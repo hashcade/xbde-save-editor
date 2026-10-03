@@ -20,6 +20,26 @@ try
         Console.WriteLine("region-affinities <save>\nregion-affinity <save> <output> <region-id> --points N\nregion-affinity <save> <output> <region-id> --stars N\nmax-region-affinity <save> <output> <region-id>\nmax-all-region-affinity <save> <output>");
         Console.WriteLine("equipment-inventory <save> <Weapon|Head|Torso|Arms|Legs|Feet>\nadd-equipment <save> <output> <item-id>\nfill-missing-equipment <save> <output> <slot> <character-id>\nequipment-favorite <save> <output> <slot> <index> <true|false>\ndelete-equipment <save> <output> <slot> <index>");
         Console.WriteLine("colony6 <save>\nmax-colony6 <save> <output>");
+        Console.WriteLine("collectopaedia <save>");
+        return 0;
+    }
+    if (args is ["collectopaedia", var collectopaediaSource])
+    {
+        var document = SaveSession.Open(collectopaediaSource).Document;
+        var entries = document.Collectopaedia;
+        Console.WriteLine(JsonSerializer.Serialize(new
+        {
+            Supported = document.CanInspectCollectopaedia,
+            Campaign = document.Campaign.ToString(),
+            Count = entries.Count,
+            RegisteredCount = entries.Count(entry => entry.IsRegistered),
+            Pages = entries.GroupBy(entry => entry.MapId).Select(page => new
+            {
+                MapId = page.Key, MapName = page.First().MapName,
+                Count = page.Count(), RegisteredCount = page.Count(entry => entry.IsRegistered),
+                Entries = page.Select(entry => new { entry.Id, entry.ItemId, entry.Name, entry.Category, entry.IsRegistered })
+            })
+        }, new JsonSerializerOptions { WriteIndented = true }));
         return 0;
     }
     if (args is ["colony6", var colonySource])

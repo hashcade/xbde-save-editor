@@ -1,5 +1,19 @@
 # CLI
 
+## Collectopaedia inspection
+
+```sh
+XbdeEditor.Cli collectopaedia bfsgame00.sav
+XbdeEditor.Cli collectopaedia bfsmeria00.sav
+```
+
+Reports registered totals and per-map entries for the identified campaign:
+300 main-story entries or 28 Future Connected entries. Placeholder rows are
+excluded. Registration is read from saved flags, not inventory ownership.
+Unverified formats and unidentified campaigns return `Supported: false` with
+an empty catalog. This command is read-only; completion and reward editing are
+not implemented yet. See [validation](docs/collectopaedia.md).
+
 ## Colony 6
 
 ```sh

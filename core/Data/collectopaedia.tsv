@@ -1,0 +1,329 @@
+id	item_id	map_id	map_name	category
+1	1852	2	Colony 9	1
+2	1853	2	Colony 9	1
+3	1854	2	Colony 9	1
+4	1855	2	Colony 9	1
+5	1856	4	Bionis' Leg	1
+6	1857	4	Bionis' Leg	1
+7	1858	4	Bionis' Leg	1
+8	1859	4	Bionis' Leg	1
+9	1860	7	Satorl Marsh	1
+10	1861	7	Satorl Marsh	1
+11	1862	7	Satorl Marsh	1
+12	1863	7	Satorl Marsh	1
+13	1864	8	Makna Forest	1
+14	1865	8	Makna Forest	1
+15	1866	8	Makna Forest	1
+16	1867	12	Eryth Sea	1
+17	1868	12	Eryth Sea	1
+18	1869	12	Eryth Sea	1
+19	1870	12	Eryth Sea	1
+20	1871	16	Valak Mountain	1
+21	1872	16	Valak Mountain	1
+22	1873	16	Valak Mountain	1
+23	1874	16	Valak Mountain	1
+24	1875	17	Sword Valley	1
+25	1876	17	Sword Valley	1
+26	1877	17	Sword Valley	1
+27	1878	19	Fallen Arm	1
+28	1879	19	Fallen Arm	1
+29	1880	21	Mechonis Field	1
+30	1881	21	Mechonis Field	1
+31	1882	21	Mechonis Field	1
+32	1883	21	Mechonis Field	1
+33	1884	24	Central Factory	1
+34	1885	24	Central Factory	1
+35	1886	25	Bionis' Interior	1
+36	1887	25	Bionis' Interior	1
+37	1888	2	Colony 9	2
+38	1889	2	Colony 9	2
+39	1890	3	Tephra Cave	2
+40	1891	3	Tephra Cave	2
+41	1892	3	Tephra Cave	2
+42	1893	4	Bionis' Leg	2
+43	1894	4	Bionis' Leg	2
+44	1895	4	Bionis' Leg	2
+45	1896	4	Bionis' Leg	2
+46	1897	8	Makna Forest	2
+47	1898	8	Makna Forest	2
+48	1899	8	Makna Forest	2
+49	1900	8	Makna Forest	2
+50	1901	9	Frontier Village	2
+51	1902	9	Frontier Village	2
+52	1903	13	Alcamoth	2
+53	1904	13	Alcamoth	2
+54	1905	15	Prison Island	2
+55	1906	15	Prison Island	2
+56	1907	15	Prison Island	2
+57	1908	15	Prison Island	2
+58	1909	16	Valak Mountain	2
+59	1910	16	Valak Mountain	2
+60	1911	16	Valak Mountain	2
+61	1912	16	Valak Mountain	2
+62	1913	17	Sword Valley	2
+63	1914	17	Sword Valley	2
+64	1915	17	Sword Valley	2
+65	1916	17	Sword Valley	2
+66	1917	19	Fallen Arm	2
+67	1918	19	Fallen Arm	2
+68	1919	19	Fallen Arm	2
+69	1920	19	Fallen Arm	2
+70	1921	23	Agniratha	2
+71	1922	23	Agniratha	2
+72	1923	23	Agniratha	2
+73	1924	2	Colony 9	3
+74	1925	2	Colony 9	3
+75	1926	2	Colony 9	3
+76	1927	3	Tephra Cave	3
+77	1928	3	Tephra Cave	3
+78	1929	5	Colony 6	3
+79	1930	5	Colony 6	3
+80	1931	5	Colony 6	3
+81	1932	7	Satorl Marsh	3
+82	1933	7	Satorl Marsh	3
+83	1934	7	Satorl Marsh	3
+84	1935	7	Satorl Marsh	3
+85	1936	7	Satorl Marsh	3
+86	1937	8	Makna Forest	3
+87	1938	8	Makna Forest	3
+88	1939	8	Makna Forest	3
+89	1940	8	Makna Forest	3
+90	1941	12	Eryth Sea	3
+91	1942	12	Eryth Sea	3
+92	1943	12	Eryth Sea	3
+93	1944	12	Eryth Sea	3
+94	1945	12	Eryth Sea	3
+95	1946	13	Alcamoth	3
+96	1947	13	Alcamoth	3
+97	1948	16	Valak Mountain	3
+98	1949	16	Valak Mountain	3
+99	1950	16	Valak Mountain	3
+100	1951	17	Sword Valley	3
+101	1952	17	Sword Valley	3
+102	1953	17	Sword Valley	3
+103	1954	17	Sword Valley	3
+104	1955	21	Mechonis Field	3
+105	1956	21	Mechonis Field	3
+106	1957	23	Agniratha	3
+107	1958	23	Agniratha	3
+108	1959	23	Agniratha	3
+109	1960	3	Tephra Cave	4
+110	1961	3	Tephra Cave	4
+111	1962	3	Tephra Cave	4
+112	1963	3	Tephra Cave	4
+113	1964	5	Colony 6	4
+114	1965	5	Colony 6	4
+115	1966	5	Colony 6	4
+116	1967	6	Ether Mine	4
+117	1968	6	Ether Mine	4
+118	1969	6	Ether Mine	4
+119	1970	7	Satorl Marsh	4
+120	1971	7	Satorl Marsh	4
+121	1972	7	Satorl Marsh	4
+122	1973	8	Makna Forest	4
+123	1974	8	Makna Forest	4
+124	1975	8	Makna Forest	4
+125	1976	8	Makna Forest	4
+126	1977	12	Eryth Sea	4
+127	1978	12	Eryth Sea	4
+128	1979	15	Prison Island	4
+129	1980	15	Prison Island	4
+130	1981	15	Prison Island	4
+131	1982	16	Valak Mountain	4
+132	1983	16	Valak Mountain	4
+133	1984	16	Valak Mountain	4
+134	1985	16	Valak Mountain	4
+135	1986	19	Fallen Arm	4
+136	1987	19	Fallen Arm	4
+137	1988	19	Fallen Arm	4
+138	1989	19	Fallen Arm	4
+139	1990	24	Central Factory	4
+140	1991	24	Central Factory	4
+141	1992	24	Central Factory	4
+142	1993	25	Bionis' Interior	4
+143	1994	25	Bionis' Interior	4
+144	1995	25	Bionis' Interior	4
+145	1996	2	Colony 9	5
+146	1997	2	Colony 9	5
+147	1998	2	Colony 9	5
+148	1999	2	Colony 9	5
+149	2000	3	Tephra Cave	5
+150	2001	3	Tephra Cave	5
+151	2002	3	Tephra Cave	5
+152	2003	4	Bionis' Leg	5
+153	2004	4	Bionis' Leg	5
+154	2005	4	Bionis' Leg	5
+155	2006	4	Bionis' Leg	5
+156	2007	4	Bionis' Leg	5
+157	2008	6	Ether Mine	5
+158	2009	6	Ether Mine	5
+159	2010	6	Ether Mine	5
+160	2011	8	Makna Forest	5
+161	2012	8	Makna Forest	5
+162	2013	8	Makna Forest	5
+163	2014	8	Makna Forest	5
+164	2015	9	Frontier Village	5
+165	2016	9	Frontier Village	5
+166	2017	11	High Entia Tomb	5
+167	2018	11	High Entia Tomb	5
+168	2019	15	Prison Island	5
+169	2020	15	Prison Island	5
+170	2021	18	Galahad Fortress	5
+171	2022	18	Galahad Fortress	5
+172	2023	21	Mechonis Field	5
+173	2024	21	Mechonis Field	5
+174	2025	21	Mechonis Field	5
+175	2026	23	Agniratha	5
+176	2027	23	Agniratha	5
+177	2028	24	Central Factory	5
+178	2029	24	Central Factory	5
+179	2030	26	Memory Space	5
+180	2031	26	Memory Space	5
+181	2032	3	Tephra Cave	6
+182	2033	3	Tephra Cave	6
+183	2034	3	Tephra Cave	6
+184	2035	4	Bionis' Leg	6
+185	2036	4	Bionis' Leg	6
+186	2037	4	Bionis' Leg	6
+187	2038	6	Ether Mine	6
+188	2039	6	Ether Mine	6
+189	2040	6	Ether Mine	6
+190	2041	7	Satorl Marsh	6
+191	2042	7	Satorl Marsh	6
+192	2043	7	Satorl Marsh	6
+193	2044	7	Satorl Marsh	6
+194	2045	7	Satorl Marsh	6
+195	2046	12	Eryth Sea	6
+196	2047	12	Eryth Sea	6
+197	2048	12	Eryth Sea	6
+198	2049	12	Eryth Sea	6
+199	2050	15	Prison Island	6
+200	2051	15	Prison Island	6
+201	2052	16	Valak Mountain	6
+202	2053	16	Valak Mountain	6
+203	2054	16	Valak Mountain	6
+204	2055	16	Valak Mountain	6
+205	2056	16	Valak Mountain	6
+206	2057	19	Fallen Arm	6
+207	2058	19	Fallen Arm	6
+208	2059	19	Fallen Arm	6
+209	2060	21	Mechonis Field	6
+210	2061	21	Mechonis Field	6
+211	2062	21	Mechonis Field	6
+212	2063	23	Agniratha	6
+213	2064	23	Agniratha	6
+214	2065	24	Central Factory	6
+215	2066	24	Central Factory	6
+216	2067	24	Central Factory	6
+217	2068	2	Colony 9	7
+218	2069	2	Colony 9	7
+219	2070	4	Bionis' Leg	7
+220	2071	4	Bionis' Leg	7
+221	2072	6	Ether Mine	7
+222	2073	6	Ether Mine	7
+223	2074	7	Satorl Marsh	7
+224	2075	7	Satorl Marsh	7
+225	2076	11	High Entia Tomb	7
+226	2077	11	High Entia Tomb	7
+227	2078	11	High Entia Tomb	7
+228	2079	15	Prison Island	7
+229	2080	15	Prison Island	7
+230	2081	15	Prison Island	7
+231	2082	15	Prison Island	7
+232	2083	17	Sword Valley	7
+233	2084	17	Sword Valley	7
+234	2085	17	Sword Valley	7
+235	2086	18	Galahad Fortress	7
+236	2087	18	Galahad Fortress	7
+237	2088	18	Galahad Fortress	7
+238	2089	19	Fallen Arm	7
+239	2090	19	Fallen Arm	7
+240	2091	21	Mechonis Field	7
+241	2092	21	Mechonis Field	7
+242	2093	21	Mechonis Field	7
+243	2094	23	Agniratha	7
+244	2095	23	Agniratha	7
+245	2096	23	Agniratha	7
+246	2097	23	Agniratha	7
+247	2098	24	Central Factory	7
+248	2099	24	Central Factory	7
+249	2100	24	Central Factory	7
+250	2101	26	Memory Space	7
+251	2102	26	Memory Space	7
+252	2103	26	Memory Space	7
+253	2104	2	Colony 9	8
+254	2105	2	Colony 9	8
+255	2106	3	Tephra Cave	8
+256	2107	3	Tephra Cave	8
+257	2108	4	Bionis' Leg	8
+258	2109	4	Bionis' Leg	8
+259	2110	4	Bionis' Leg	8
+260	2111	4	Bionis' Leg	8
+261	2112	5	Colony 6	8
+262	2113	5	Colony 6	8
+263	2114	6	Ether Mine	8
+264	2115	6	Ether Mine	8
+265	2116	7	Satorl Marsh	8
+266	2117	7	Satorl Marsh	8
+267	2118	7	Satorl Marsh	8
+268	2119	8	Makna Forest	8
+269	2120	8	Makna Forest	8
+270	2121	8	Makna Forest	8
+271	2122	9	Frontier Village	8
+272	2123	9	Frontier Village	8
+273	2124	11	High Entia Tomb	8
+274	2125	11	High Entia Tomb	8
+275	2126	12	Eryth Sea	8
+276	2127	12	Eryth Sea	8
+277	2128	13	Alcamoth	8
+278	2129	13	Alcamoth	8
+279	2130	15	Prison Island	8
+280	2131	15	Prison Island	8
+281	2132	16	Valak Mountain	8
+282	2133	16	Valak Mountain	8
+283	2134	17	Sword Valley	8
+284	2135	17	Sword Valley	8
+285	2136	17	Sword Valley	8
+286	2137	18	Galahad Fortress	8
+287	2138	18	Galahad Fortress	8
+288	2139	19	Fallen Arm	8
+289	2140	19	Fallen Arm	8
+290	2141	21	Mechonis Field	8
+291	2142	21	Mechonis Field	8
+292	2143	23	Agniratha	8
+293	2144	23	Agniratha	8
+294	2145	24	Central Factory	8
+295	2146	24	Central Factory	8
+296	2147	24	Central Factory	8
+297	2148	25	Bionis' Interior	8
+298	2149	25	Bionis' Interior	8
+299	2150	26	Memory Space	8
+300	2151	26	Memory Space	8
+319	3956	29	Bionis' Shoulder	1
+320	3957	29	Bionis' Shoulder	1
+321	3958	29	Bionis' Shoulder	1
+322	3959	29	Bionis' Shoulder	1
+323	3960	29	Bionis' Shoulder	1
+324	3961	29	Bionis' Shoulder	4
+325	3962	29	Bionis' Shoulder	4
+326	3963	29	Bionis' Shoulder	4
+327	3964	29	Bionis' Shoulder	4
+328	3965	29	Bionis' Shoulder	4
+329	3966	29	Bionis' Shoulder	7
+330	3967	29	Bionis' Shoulder	7
+331	3968	29	Bionis' Shoulder	7
+332	3969	29	Bionis' Shoulder	7
+333	3970	29	Bionis' Shoulder	7
+334	4006	29	Bionis' Shoulder	8
+335	4007	29	Bionis' Shoulder	8
+336	4008	29	Bionis' Shoulder	8
+337	4009	29	Bionis' Shoulder	8
+338	4010	29	Bionis' Shoulder	8
+339	4084	30	Alcamoth	3
+340	4085	30	Alcamoth	2
+341	4086	30	Alcamoth	2
+342	4087	30	Alcamoth	3
+343	4088	30	Alcamoth	8
+344	4089	30	Alcamoth	8
+345	4090	30	Alcamoth	4
+346	4091	30	Alcamoth	4

@@ -36,6 +36,39 @@ def main() -> None:
         source = root / "bfsgame00.sav"
         output = root / "output.sav"
         source.write_bytes(original)
+        assert "collectopaedia" in run("--help")
+        collection_source = root / "collection.sav"
+        for future in (False, True):
+            collection_bytes = bytearray(original)
+            if future:
+                struct.pack_into("<H", collection_bytes, 0x15231A, 14)
+                struct.pack_into("<I", collection_bytes, 0x152368 + 13 * 0x138, 20)
+            ids = (319, 346) if future else (1, 32, 300)
+            for item_id in ids:
+                bit = 0x19E9 + item_id
+                collection_bytes[0x148D6C + (bit >> 3)] |= 1 << (bit & 7)
+            # Adjacent placeholders and the other campaign must not appear.
+            for item_id in (301, 318, 347, 349, 1 if future else 319):
+                bit = 0x19E9 + item_id
+                collection_bytes[0x148D6C + (bit >> 3)] |= 1 << (bit & 7)
+            collection_source.write_bytes(collection_bytes)
+            info = json.loads(run("collectopaedia", collection_source))
+            assert info["Supported"] and info["Count"] == (28 if future else 300)
+            assert info["RegisteredCount"] == len(ids) and len(info["Pages"]) == (2 if future else 21)
+            entries = [entry for page in info["Pages"] for entry in page["Entries"]]
+            assert {entry["Id"] for entry in entries if entry["IsRegistered"]} == set(ids)
+            assert entries[0]["ItemId"] == (3956 if future else 1852)
+            assert collection_source.read_bytes() == collection_bytes and not output.exists()
+            for unsupported in ("version", "campaign"):
+                unknown = bytearray(collection_bytes)
+                if unsupported == "version":
+                    struct.pack_into("<I", unknown, 0, 8)
+                else:
+                    unknown[0x152330] = 1
+                collection_source.write_bytes(unknown)
+                info = json.loads(run("collectopaedia", collection_source))
+                assert not info["Supported"] and info["Count"] == 0 and info["Pages"] == []
+                assert collection_source.read_bytes() == unknown
         assert "max-colony6" in run("--help")
         colony_bytes = bytearray(original)
         colony_bytes[0xCF8:0xCFF] = bytes([20, 30, 1, 0, 0, 0, 0])

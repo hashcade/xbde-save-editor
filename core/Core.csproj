@@ -6,6 +6,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Data/achievements.tsv" />
     <EmbeddedResource Include="Data/inventory.tsv" />
+    <EmbeddedResource Include="Data/collectopaedia.tsv" />
+    <EmbeddedResource Include="Data/collectopaedia-rewards.tsv" />
     <EmbeddedResource Include="Data/arts.tsv" />
     <EmbeddedResource Include="Data/skills.tsv" />
     <EmbeddedResource Include="Data/skill-trees.tsv" />
