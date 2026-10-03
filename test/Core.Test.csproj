@@ -3,6 +3,6 @@
     <OutputType>Exe</OutputType>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
-  <ItemGroup><Compile Include="Program.cs" /><Compile Include="ArtsTests.cs" /><Compile Include="SkillsTests.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="Program.cs" /><Compile Include="ArtsTests.cs" /><Compile Include="SkillsTests.cs" /><Compile Include="EquipmentTests.cs" /></ItemGroup>
   <ItemGroup><ProjectReference Include="../core/Core.csproj" /></ItemGroup>
 </Project>

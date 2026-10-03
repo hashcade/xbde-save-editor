@@ -218,6 +218,50 @@ def main() -> None:
         run("max-all-skills", source, output, success=False)
         assert output.read_bytes() == skill_bytes
         assert source.read_bytes() == ambiguous
+        equipment = bytearray(original)
+        weapon = 0x3B10
+        for index in range(3):
+            offset = weapon + index * 0x30
+            struct.pack_into("<5H", equipment, offset, index, 2, 15, 2, 1)
+            equipment[offset + 0x10] = 1
+            equipment[offset + 0x15] = 3
+            struct.pack_into("<I", equipment, offset + 0x18, index | (3 << 16))
+        struct.pack_into("<I", equipment, weapon + 0x24, 3297 | (1 << 16))
+        struct.pack_into("<2H", equipment, 0x152368 + 0x28, 0, 2)
+        struct.pack_into("<2H", equipment, 0x1524A0 + 0x28, 1, 2)
+        for index in range(6):
+            offset = 0x2C380 + index * 0x2C
+            struct.pack_into("<5H", equipment, offset, index, 3, 0, 3, 1)
+            equipment[offset + 0x10] = 1
+            equipment[offset + 0x16] = 6
+            struct.pack_into("<3H", equipment, offset + 0x1A, 1, 1, 100)
+        equipment[0x2C380 + 5 * 0x2C + 0x19] = 1
+        equipment_source = root / "equipment.sav"
+        equipment_source.write_bytes(equipment)
+        rows = json.loads(run("equipment", equipment_source, "1"))
+        assert [row["Slot"] for row in rows] == ["Weapon", "Head", "Torso", "Arms", "Legs", "Feet"]
+        assert rows[0]["Sockets"][0]["GemIndex"] == 0
+        assert rows[0]["Sockets"][1]["FixedItemId"] == 3297
+        assert not rows[0]["Sockets"][1]["CanEdit"]
+        assert [gem["Index"] for gem in rows[0]["Sockets"][0]["AvailableGems"]] == [0, 3, 4]
+        run("equipment-gem", equipment_source, output, "1", "Weapon", "1", "3")
+        expected_equipment = bytearray(equipment)
+        struct.pack_into("<I", expected_equipment, weapon + 0x18, 3 | (3 << 16))
+        assert output.read_bytes() == expected_equipment
+        for slot, socket, gem in (("Weapon", "1", "-1"), ("Weapon", "1", "1"),
+                                  ("Weapon", "1", "2"), ("Weapon", "1", "5"),
+                                  ("Weapon", "1", "499"), ("Weapon", "1", "500"),
+                                  ("Weapon", "1", "1.5"), ("Weapon", "0", "3"),
+                                  ("Weapon", "4", "3"), ("Weapon", "2", "3"),
+                                  ("Head", "1", "3"), ("Unknown", "1", "3")):
+            run("equipment-gem", equipment_source, output, "1", slot, socket, gem, success=False)
+            assert output.read_bytes() == expected_equipment
+        run("equipment-gem", equipment_source, output, "14", "Weapon", "1", "3", success=False)
+        assert output.read_bytes() == expected_equipment
+        run("equipment-gem", output, output, "1", "Weapon", "1", "none")
+        struct.pack_into("<I", expected_equipment, weapon + 0x18, 0)
+        assert output.read_bytes() == expected_equipment
+        assert equipment_source.read_bytes() == equipment
         assert not list(root.glob(".xbde-*.tmp"))
     print("CLI tests passed.")
 

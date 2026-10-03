@@ -30,6 +30,10 @@ public sealed class CharacterRecord
         _ => false
     };
     public uint MinimumLevel => LevelProgression.MinimumLevel(Id, _document.Campaign);
+    public IReadOnlyList<EquipmentRecord> Equipment => Enum.GetValues<EquipmentSlot>()
+        .Select(slot => new EquipmentRecord(_document, Id, slot)).ToArray();
+    public EquipmentRecord GetEquipment(EquipmentSlot slot) => Equipment.FirstOrDefault(equipment => equipment.Slot == slot)
+        ?? throw new ArgumentOutOfRangeException(nameof(slot));
     public IReadOnlyList<ArtRecord> Arts => ArtCatalog.All.Where(art => art.CharacterId == Id && art.LinkedArtId is null)
         .OrderBy(art => art.Order).ThenBy(art => art.Id)
         .Select(art => new ArtRecord(_document, art)).ToArray();

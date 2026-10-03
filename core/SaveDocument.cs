@@ -58,6 +58,30 @@ public sealed class SaveDocument
     }
 
     public byte[] Serialize() => (byte[])_data.Clone();
+    public IReadOnlyList<GemRecord> Gems => Enumerable.Range(0, 500).Select(index => new GemRecord(this, index))
+        .Where(gem => gem.Exists).ToArray();
+    public GemRecord GetGem(int index) => index is >= 0 and < 500 ? new GemRecord(this, index)
+        : throw new ArgumentOutOfRangeException(nameof(index));
+
+    internal bool IsGemUsed(int index, EquipmentRecord? excluded = null)
+        => UsedGemIndices(excluded).Contains(index);
+
+    internal HashSet<int> UsedGemIndices(EquipmentRecord? excluded = null)
+    {
+        var used = new HashSet<int>();
+        foreach (var slot in Enum.GetValues<EquipmentSlot>())
+            for (int item = 0; item < 500; item++)
+            {
+                int offset = EquipmentCatalog.InventoryOffset(slot) + item * EquipmentRecord.InventorySize;
+                if (ReadByte(offset + 0x10) != 1 || excluded is not null && excluded.Slot == slot && excluded.Index == item) continue;
+                for (int socket = 0; socket < 3; socket++)
+                {
+                    int reference = offset + 0x18 + socket * 8;
+                    if (ReadUInt16(reference + 2) == 3) used.Add(ReadUInt16(reference));
+                }
+            }
+        return used;
+    }
 
     public void MaxAllAP()
     {

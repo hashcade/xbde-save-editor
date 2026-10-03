@@ -10,7 +10,7 @@ try
     }
     if (args is [] or ["--help"])
     {
-        Console.WriteLine("XBDE Save Editor\n\ninspect <save>\ncopy <save> <output>\nresources <save> <output> [--money N] [--noponstones N]\ncharacter <save> <output> <id> [--ap N] [--coins N] [--reserve-exp N]\nprogression <save> <output> <id> [--level N] [--exp N]\nmax-ap <save> <output>\narts <save> <character-id>\nart <save> <output> <character-id> <art-id> --level N\nmax-art <save> <output> <character-id> <art-id>\nmax-arts <save> <output> <character-id>\nskills <save> <character-id>\nskill-tree <save> <output> <character-id> <tree-index> --learned N\nskill-tree <save> <output> <character-id> <tree-index> --sp N\nmax-skill-tree <save> <output> <character-id> <tree-index>\nmax-skills <save> <output> <character-id>\nmax-all-skills <save> <output>\n--version");
+        Console.WriteLine("XBDE Save Editor\n\ninspect <save>\ncopy <save> <output>\nresources <save> <output> [--money N] [--noponstones N]\ncharacter <save> <output> <id> [--ap N] [--coins N] [--reserve-exp N]\nprogression <save> <output> <id> [--level N] [--exp N]\nmax-ap <save> <output>\narts <save> <character-id>\nart <save> <output> <character-id> <art-id> --level N\nmax-art <save> <output> <character-id> <art-id>\nmax-arts <save> <output> <character-id>\nskills <save> <character-id>\nskill-tree <save> <output> <character-id> <tree-index> --learned N\nskill-tree <save> <output> <character-id> <tree-index> --sp N\nmax-skill-tree <save> <output> <character-id> <tree-index>\nmax-skills <save> <output> <character-id>\nmax-all-skills <save> <output>\nequipment <save> <character-id>\nequipment-gem <save> <output> <character-id> <Weapon|Head|Torso|Arms|Legs|Feet> <socket> <gem-index|none>\n--version");
         return 0;
     }
     if (args is ["inspect", var source])
@@ -42,6 +42,34 @@ try
             tree.Index, tree.Name, tree.IsUnlocked, tree.CanEdit, tree.LearnedCount,
             tree.Progress, tree.MaximumProgress, tree.Skills
         }), new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["equipment", var equipmentSource, var equipmentCharacter])
+    {
+        var character = SaveSession.Open(equipmentSource).Document.GetCharacter(ParseId(equipmentCharacter));
+        Console.WriteLine(JsonSerializer.Serialize(character.Equipment.Select(equipment => new
+        {
+            Slot = equipment.Slot.ToString(), equipment.Index, equipment.ItemId, equipment.Name, equipment.Exists,
+            equipment.CanEdit, equipment.GemSlotCount,
+            Sockets = equipment.GemSockets.Select(socket => new
+            {
+                socket.Index, socket.Name, socket.GemIndex, socket.FixedItemId, socket.CanEdit,
+                AvailableGems = socket.CanEdit ? socket.AvailableGems.Select(gem => new { gem.Index, gem.Name, gem.Rank, gem.Value }) : []
+            })
+        }), new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["equipment-gem", var gemSource, var gemOutput, var gemCharacter, var equipmentSlot, var socketIndex, var gemChoice])
+    {
+        if (!Enum.TryParse<EquipmentSlot>(equipmentSlot, true, out var slot) || !Enum.IsDefined(slot))
+            throw new ArgumentException("Choose Weapon, Head, Torso, Arms, Legs or Feet.");
+        var session = SaveSession.Open(gemSource);
+        var equipment = session.Document.GetCharacter(ParseId(gemCharacter)).GetEquipment(slot);
+        int socket = ParseId(socketIndex);
+        if (socket < 1 || socket > equipment.GemSlotCount) throw new ArgumentOutOfRangeException(nameof(socket));
+        int? gem = gemChoice == "none" ? null : ParseId(gemChoice);
+        equipment.SetGems(equipment.GemSockets.Select(record => record.Index == socket ? gem : record.GemIndex).ToArray());
+        session.Save(gemOutput);
         return 0;
     }
     if (args is ["max-all-skills", var allSkillsSource, var allSkillsOutput])

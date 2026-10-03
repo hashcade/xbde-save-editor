@@ -7,5 +7,7 @@
     <EmbeddedResource Include="Data/arts.tsv" />
     <EmbeddedResource Include="Data/skills.tsv" />
     <EmbeddedResource Include="Data/skill-trees.tsv" />
+    <EmbeddedResource Include="Data/equipment.tsv" />
+    <EmbeddedResource Include="Data/gem-effects.tsv" />
   </ItemGroup>
 </Project>
