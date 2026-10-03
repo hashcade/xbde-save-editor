@@ -48,6 +48,25 @@ def main() -> None:
         run("collectopaedia-plan", source, "--entry", "0", success=False)
         run("collectopaedia-plan", source, "--unknown", success=False)
         assert source.read_bytes() == original and not output.exists()
+        run("complete-collectopaedia", source, output, "--page", "2")
+        completed = output.read_bytes()
+        assert source.read_bytes() == original
+        info = json.loads(run("collectopaedia", output))
+        page = next(page for page in info["Pages"] if page["MapId"] == 2)
+        assert page["RegisteredCount"] == page["Count"] and info["RegisteredCount"] == page["Count"]
+        assert json.loads(run("collectopaedia-plan", output, "--page", "2"))["Rewards"] == []
+        run("complete-collectopaedia", output, output, "--page", "2")
+        assert output.read_bytes() == completed
+        run("complete-collectopaedia", source, output, "--entry", "301", success=False)
+        assert output.read_bytes() == completed and source.read_bytes() == original
+        full_source = root / "full-collection.sav"
+        full_bytes = bytearray(original)
+        for index in range(500):
+            full_bytes[0x2C380 + index * 0x2C + 0x10] = 2
+        full_source.write_bytes(full_bytes)
+        run("complete-collectopaedia", full_source, output, success=False)
+        assert output.read_bytes() == completed and full_source.read_bytes() == full_bytes
+        output.unlink()
         collection_source = root / "collection.sav"
         for future in (False, True):
             collection_bytes = bytearray(original)
@@ -73,6 +92,15 @@ def main() -> None:
             assert plan["NewEntryCount"] == (28 if future else 300) - len(ids)
             run("collectopaedia-plan", collection_source, "--entry", "1" if future else "319", success=False)
             assert collection_source.read_bytes() == collection_bytes and not output.exists()
+            run("complete-collectopaedia", collection_source, output)
+            completed_info = json.loads(run("collectopaedia", output))
+            assert completed_info["Count"] == completed_info["RegisteredCount"] == (28 if future else 300)
+            reward_plan = json.loads(run("collectopaedia-plan", output))
+            assert reward_plan["Rewards"] == [] and reward_plan["NewAchievementIds"] == []
+            completed_bytes = output.read_bytes()
+            run("complete-collectopaedia", output, output)
+            assert output.read_bytes() == completed_bytes and collection_source.read_bytes() == collection_bytes
+            output.unlink()
             for unsupported in ("version", "campaign"):
                 unknown = bytearray(collection_bytes)
                 if unsupported == "version":
@@ -83,6 +111,8 @@ def main() -> None:
                 info = json.loads(run("collectopaedia", collection_source))
                 assert not info["Supported"] and info["Count"] == 0 and info["Pages"] == []
                 run("collectopaedia-plan", collection_source, success=False)
+                run("complete-collectopaedia", collection_source, output, success=False)
+                assert not output.exists()
                 assert collection_source.read_bytes() == unknown
         assert "max-colony6" in run("--help")
         colony_bytes = bytearray(original)

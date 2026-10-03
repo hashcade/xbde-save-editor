@@ -153,6 +153,9 @@ internal static class CollectopaediaTests
             var replay = document.PlanCollectopaediaCompletion(document.Collectopaedia.Select(entry => entry.Id));
             check(replay.NewEntries.Count == 0 && replay.Rewards.Count == 0,
                 "A completed real save receives duplicate collection rewards in the plan.");
+            var completion = document.CompleteCollectopaedia(document.Collectopaedia.Select(entry => entry.Id));
+            check(completion.NewEntries.Count == 0 && completion.Rewards.Count == 0,
+                "A completed real save receives duplicate collection rewards.");
         }
         check(document.Serialize().AsSpan().SequenceEqual(bytes), "Inspecting a real Collectopaedia changed the save.");
         Console.WriteLine($"Collectopaedia: {document.Collectopaedia.Count(entry => entry.IsRegistered)}/{document.Collectopaedia.Count} registered.");

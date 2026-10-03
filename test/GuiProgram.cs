@@ -41,6 +41,7 @@ void VerifyPageSpacing()
     else if (items.IsVisible) page = items;
     else if (window.FindControl<Grid>("AffinityPanel")!.IsVisible) page = window.FindControl<Grid>("AffinityPanel")!;
     else if (window.FindControl<Grid>("AchievementsPanel")!.IsVisible) page = window.FindControl<Grid>("AchievementsPanel")!;
+    else if (window.FindControl<Grid>("CollectopaediaPanel")!.IsVisible) page = window.FindControl<Grid>("CollectopaediaPanel")!;
     double gap = page.Bounds.Top - header.Bounds.Bottom;
     Check(Math.Abs(gap - (main.IsVisible ? 20 : 16)) < 0.1,
         $"Header-to-page spacing changed: {gap}.");
@@ -86,6 +87,7 @@ try
 {
     EquipmentInventoryGuiTests.Run(window, temporary, Check);
     Colony6GuiTests.Run(window, temporary, Check);
+    CollectopaediaGuiTests.Run(window, temporary, Check);
     byte[] regionFixture = new byte[SaveDocument.FileSize];
     BinaryPrimitives.WriteUInt32LittleEndian(regionFixture, 7);
     BinaryPrimitives.WriteUInt16LittleEndian(regionFixture.AsSpan(0x152318), 1);
@@ -1067,6 +1069,7 @@ try
         else if (page.Length > 0 && page[0] == "skill-links") window.ShowSkillLinks();
         else if (page.Length > 0 && page[0] == "affinity") window.ShowAffinity();
         else if (page.Length > 0 && page[0] == "regions") window.ShowRegionAffinity();
+        else if (page.Length > 0 && page[0] == "collectopaedia") window.ShowCollectopaedia();
         else if (page.Length > 0 && page[0] == "equipment")
         {
             window.ShowEquipment();

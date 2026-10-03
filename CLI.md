@@ -11,8 +11,7 @@ Reports registered totals and per-map entries for the identified campaign:
 300 main-story entries or 28 Future Connected entries. Placeholder rows are
 excluded. Registration is read from saved flags, not inventory ownership.
 Unverified formats and unidentified campaigns return `Supported: false` with
-an empty catalog. This command is read-only; completion and reward editing are
-not implemented yet. See [validation](docs/collectopaedia.md).
+an empty catalog. This command is read-only. See [validation](docs/collectopaedia.md).
 
 ```sh
 XbdeEditor.Cli collectopaedia-plan bfsgame00.sav
@@ -28,6 +27,22 @@ native reward item IDs and gem effect/rank/fixed-strength data. Zero fixed
 strength denotes a native random range, not a maximum crafted gem. Invalid IDs,
 other campaigns and unverified formats reject previewing. Previews do not check
 inventory capacity, allocate rewards, change registrations or save files.
+
+```sh
+XbdeEditor.Cli complete-collectopaedia bfsgame00.sav edited.sav
+XbdeEditor.Cli complete-collectopaedia bfsgame00.sav edited.sav --page 2
+XbdeEditor.Cli complete-collectopaedia bfsmeria00.sav edited.sav --entry 319
+```
+
+Completion registers missing entries without requiring or consuming owned
+collectables. It adds the original equipment/gem rewards for categories/pages
+newly completed by this edit, never rewards for previously completed groups.
+Main-story collection achievements are synchronized without adding EXP or
+changing character levels, matching the standalone achievement editor. Future
+Connected does not change main-story achievement records. Existing items,
+equipment references, quests and other flags remain unchanged. Any bank capacity
+or acquisition-serial failure rejects the entire batch before saving, including
+when earlier rewards would fit. Repeating a completed selection is byte-identical.
 
 ## Colony 6
 

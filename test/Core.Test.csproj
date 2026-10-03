@@ -11,5 +11,5 @@
   <ItemGroup><Compile Include="RegionAffinityTests.cs" /></ItemGroup>
   <ItemGroup><Compile Include="EquipmentInventoryTests.cs" /></ItemGroup>
   <ItemGroup><Compile Include="Colony6Tests.cs" /></ItemGroup>
-  <ItemGroup><Compile Include="CollectopaediaTests.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="CollectopaediaTests.cs" /><Compile Include="CollectopaediaCompletionTests.cs" /></ItemGroup>
 </Project>

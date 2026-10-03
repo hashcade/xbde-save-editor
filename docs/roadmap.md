@@ -25,7 +25,8 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Colony 6: inspect facilities/development/population and maximize started reconstruction with native linked writes, all-or-nothing validation and matching CLI support.
 - [x] Collectopaedia: verified campaign-specific item/reward catalogs and read-only registration inspection, with CLI support.
 - [x] Collectopaedia: native category/page reward mapping, gem reward metadata and duplicate-safe read-only completion previews, with CLI support.
-- [ ] Collectopaedia: validated completion with linked rewards/achievements, atomic inventory allocation and matching GUI/CLI operations.
+- [x] Collectopaedia: single/page/campaign completion with original rewards, linked achievement records, atomic inventory allocation and matching GUI/CLI operations; character EXP and collectable stocks are preserved.
+- [ ] Collectopaedia: in-game verification of edited registrations and reward visibility.
 
 Prioritize grind reduction, bulk edits and actions that are difficult or unavailable
 in-game. Basic party sorting is intentionally excluded; it adds little value to
@@ -35,9 +36,9 @@ editing remain available for progression changes without grinding.
 
 ## Remaining priorities
 
-1. Complete Collectopaedia pages without repetitive item gathering, including verified rewards and linked achievements.
-2. Reduce affinity and Colony 6 reconstruction/recruitment grinding where all linked state can be validated.
-3. Assess Time Attack rewards and Ponspectors against the same usefulness and write-safety criteria before committing to implementation.
+1. Reduce remaining NPC affinity and Colony 6 recruitment grinding where all linked state can be validated.
+2. Assess protected Art and skill-tree unlocks only where they remove a concrete progression obstacle and preserve linked quest state.
+3. Assess Time Attack rewards and Ponspectors against the same usefulness and write-safety criteria before committing to implementation. An unverified or low-value candidate is deferred, not added merely to expand feature coverage.
 
 NPC affinity, quests, Colony 6 initial quest/recruitment, Time Attack, Ponspectors and system-save
 unlocks need further format validation. They are not promised or exposed as editable fields.

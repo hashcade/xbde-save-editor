@@ -112,6 +112,7 @@ AffinityTests.Run(Fixture, Check, Reject);
 RegionAffinityTests.Run(Fixture, Check, Reject);
 Colony6Tests.Run(Fixture, Check, Reject);
 CollectopaediaTests.Run(Fixture, Check, Reject);
+CollectopaediaCompletionTests.Run(Fixture, Check, Reject);
 EquipmentTests.Run(Fixture, Check, Reject);
 EquipmentSwitchTests.Run(Fixture, Check, Reject);
 EquipmentInventoryTests.Run(Fixture, Check, Reject);

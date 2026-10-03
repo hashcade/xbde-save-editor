@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Text.Json;
 using XbdeEditor.Core;
 
@@ -23,29 +22,27 @@ try
         Console.WriteLine("colony6 <save>\nmax-colony6 <save> <output>");
         Console.WriteLine("collectopaedia <save>");
         Console.WriteLine("collectopaedia-plan <save> [--page <map-id>|--entry <entry-id>]");
+        Console.WriteLine("complete-collectopaedia <save> <output> [--page <map-id>|--entry <entry-id>]");
         return 0;
     }
     if (args is ["collectopaedia-plan", var planSource, .. var planArguments])
     {
         var document = SaveSession.Open(planSource).Document;
-        int[] entryIds;
-        if (planArguments is []) entryIds = document.Collectopaedia.Select(entry => entry.Id).ToArray();
-        else if (planArguments is ["--entry", var entry]) entryIds = [int.Parse(entry, CultureInfo.InvariantCulture)];
-        else if (planArguments is ["--page", var page])
-        {
-            int mapId = int.Parse(page, CultureInfo.InvariantCulture);
-            entryIds = document.Collectopaedia.Where(entry => entry.MapId == mapId).Select(entry => entry.Id).ToArray();
-            if (entryIds.Length == 0) throw new ArgumentException("Choose a Collectopaedia page from this campaign.");
-        }
-        else throw new ArgumentException("Use --page <map-id> or --entry <entry-id>.");
-        var plan = document.PlanCollectopaediaCompletion(entryIds);
+        var plan = document.PlanCollectopaediaCompletion(ParseCollectionSelection(document, planArguments));
         Console.WriteLine(JsonSerializer.Serialize(new
         {
-            PreviewOnly = true, NewEntryCount = plan.NewEntries.Count,
+            PreviewOnly = true, NewEntryCount = plan.NewEntries.Count, plan.NewAchievementIds,
             NewEntries = plan.NewEntries.Select(entry => new { entry.Id, entry.ItemId, entry.Name }),
             Rewards = plan.Rewards.Select(reward => new { reward.Id, reward.ItemId, reward.Name,
                 reward.ItemType, reward.EffectId, reward.Rank, reward.FixedStrength })
         }, new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["complete-collectopaedia", var collectionSource, var collectionOutput, .. var collectionOptions])
+    {
+        var session = SaveSession.Open(collectionSource);
+        session.Document.CompleteCollectopaedia(ParseCollectionSelection(session.Document, collectionOptions));
+        session.Save(collectionOutput);
         return 0;
     }
     if (args is ["collectopaedia", var collectopaediaSource])
@@ -582,6 +579,18 @@ catch (Exception error) when (error is IOException or InvalidDataException or Ar
 
 static int ParseId(string value) => int.TryParse(value, out int id) ? id
     : throw new ArgumentException("ID must be an integer.");
+
+static int[] ParseCollectionSelection(SaveDocument document, string[] options)
+{
+    if (options is []) return document.Collectopaedia.Select(entry => entry.Id).ToArray();
+    if (options is ["--entry", var entry]) return [ParseId(entry)];
+    if (options is not ["--page", var page])
+        throw new ArgumentException("Use --page <map-id> or --entry <entry-id>.");
+    int mapId = ParseId(page);
+    var ids = document.Collectopaedia.Where(entry => entry.MapId == mapId).Select(entry => entry.Id).ToArray();
+    if (ids.Length == 0) throw new ArgumentException("Choose a Collectopaedia page from this campaign.");
+    return ids;
+}
 
 static InventoryKind ParseInventoryKind(string value) => Enum.TryParse<InventoryKind>(value, true, out var kind) && Enum.IsDefined(kind)
     ? kind : throw new ArgumentException("Choose Collectables, Materials, KeyItems or ArtManuals.");

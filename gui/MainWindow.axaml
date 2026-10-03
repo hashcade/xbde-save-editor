@@ -35,6 +35,7 @@
         <TabStripItem Content="{DynamicResource Items}" />
         <TabStripItem Content="{DynamicResource Affinity}" />
         <TabStripItem Content="{DynamicResource Achievements}" />
+        <TabStripItem Content="{DynamicResource Collectopaedia}" />
       </TabStrip>
     </Grid>
     <ScrollViewer Name="MainScroll" Grid.Row="1" Margin="24,4,24,0" HorizontalScrollBarVisibility="Disabled">
@@ -473,6 +474,55 @@
           </StackPanel>
         </ScrollViewer>
       </Grid>
+    </Grid>
+    <Grid Name="CollectopaediaPanel" Grid.Row="1" Margin="24,0" ColumnDefinitions="320,*" ColumnSpacing="24" IsVisible="False">
+      <suki:GlassCard Padding="20">
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto" RowSpacing="12">
+          <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <TextBlock Text="{DynamicResource Collectopaedia}" FontWeight="SemiBold" />
+            <TextBlock Name="CollectionCountValue" Grid.Column="1" />
+          </Grid>
+          <ComboBox Name="CollectionPageFilter" Grid.Row="1" HorizontalAlignment="Stretch" SelectionChanged="CollectionPage_Changed" />
+          <ComboBox Name="CollectionStatusFilter" Grid.Row="2" HorizontalAlignment="Stretch" SelectionChanged="CollectionFilter_Changed" />
+          <TextBox Name="CollectionSearch" Grid.Row="3" PlaceholderText="{DynamicResource Search}" TextChanged="CollectionSearch_Changed" />
+          <ListBox Name="CollectionList" Grid.Row="4" SelectionChanged="CollectionList_Changed">
+            <ListBox.ItemTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate></ListBox.ItemTemplate>
+          </ListBox>
+          <Button Name="CompleteCollectionPageButton" Grid.Row="5" Content="{DynamicResource CompletePage}" HorizontalAlignment="Stretch" IsEnabled="False" Click="CompleteCollectionPage_Click" />
+          <Button Name="CompleteCollectionButton" Grid.Row="6" Content="{DynamicResource CompleteCollection}" HorizontalAlignment="Stretch" IsEnabled="False" Click="CompleteCollection_Click" />
+        </Grid>
+      </suki:GlassCard>
+      <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="16">
+          <suki:GlassCard Padding="20">
+            <StackPanel Spacing="20">
+              <TextBlock Text="{DynamicResource Registration}" FontWeight="SemiBold" />
+              <TextBlock Name="CollectionUnavailableValue" Text="{DynamicResource CollectopaediaUnavailable}" TextWrapping="Wrap" IsVisible="False" />
+              <StackPanel Name="CollectionEntryDetails" Spacing="20" IsVisible="False">
+                <Grid ColumnDefinitions="160,*" ColumnSpacing="16">
+                  <TextBlock Text="{DynamicResource ArtStatus}" /><TextBlock Name="CollectionEntryStatusValue" Grid.Column="1" />
+                </Grid>
+                <Button Name="RegisterCollectionEntryButton" Content="{DynamicResource RegisterEntry}" HorizontalAlignment="Stretch" IsEnabled="False" Click="RegisterCollectionEntry_Click" />
+              </StackPanel>
+            </StackPanel>
+          </suki:GlassCard>
+          <suki:GlassCard Name="CollectionRewardsCard" Padding="20" IsVisible="False">
+            <StackPanel Spacing="20">
+              <TextBlock Text="{DynamicResource CollectionRewards}" FontWeight="SemiBold" />
+              <ItemsControl Name="CollectionRewardList">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="x:Object" x:CompileBindings="False">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" Margin="0,0,0,16">
+                      <TextBlock Text="{Binding Label}" TextWrapping="Wrap" />
+                      <TextBlock Grid.Column="1" Text="{Binding Progress}" />
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </suki:GlassCard>
+        </StackPanel>
+      </ScrollViewer>
     </Grid>
     <Grid Name="AchievementsPanel" Grid.Row="1" Margin="24,0" ColumnDefinitions="320,*" ColumnSpacing="24" IsVisible="False">
       <suki:GlassCard Padding="20">

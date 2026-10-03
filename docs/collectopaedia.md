@@ -5,9 +5,12 @@
 The core and `collectopaedia <save>` CLI command inspect saved registrations.
 `collectopaedia-plan <save>` previews missing registrations and newly earned
 category/page rewards, optionally restricted by `--page` or `--entry`.
-There is no completion setter or GUI completion button yet. Registration,
-reward creation, achievement notification and inventory consumption must be
-handled together before exposing a completion operation.
+The GUI and `complete-collectopaedia <save> <output>` command register a selected
+entry, page or whole campaign without repeated item gathering. Completion grants
+newly earned equipment/gem rewards and synchronizes related main-story achievement
+records. It deliberately leaves character EXP/levels and owned collectables
+unchanged, matching the standalone achievement editor rather than simulating
+the in-game registration animation or its EXP rewards.
 
 The catalog contains 300 main-story entries (IDs 1–300, 21 map pages) and 28
 Future Connected entries (IDs 319–346, two map pages). IDs 301–318 are excluded
@@ -131,16 +134,32 @@ Collection achievements are 132 (first entry), 133 (one complete page) and 134
 `0xB5C50`. That setter writes the achievement flag and calls `0xB5CC0` for
 reward EXP. The reward path invokes `0xBA860` for character IDs 1–8, accounting
 for joined-character checks and Expert Mode routing. Runtime EXP bookkeeping,
-level-up effects and their serialized correspondence still require validation;
-no completion/reward mutation is exposed yet.
+level-up effects and their serialized correspondence are not simulated by this
+editor operation. It unlocks only the three applicable collection records,
+without XP grants, following the existing standalone achievement editor policy.
+Future Connected never changes main-story achievement records.
 
-## Remaining completion requirements
+## Atomic completion and verification
 
-- Implement the traced reward insertion with native equipment/gem packet fields,
-  preserving random-range semantics for gems without a fixed strength.
-- Resolve story gates and linked achievement/EXP behavior before choosing
-  completion semantics.
-- Preflight all inventory banks, serial counters and references; a failed batch
-  must leave the whole save unchanged.
-- Add single-entry, page-wide and campaign-wide core/CLI/GUI operations only
-  after their linked effects are validated. Test edited copies in-game.
+The completion operation stages every change in a separate lossless document.
+Native equipment initialization and fixed-item gem initialization preserve reward
+item IDs, socket defaults and effect/rank/strength/chance. Free slots exclude
+occupied or unrecognized presence states and equipment/gem references. Acquisition
+serials are checked against stored counters and existing records. A full bank,
+serial overflow or invalid selection leaves the original document unchanged,
+even if another reward bank has already been staged. No records are reindexed.
+
+Only after all rewards fit are missing registration bits and applicable collection
+achievement flags staged. The completed byte array then replaces the document
+contents without invalidating existing record objects. Existing collectable stocks,
+characters, quests and unrelated records are not modified. A completed selection
+is an immediate no-op, even when reward inventory banks are full.
+
+Core tests compare whole serialized files against independently generated native
+packets for both campaigns. They cover each reward bank's capacity and serial
+overflow, unsupported versions, cross-campaign IDs, duplicates and repeat no-ops.
+CLI tests verify source/output preservation after failure and in-place no-ops.
+GUI tests cover single/page/all operations, filtering, UI languages, preserved
+character drafts, full-bank failure and lossless saving. The UI uses the common
+virtual-list buffer and header spacing. Load an edited copy in-game to validate
+actual reward visibility; this runtime check has not been performed here.

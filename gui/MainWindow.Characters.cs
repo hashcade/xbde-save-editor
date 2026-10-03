@@ -14,12 +14,13 @@ public partial class MainWindow
 
     private void Navigation_Changed(object? sender, SelectionChangedEventArgs e)
     {
-        if (MainScroll is null || CharactersPanel is null || ItemsPanel is null || AffinityPanel is null || AchievementsPanel is null) return;
+        if (MainScroll is null || CharactersPanel is null || ItemsPanel is null || AffinityPanel is null || AchievementsPanel is null || CollectopaediaPanel is null) return;
         MainScroll.IsVisible = MainNavigation.SelectedIndex == 0;
         CharactersPanel.IsVisible = MainNavigation.SelectedIndex == 1;
         ItemsPanel.IsVisible = MainNavigation.SelectedIndex == 2;
         AffinityPanel.IsVisible = MainNavigation.SelectedIndex == 3;
         AchievementsPanel.IsVisible = MainNavigation.SelectedIndex == 4;
+        CollectopaediaPanel.IsVisible = MainNavigation.SelectedIndex == 5;
     }
 
     public void ShowCharacters() => MainNavigation.SelectedIndex = 1;

@@ -155,7 +155,7 @@ internal static class EquipmentInventoryTests
         check(save.Serialize().AsSpan().SequenceEqual(bytes), "Equipment inventory inspection changed the real save.");
     }
 
-    private static void Initialize(byte[] bytes, EquipmentDefinition definition, int index, uint serial)
+    internal static void Initialize(byte[] bytes, EquipmentDefinition definition, int index, uint serial)
     {
         int start = Start(definition.Slot) + index * 0x30;
         bytes.AsSpan(start, 0x30).Clear();

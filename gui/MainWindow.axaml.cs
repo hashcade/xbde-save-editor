@@ -24,6 +24,7 @@ public partial class MainWindow : Window
         }
         RefreshAchievements();
         RefreshAffinity();
+        RefreshCollectopaedia();
     }
 
     public bool LoadSave(string path)
@@ -38,6 +39,8 @@ public partial class MainWindow : Window
             _equipmentInventorySelections.Clear();
             _equipmentRecipient = null;
             _selectedAchievement = null;
+            _collectionMap = null;
+            _collectionEntry = null;
             _selectedAffinity = null;
             _affinity = null;
             RefreshMain();
@@ -46,6 +49,7 @@ public partial class MainWindow : Window
             RefreshInventory();
             RefreshEquipmentInventory();
             RefreshAchievements();
+            RefreshCollectopaedia();
             RefreshAffinity();
             ShowStatus(null);
             return true;
@@ -108,6 +112,7 @@ public partial class MainWindow : Window
         RefreshInventory();
         RefreshEquipmentInventory();
         RefreshAchievements();
+        RefreshCollectopaedia();
         RefreshAffinity();
         ShowStatus(null);
     }
