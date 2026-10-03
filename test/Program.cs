@@ -119,10 +119,60 @@ bad = Fixture(true);
 BinaryPrimitives.WriteUInt32LittleEndian(bad.AsSpan(0x152368 + 13 * 0x138), 0);
 Reject(() => SaveDocument.Parse(bad), "Character ID 14 did not map to record 13.");
 
+Check(LevelProgression.ExperienceToNextLevel(1) == 40, "Level 2 EXP cost differs from the growth table.");
+Check(LevelProgression.ExperienceToNextLevel(98) == 1491201, "Level 99 EXP cost differs.");
+Check(LevelProgression.ExperienceToNextLevel(99) == 0, "Level cap has a next-level cost.");
+Check(LevelProgression.Normalize(1, 100) == (3u, 0u), "EXP normalization failed at exact thresholds.");
+Check(LevelProgression.Normalize(1, 101) == (3u, 1u), "EXP remainder was lost.");
+Check(LevelProgression.Normalize(98, 1491202) == (99u, 1u), "Level 99 normalization differs.");
+foreach (bool future in new[] { false, true })
+{
+    byte[] progressionBytes = Fixture(future);
+    var progressionSave = SaveDocument.Parse(progressionBytes);
+    foreach (var member in progressionSave.Characters)
+    {
+        int record = 0x152368 + (member.Id - 1) * 0x138;
+        BinaryPrimitives.WriteUInt32LittleEndian(progressionBytes.AsSpan(record + 0xec), 99);
+        BinaryPrimitives.WriteUInt32LittleEndian(progressionBytes.AsSpan(record + 0xf0), 123);
+    }
+    progressionSave = SaveDocument.Parse(progressionBytes);
+    foreach (var member in progressionSave.Characters)
+    {
+        uint minimum = member.MinimumLevel;
+        byte[] before = progressionSave.Serialize();
+        Reject(() => member.SetProgression(level: minimum - 1), "Below-introduction level was accepted.");
+        Reject(() => member.SetProgression(level: 100), "Level 100 was accepted.");
+        Reject(() => member.SetProgression(level: minimum, experience: 100000000), "EXP cap was ignored.");
+        Check(progressionSave.Serialize().AsSpan().SequenceEqual(before), "Rejected progression changed bytes.");
+        member.SetProgression(level: minimum);
+        Check(member.Level == minimum && member.Experience == 0, "Level selection did not reset EXP.");
+        Check(member.ExpertLevel == 99 && member.ExpertExperience == 0, "Highest level bookkeeping differs.");
+        member.SetProgression(experience: LevelProgression.ExperienceToNextLevel(minimum) + 7);
+        Check(member.Level == minimum + 1 && member.Experience == 7, "Linked EXP did not advance level.");
+        member.SetProgression(level: 99, experience: LevelProgression.MaximumExperience);
+        Check(member.Level == 99 && member.Experience == LevelProgression.MaximumExperience, "Level cap EXP was discarded.");
+        byte[] after = progressionSave.Serialize();
+        int start = 0x152368 + (member.Id - 1) * 0x138;
+        for (int offset = 0; offset < after.Length; offset++)
+            if (!(offset >= start && offset < start + 8) && !(offset >= start + 0xec && offset < start + 0xf4)
+                && after[offset] != before[offset])
+                throw new InvalidOperationException($"Progression changed unrelated byte {offset:X}.");
+        Check(member.CanEditProgression, "Joined playable character has no progression support.");
+    }
+}
+byte[] ascending = Fixture();
+BinaryPrimitives.WriteUInt32LittleEndian(ascending.AsSpan(0x152368), 1);
+BinaryPrimitives.WriteUInt32LittleEndian(ascending.AsSpan(0x152368 + 0xec), 1);
+var ascendingMember = SaveDocument.Parse(ascending).GetCharacter(1);
+ascendingMember.SetProgression(level: 10);
+Check(ascendingMember.ExpertLevel == 10, "New highest level was not recorded.");
+
 byte[] ambiguous = Fixture(true);
 ambiguous[0x152330] = 2;
 var ambiguousSave = SaveDocument.Parse(ambiguous);
 Check(ambiguousSave.Campaign == Campaign.Unknown, "Shared characters incorrectly identify a campaign.");
+Check(!ambiguousSave.GetCharacter(1).CanEditProgression, "Ambiguous campaign enabled progression.");
+Reject(() => ambiguousSave.GetCharacter(1).SetProgression(level: 60), "Ambiguous campaign accepted a level edit.");
 Reject(() => ambiguousSave.GetCharacter(1).SetResources(affinityCoins: 100),
     "An ambiguous campaign allowed main-story coin editing.");
 Check(ambiguousSave.Serialize().AsSpan().SequenceEqual(ambiguous), "Ambiguous campaign parsing changed bytes.");

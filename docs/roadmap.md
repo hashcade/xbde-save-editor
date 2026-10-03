@@ -7,7 +7,8 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Main panel: money and Noponstones, nine UI languages and shared save actions.
 - [x] Characters: AP/Affinity Coin editing and general/Expert Mode inspection.
 - [x] Characters: verified AP cap, single/bulk AP maximum and reserve EXP editing.
-- [ ] Characters: validated level/experience and Expert Mode editing.
+- [x] Characters: linked current level/EXP editing with verified highest-level bookkeeping.
+- [ ] Expert Mode: simulate spending/refunding reserve EXP and edit its enabled state.
 - [ ] Arts and skills: limits, unlock state and learned progress.
 - [ ] Equipment: inventory references, gems and appearance.
 - [ ] Items: localized catalogs and validated editing.
@@ -28,4 +29,4 @@ dotnet run --project test/Core.Test.csproj -- --save-directory /path/to/saves
 Round-trip and byte-diff tests do not replace loading an edited copy in-game.
 
 See [progression validation](progression.md) for the verified resource limits and
-the level/EXP operations that still remain read-only.
+the verified level/EXP linkage and the remaining Expert Mode operations.

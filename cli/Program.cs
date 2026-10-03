@@ -10,7 +10,7 @@ try
     }
     if (args is [] or ["--help"])
     {
-        Console.WriteLine("XBDE Save Editor\n\ninspect <save>\ncopy <save> <output>\nresources <save> <output> [--money N] [--noponstones N]\ncharacter <save> <output> <id> [--ap N] [--coins N] [--reserve-exp N]\nmax-ap <save> <output>\n--version");
+        Console.WriteLine("XBDE Save Editor\n\ninspect <save>\ncopy <save> <output>\nresources <save> <output> [--money N] [--noponstones N]\ncharacter <save> <output> <id> [--ap N] [--coins N] [--reserve-exp N]\nprogression <save> <output> <id> [--level N] [--exp N]\nmax-ap <save> <output>\n--version");
         return 0;
     }
     if (args is ["inspect", var source])
@@ -64,6 +64,17 @@ try
         var session = SaveSession.Open(apSource);
         session.Document.MaxAllAP();
         session.Save(apOutput);
+        return 0;
+    }
+    if (args is ["progression", var progressionSource, var progressionOutput, var progressionId, .. var progressionFields])
+    {
+        var session = SaveSession.Open(progressionSource);
+        if (!int.TryParse(progressionId, out int id)) throw new ArgumentException("Character ID must be an integer.");
+        var progressionOptions = ParseOptions(progressionFields, "--level", "--exp");
+        session.Document.GetCharacter(id).SetProgression(
+            level: progressionOptions.TryGetValue("--level", out uint level) ? level : null,
+            experience: progressionOptions.TryGetValue("--exp", out uint experience) ? experience : null);
+        session.Save(progressionOutput);
         return 0;
     }
     if (args is ["character", var characterSource, var characterOutput, var characterId, .. var fields])

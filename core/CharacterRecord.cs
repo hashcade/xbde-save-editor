@@ -23,6 +23,32 @@ public sealed class CharacterRecord
     public uint ExpertExperience => _document.ReadUInt32(_offset + 0xf0);
     public uint ReserveExperience => _document.ReadUInt32(_offset + 0xf4);
     public bool UsesAffinityCoins => _document.Campaign == Campaign.MainStory;
+    public bool CanEditProgression => _document.Campaign switch
+    {
+        Campaign.MainStory => Id is >= 1 and <= 8,
+        Campaign.FutureConnected => Id is 1 or 7 or 14 or 15,
+        _ => false
+    };
+    public uint MinimumLevel => LevelProgression.MinimumLevel(Id, _document.Campaign);
+
+    public void SetProgression(uint? level = null, uint? experience = null)
+    {
+        uint targetLevel = level ?? Level;
+        if (targetLevel < MinimumLevel || targetLevel > LevelProgression.MaximumLevel)
+            throw new ArgumentOutOfRangeException(nameof(level), $"Level must be between {MinimumLevel} and 99.");
+        if (level is null && experience is null) return;
+        uint targetExperience = experience ?? (targetLevel == Level ? Experience : 0);
+        var normalized = LevelProgression.Normalize(targetLevel, targetExperience);
+        if (normalized.Level != Level)
+        {
+            // Loading rebuilds stats from level. Preserve the highest attained level,
+            // as the native level rebuild does, and reset its EXP accumulator.
+            _document.WriteUInt32(_offset + 0xec, Math.Max(ExpertLevel, normalized.Level));
+            _document.WriteUInt32(_offset + 0xf0, 0);
+        }
+        _document.WriteUInt32(_offset, normalized.Level);
+        _document.WriteUInt32(_offset + 4, normalized.Experience);
+    }
 
     public void SetResources(uint? ap = null, uint? affinityCoins = null, uint? reserveExperience = null)
     {

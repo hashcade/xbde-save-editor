@@ -10,6 +10,8 @@ XbdeEditor.Cli resources bfsgame00.sav edited.sav --money 100000 --noponstones 1
 XbdeEditor.Cli character bfsgame00.sav edited.sav 1 --ap 100000 --coins 999
 XbdeEditor.Cli character bfsgame00.sav edited.sav 1 --reserve-exp 1000000
 XbdeEditor.Cli max-ap bfsgame00.sav edited.sav
+XbdeEditor.Cli progression bfsgame00.sav edited.sav 1 --level 50
+XbdeEditor.Cli progression bfsgame00.sav edited.sav 1 --level 1 --exp 101
 ```
 
 `inspect` prints JSON containing campaign, resources and joined characters,
@@ -25,6 +27,14 @@ writing. `copy` requires a different output path. Editing commands may explicitl
 use the source path as their output; saving uses an atomic file replacement.
 
 No command modifies system saves or thumbnail files.
+
+`progression` selects a character's level and/or edits current EXP. A changed
+level defaults to zero current EXP. Supplied EXP is consumed through the game's
+per-level thresholds: level 1 with 101 EXP becomes level 3 with 1 EXP. Levels
+cannot fall below the character's campaign-specific introduction level or exceed
+99; EXP accepts 0–99,999,999. A level change preserves the highest attained level
+and resets its EXP accumulator. It leaves reserve EXP, AP, coins and unlocks alone.
+Unconfirmed campaigns and unsupported guests reject progression editing.
 
 `max-ap` sets AP to 99,999,999 for every joined, editable character in either
 campaign. It does not unlock arts or skills, spend AP, add characters, or change

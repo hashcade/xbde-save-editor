@@ -52,6 +52,16 @@ def main() -> None:
         assert struct.unpack_from("<I", reserve_bytes, 0x15245C)[0] == 199999998
         assert reserve_bytes[:0x15245C] == original[:0x15245C]
         assert reserve_bytes[0x152460:] == original[0x152460:]
+        run("progression", source, output, "1", "--level", "1", "--exp", "101")
+        progression = output.read_bytes()
+        assert struct.unpack_from("<II", progression, 0x152368) == (3, 1)
+        assert struct.unpack_from("<II", progression, 0x152454) == (3, 0)
+        for index, (before, after) in enumerate(zip(original, progression)):
+            assert before == after or 0x152368 <= index < 0x152370 or 0x152454 <= index < 0x15245c
+        for field, invalid_value in (("--level", "0"), ("--level", "100"), ("--exp", "100000000"), ("--exp", "1.5")):
+            run("progression", source, output, "1", field, invalid_value, success=False)
+            assert output.read_bytes() == progression
+        output.write_bytes(reserve_bytes)
         for field, invalid_value in (("--ap", "100000000"), ("--reserve-exp", "199999999")):
             run("character", source, output, "1", field, invalid_value, success=False)
             assert output.read_bytes() == reserve_bytes
