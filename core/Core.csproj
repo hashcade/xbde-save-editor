@@ -4,6 +4,7 @@
     <RootNamespace>XbdeEditor.Core</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Data/inventory.tsv" />
     <EmbeddedResource Include="Data/arts.tsv" />
     <EmbeddedResource Include="Data/skills.tsv" />
     <EmbeddedResource Include="Data/skill-trees.tsv" />

@@ -12,6 +12,64 @@ try
     {
         Console.WriteLine("XBDE Save Editor\n\ninspect <save>\ncopy <save> <output>\nresources <save> <output> [--money N] [--noponstones N]\ncharacter <save> <output> <id> [--ap N] [--coins N] [--reserve-exp N]\nprogression <save> <output> <id> [--level N] [--exp N]\nmax-ap <save> <output>\narts <save> <character-id>\nart <save> <output> <character-id> <art-id> --level N\nmax-art <save> <output> <character-id> <art-id>\nmax-arts <save> <output> <character-id>\nskills <save> <character-id>\nskill-tree <save> <output> <character-id> <tree-index> --learned N\nskill-tree <save> <output> <character-id> <tree-index> --sp N\nmax-skill-tree <save> <output> <character-id> <tree-index>\nmax-skills <save> <output> <character-id>\nmax-all-skills <save> <output>\nequipment <save> <character-id>\nequip <save> <output> <character-id> <Weapon|Head|Torso|Arms|Legs|Feet> <inventory-index>\nequipment-gem <save> <output> <character-id> <Weapon|Head|Torso|Arms|Legs|Feet> <socket> <gem-index|none>\n--version");
         Console.WriteLine("gems <save>\ngem <save> <output> <gem-index> [--effect N] [--rank N] [--value N]\nmax-gem <save> <output> <gem-index>");
+        Console.WriteLine("inventory <save> <Collectables|Materials|KeyItems|ArtManuals>\nitem <save> <output> <kind> <index> --quantity N\nadd-item <save> <output> <item-id> --quantity N\ndelete-item <save> <output> <kind> <index>\nmax-items <save> <output> <kind>\nadd-gem <save> <output> --effect N --rank N --value N\ndelete-gem <save> <output> <gem-index>");
+        return 0;
+    }
+    if (args is ["inventory", var inventorySource, var inventoryKind])
+    {
+        var document = SaveSession.Open(inventorySource).Document;
+        var kind = ParseInventoryKind(inventoryKind);
+        Console.WriteLine(JsonSerializer.Serialize(new
+        {
+            Kind = kind.ToString(), Capacity = InventoryCatalog.Capacity,
+            Items = document.Inventory(kind).Select(item => new { item.Index, item.ItemId, item.Name, item.Quantity, item.Favorite, item.CanEdit }),
+            Catalog = InventoryCatalog.Definitions.Where(item => item.Kind == kind)
+        }, new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["add-item", var addItemSource, var addItemOutput, var addItemId, "--quantity", var addItemQuantity])
+    {
+        var session = SaveSession.Open(addItemSource);
+        session.Document.AddInventoryItem(ParseId(addItemId), ParseId(addItemQuantity));
+        session.Save(addItemOutput);
+        return 0;
+    }
+    if (args is ["item", var itemSource, var itemOutput, var itemKind, var stackIndex, "--quantity", var itemQuantity])
+    {
+        var session = SaveSession.Open(itemSource);
+        session.Document.GetInventoryItem(ParseInventoryKind(itemKind), ParseId(stackIndex)).SetQuantity(ParseId(itemQuantity));
+        session.Save(itemOutput);
+        return 0;
+    }
+    if (args is ["delete-item", var deleteItemSource, var deleteItemOutput, var deleteItemKind, var deleteItemIndex])
+    {
+        var session = SaveSession.Open(deleteItemSource);
+        session.Document.GetInventoryItem(ParseInventoryKind(deleteItemKind), ParseId(deleteItemIndex)).Delete();
+        session.Save(deleteItemOutput);
+        return 0;
+    }
+    if (args is ["max-items", var maxItemsSource, var maxItemsOutput, var maxItemsKind])
+    {
+        var session = SaveSession.Open(maxItemsSource);
+        session.Document.MaxInventoryQuantities(ParseInventoryKind(maxItemsKind));
+        session.Save(maxItemsOutput);
+        return 0;
+    }
+    if (args is ["add-gem", var addGemSource, var addGemOutput, .. var addGemArguments])
+    {
+        var newGemOptions = ParseOptions(addGemArguments, "--effect", "--rank", "--value");
+        if (newGemOptions.Count != 3 || newGemOptions.Values.Any(value => value > ushort.MaxValue))
+            throw new ArgumentException("Specify gem effect, rank and value.");
+        var session = SaveSession.Open(addGemSource);
+        session.Document.AddGem((int)newGemOptions["--effect"], (int)newGemOptions["--rank"], (int)newGemOptions["--value"]);
+        session.Save(addGemOutput);
+        return 0;
+    }
+    if (args is ["delete-gem", var deleteGemSource, var deleteGemOutput, var deleteGemIndex])
+    {
+        var session = SaveSession.Open(deleteGemSource);
+        session.Document.GetGem(ParseId(deleteGemIndex)).Delete();
+        session.Save(deleteGemOutput);
         return 0;
     }
     if (args is ["inspect", var source])
@@ -258,6 +316,9 @@ catch (Exception error) when (error is IOException or InvalidDataException or Ar
 
 static int ParseId(string value) => int.TryParse(value, out int id) ? id
     : throw new ArgumentException("ID must be an integer.");
+
+static InventoryKind ParseInventoryKind(string value) => Enum.TryParse<InventoryKind>(value, true, out var kind) && Enum.IsDefined(kind)
+    ? kind : throw new ArgumentException("Choose Collectables, Materials, KeyItems or ArtManuals.");
 
 static IReadOnlyDictionary<string, uint> ParseOptions(string[] options, params string[] allowed)
 {

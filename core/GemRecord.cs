@@ -59,4 +59,12 @@ public sealed class GemRecord
         if (Definition is not { } rule) throw new ArgumentException("Unrecognized gem effect or rank.");
         Set(EffectId, Rank, rule.Maximum);
     }
+
+    public bool CanDelete => CanEdit && !_document.IsGemUsed(Index);
+
+    public void Delete()
+    {
+        if (!CanDelete) throw new ArgumentException("Remove this gem from all equipment before deleting it.");
+        _document.WriteByte(Offset + 0x10, 0);
+    }
 }

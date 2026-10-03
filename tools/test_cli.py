@@ -305,6 +305,51 @@ def main() -> None:
         run("equip", output, output, "1", "Weapon", "0")
         assert output.read_bytes() == switching
         assert switching_source.read_bytes() == switching
+        inventory_source = root / "inventory.sav"
+        inventory_source.write_bytes(original)
+        inventory = json.loads(run("inventory", inventory_source, "Collectables"))
+        assert inventory["Capacity"] == 500 and not inventory["Items"]
+        item_id = inventory["Catalog"][0]["Id"]
+        run("add-item", inventory_source, output, str(item_id), "--quantity", "5")
+        added_item = bytearray(original)
+        struct.pack_into("<5H", added_item, 0x31970, 0, 10, item_id, 10, 5)
+        struct.pack_into("<I", added_item, 0x3197C, 1)
+        added_item[0x31980] = 1
+        struct.pack_into("<I", added_item, 0x46928, 1)
+        assert output.read_bytes() == added_item
+        run("item", output, output, "Collectables", "0", "--quantity", "8")
+        struct.pack_into("<H", added_item, 0x31978, 8)
+        assert output.read_bytes() == added_item
+        run("max-items", output, output, "Collectables")
+        struct.pack_into("<H", added_item, 0x31978, 99)
+        assert output.read_bytes() == added_item
+        for invalid in ("0", "100", "-1", "1.5", "4294967295"):
+            run("item", output, output, "Collectables", "0", "--quantity", invalid, success=False)
+            assert output.read_bytes() == added_item
+        run("add-item", output, output, str(item_id), "--quantity", "1", success=False)
+        run("max-items", output, output, "KeyItems", success=False)
+        assert output.read_bytes() == added_item
+        run("delete-item", output, output, "Collectables", "0")
+        added_item[0x31980] = 0
+        assert output.read_bytes() == added_item
+        run("add-gem", equipment_source, output, "--effect", "26", "--rank", "6", "--value", "200")
+        created_gem = bytearray(equipment)
+        gem_offset = 0x2C380 + 6 * 44
+        struct.pack_into("<5H", created_gem, gem_offset, 6, 3, 0, 3, 1)
+        struct.pack_into("<I", created_gem, gem_offset + 12, 1)
+        created_gem[gem_offset + 16] = 1
+        created_gem[gem_offset + 22] = 6
+        created_gem[gem_offset + 23] = 5
+        struct.pack_into("<3H", created_gem, gem_offset + 26, 1, 26, 6600)
+        struct.pack_into("<I", created_gem, 0x4690C, 1)
+        assert output.read_bytes() == created_gem
+        for index in ("0", "2", "5", "499", "-1"):
+            run("delete-gem", output, output, index, success=False)
+            assert output.read_bytes() == created_gem
+        run("delete-gem", output, output, "6")
+        created_gem[gem_offset + 16] = 0
+        assert output.read_bytes() == created_gem
+        assert inventory_source.read_bytes() == original
         assert not list(root.glob(".xbde-*.tmp"))
     print("CLI tests passed.")
 

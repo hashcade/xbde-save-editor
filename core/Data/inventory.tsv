@@ -1,0 +1,1354 @@
+id	type	name
+1852	10	Sweet Wasabi
+1853	10	Cool Potato
+1854	10	Red Lettuce
+1855	10	Chewy Radish
+1856	10	Hot Taro
+1857	10	Juicy Broccoli
+1858	10	Spicy Cabbage
+1859	10	Hard Lotus
+1860	10	Blue Turnip
+1861	10	Cute Parsnip
+1862	10	Poisonous Gourd
+1863	10	Humming Cabbage
+1864	10	Schorl Mushroom
+1865	10	Kelp Mushroom
+1866	10	Honey Rhubarb
+1867	10	Pink Asparagus
+1868	10	Tropical Radish
+1869	10	Dolphin Carrot
+1870	10	Gold Burdock
+1871	10	Sour Radish
+1872	10	Ice Cabbage
+1873	10	Girl Courgette
+1874	10	Amethyst Vanilla
+1875	10	Fire Pepper
+1876	10	Meaty Carrot
+1877	10	Bitter Broccoli
+1878	10	Sour Turnip
+1879	10	Golden Beetroot
+1880	10	Juicy Steakplant
+1881	10	Acerola Pea
+1882	10	Energy Aubergine
+1883	10	Sweet Pepper
+1884	10	Meaty Potato
+1885	10	Blue Root
+1886	10	Sarsaparilla
+1887	10	Black Liver Bean
+1888	10	Dance Apple
+1889	10	Black Kiwi
+1890	10	Clear Almond
+1891	10	Bright Fig
+1892	10	Dark Grape
+1893	10	Sour Gooseberry
+1894	10	Red Durian
+1895	10	Walnut Grape
+1896	10	Humming Plum
+1897	10	Dark Mango
+1898	10	Pure Cherry
+1899	10	Bitter Kiwi
+1900	10	Juicy Grape
+1901	10	Spicy Nut
+1902	10	Crimson Citrus
+1903	10	Cool Lemon
+1904	10	Heart Peach
+1905	10	Dry Lemon
+1906	10	Death Lychee
+1907	10	Hell Raspberry
+1908	10	Deadly Kiwi
+1909	10	Ether Plum
+1910	10	Fire Apple
+1911	10	Ruby Mangosteen
+1912	10	Sour Grape
+1913	10	Bitter Melon
+1914	10	Citron Gooseberry
+1915	10	Juicy Melon
+1916	10	Amethyst Melon
+1917	10	White Plum
+1918	10	Ice Kiwi Fruit
+1919	10	Spicy Papaya
+1920	10	Large Mango
+1921	10	Juicy Blueberry
+1922	10	Sweet Lime
+1923	10	Spicy Banana
+1924	10	Strong Dandelion
+1925	10	Moon Flower
+1926	10	Dawn Hydrangea
+1927	10	Insanity Mint
+1928	10	Night Tulip
+1929	10	Cute Orchid
+1930	10	Sirius Anemone
+1931	10	Spirit Clematis
+1932	10	Sunflower Rogue
+1933	10	Merry Coronation
+1934	10	Ether Rose
+1935	10	Orb Daisy
+1936	10	Forget-You-Not
+1937	10	Enigma Lotus
+1938	10	Humming Nettle
+1939	10	Princess Daffodil
+1940	10	Black Iris
+1941	10	Sea Berry
+1942	10	Despair Clover
+1943	10	Doomsday Poppy
+1944	10	Night Lily
+1945	10	Razor Teasel
+1946	10	Mystic Dahlia
+1947	10	Stardrop
+1948	10	Fortune Mallow
+1949	10	Black Peony
+1950	10	Fatal Belladonna
+1951	10	Jujube Silver
+1952	10	Black Blossom
+1953	10	Abyss Heather
+1954	10	Delerium Foxglove
+1955	10	Azure Hollyhock
+1956	10	Utopia Crocus
+1957	10	Lewisia Silver
+1958	10	Freesia Cyst
+1959	10	Bellflower Crystal
+1960	10	Shin Newt
+1961	10	Cave Rat
+1962	10	Shin Gecko
+1963	10	Happy Rabbit
+1964	10	Pyro Lizard
+1965	10	Amblygon Turtle
+1966	10	Dobercorgi
+1967	10	Light Bat
+1968	10	Black Frog
+1969	10	Yellow Cat
+1970	10	Chimera Rabbit
+1971	10	Venom Platypus
+1972	10	Humming Cat
+1973	10	Ash Fox
+1974	10	Soft Sea Cucumber
+1975	10	Fossil Monkey
+1976	10	Venomous Lizard
+1977	10	Sea Frog
+1978	10	Mane Cat
+1979	10	Dancing Squirrel
+1980	10	Lightning Weasel
+1981	10	Angry Monkey
+1982	10	Wet Rat
+1983	10	Ice Monkey
+1984	10	Crystal Frog
+1985	10	Mud Squirrel
+1986	10	Oil Oyster
+1987	10	Dark Fish
+1988	10	Ether Penguin
+1989	10	Rainbow Slug
+1990	10	Prism Centipede
+1991	10	Cable Mouse
+1992	10	Oil Fox
+1993	10	Blood Worm
+1994	10	Azure Mouse
+1995	10	Happy Duck
+1996	10	Prairie Dragonfly
+1997	10	Giant Hornet
+1998	10	White Beetle
+1999	10	Sorrow Beetle
+2000	10	Brown Butterfly
+2001	10	Gold Caterpillar
+2002	10	Rumble Stonefly
+2003	10	White Ladybird
+2004	10	Hill Firefly
+2005	10	Moth Crawler
+2006	10	Queen Locust
+2007	10	Fire Tarantula
+2008	10	Black Beetle
+2009	10	Rubber Mantis
+2010	10	Mystery Firefly
+2011	10	Scarlet Ladybird
+2012	10	Shield Bug
+2013	10	Hades Beetle
+2014	10	Benign Cricket
+2015	10	Rainbow Bug
+2016	10	Empress Beetle
+2017	10	Green Earwig
+2018	10	Blue Ladybird
+2019	10	Señorita Scarab
+2020	10	Emperor Beetle
+2021	10	Wheel Lurker
+2022	10	Ultramarine Ant
+2023	10	Scarlet Crawler
+2024	10	Shiny Scarab
+2025	10	Water Boatman
+2026	10	Electric Cricket
+2027	10	Scissor Bug
+2028	10	Dew Beetle
+2029	10	Glider Cockroach
+2030	10	Minute Mantis
+2031	10	Love Beetle
+2032	10	Kneecap Rock
+2033	10	Confusion Ivy
+2034	10	Clarity Moss
+2035	10	Mat Ice
+2036	10	Bluesky Bark
+2037	10	Pione Stone
+2038	10	Charcoal Leg
+2039	10	Ether Pebble
+2040	10	Rumble Coal
+2041	10	Mist Tree
+2042	10	Lemon Stone
+2043	10	Feather Leaf
+2044	10	Water Log
+2045	10	Wool Rock
+2046	10	White Tail
+2047	10	Marine Marble
+2048	10	Oil Branch
+2049	10	Dilemma Rock
+2050	10	Absurd Branch
+2051	10	Insanity Moss
+2052	10	Gypsum Branch
+2053	10	Black Ash
+2054	10	Emerald Snow
+2055	10	Rabbit Stone
+2056	10	Broom Icicle
+2057	10	Poisonous Coral
+2058	10	Poison Ivy
+2059	10	Amber Leaf
+2060	10	Ivy Nest
+2061	10	Mossy Panel
+2062	10	Bronze Wood
+2063	10	Missing Tree
+2064	10	Fortune Feather
+2065	10	White Styrene
+2066	10	Black Styrene
+2067	10	Blood Oil
+2068	10	Blue Chain
+2069	10	Rabbit Diode
+2070	10	Rusty Bolt
+2071	10	Winding Gear
+2072	10	Black Chip
+2073	10	Ready Coil
+2074	10	Blue Gear Shard
+2075	10	Rumble Part
+2076	10	White Tube
+2077	10	Green Diode
+2078	10	Spiral Lamp
+2079	10	White Cover
+2080	10	Modern Resistor
+2081	10	Green Cam
+2082	10	Strong Screw
+2083	10	Gold Condenser
+2084	10	Purple Lamp
+2085	10	Crimson Gear
+2086	10	Locust Spring
+2087	10	Art Core Coil
+2088	10	Tail Antenna
+2089	10	Warning Lamp
+2090	10	Digital Filament
+2091	10	Retro Diode
+2092	10	Modern Blue Gear
+2093	10	Snow Transistor
+2094	10	Fancy Bolt
+2095	10	Blue Light Amp
+2096	10	Fairy Tale Diode
+2097	10	Grape Spring
+2098	10	Angel Engine X
+2099	10	Leaf Coil
+2100	10	Warrior Screw
+2101	10	Golden Cog
+2102	10	Angel Engine Y
+2103	10	Thunder Compass
+2104	10	Plate Snow
+2105	10	Rainbow Zirconia
+2106	10	Leaf Mystery
+2107	10	Steel Silk
+2108	10	Gold Dust Illusion
+2109	10	Devious Gravity
+2110	10	White Songbird
+2111	10	Death Bangle
+2112	10	Verdant Eternity
+2113	10	White Night Rod
+2114	10	Love Crane
+2115	10	Fire Abron
+2116	10	Pauper's Cup
+2117	10	Happy Carnival
+2118	10	Dawn Dice
+2119	10	Lemonade Sky
+2120	10	Forest of Gossip
+2121	10	Gravel Disk
+2122	10	Rumble Box
+2123	10	Black Panel
+2124	10	Tasty Sausage
+2125	10	Macro Passion
+2126	10	High Violet
+2127	10	Steel Hauyne
+2128	10	Ha Ha Ha
+2129	10	Thunder Atmos
+2130	10	Blue Glow
+2131	10	Blue Blood
+2132	10	Frost Glass
+2133	10	Large Handcuffs
+2134	10	Red Frontier
+2135	10	Darkness Bottle
+2136	10	Bud of Eternity
+2137	10	Hunger Crash
+2138	10	Splish Splash
+2139	10	Star Cute
+2140	10	Summer Star
+2141	10	Tweet Tweet
+2142	10	Flame Frame
+2143	10	Eryth Blue
+2144	10	Dramatic Night
+2145	10	Smoke Cylinder
+2146	10	Sacred Panther
+2147	10	Parts Noble
+2148	10	Tap Tap Tap
+2149	10	High Entia Jewel
+2150	10	Coin of Fortune
+2151	10	Love Source
+2152	11	Stiff Hair
+2153	11	Broken Antenna
+2154	11	Small Shell
+2155	11	Small Scale
+2156	11	Filthy Wing
+2157	11	Perforated Oar
+2158	11	Muddy Pelt
+2159	11	Bunnit Paw
+2160	11	Tough Bunnit Wood
+2161	11	Caterpile Syrup
+2162	11	Sweet Nectar
+2163	11	Rock Krabble Shell
+2164	11	Raw Piranhax Meat
+2165	11	Sharp Antol Jaw
+2166	11	Vang Tooth
+2167	11	Yolkless Flamii Egg
+2168	11	Medicinal Brog Oil
+2169	11	Ancient Armour
+2170	11	Iron Krabble Shell
+2171	11	Fresh Sardi Meat
+2172	11	Special Bunnit Iron
+2173	11	Fresh Armu Milk
+2174	11	Tokilos Wing
+2175	11	Lucky Skeeter Wing
+2176	11	Krabble Artwork
+2177	11	Maternal Armu Milk
+2178	11	Quality Antol Jaw
+2179	11	Vang Hair Clip
+2180	11	Laughing Brog Bag
+2181	11	Quality Maris Shell
+2182	11	Quality Rhana Claw
+2183	11	Wet Hair
+2184	11	Old Insect Leg
+2185	11	Rough Skin
+2186	11	Small Claw
+2187	11	Bunniv Paw
+2188	11	Tatty Bunniv Wood
+2189	11	Heavy Bunniv Iron
+2190	11	Caterpile Poison
+2191	11	Black Nectar
+2192	11	Moving Lizard Tail
+2193	11	Blue Vang Wing
+2194	11	Croaking Brog Bag
+2195	11	Insect Jaw
+2196	11	Mollusc Mucus
+2197	11	Broken Pincer
+2198	11	Arachno Ear
+2199	11	Arachno Silk
+2200	11	Brog Smelling Salts
+2201	11	Krabble Stone
+2202	11	Giant Queen Jaw
+2203	11	Broken Part S
+2204	11	Broken Part M
+2205	11	Broken Part L
+2206	11	Genuine Plug
+2207	11	Genuine Frame
+2208	11	Genuine Shaft
+2209	11	Genuine Plate
+2210	11	Genuine Chamber
+2211	11	Genuine Crank
+2212	11	Smelly Hide
+2213	11	Fleecy Fur
+2214	11	Cracked Bill
+2215	11	Small Insect Leg
+2216	11	Strong Insect Leg
+2217	11	Slimy Tongue
+2218	11	Worn-Out Weapon
+2219	11	Rusty Part M
+2220	11	Rusty Part S
+2221	11	Rusty Part L
+2222	11	Small Dorsal Fin
+2223	11	Thick Armu Milk
+2224	11	Ardun Horn
+2225	11	Spotted Volff Hide
+2226	11	Fertile Flamii Egg
+2227	11	Bunnit Sapling
+2228	11	Bunnit Scrap Iron
+2229	11	Sharp Hox Spur
+2230	11	Sticky Web Fibre
+2231	11	Living Antol Eye
+2232	11	Giant King Jaw
+2233	11	Vang Third Molar
+2234	11	Flier Straw
+2235	11	Glowing Wisp Fluid
+2236	11	Thick Nectar
+2237	11	Ornate Lizard Claw
+2238	11	Brog Leg Meat
+2239	11	Ponio Neck Meat
+2240	11	Tirkin Crest
+2241	11	Tirkin Tail Feather
+2242	11	Generic Shaft
+2243	11	Generic Blade
+2244	11	Generic Plug
+2245	11	Generic Crank
+2246	11	Piranhax Roe
+2247	11	Fatty Sardi Meat
+2248	11	Light Rain Element
+2249	11	Generic Unit
+2250	11	Quality Web Fibre
+2251	11	Perfect Queen Jaw
+2252	11	Clear Torta Soup
+2253	11	Tatty Insect Wing
+2254	11	Red Wing
+2255	11	Slender Horn
+2256	11	Serrated Insect Leg
+2257	11	Small Oar
+2258	11	Flier Wing
+2259	11	Bitter Wisp Fluid
+2260	11	Red Rhogul Wing
+2261	11	100th Hox Spur
+2262	11	Crystal Antol Eye
+2263	11	Thunder Element
+2264	11	Small Upa Light
+2265	11	Flier Allure Scale
+2266	11	Wisp Glow Stick
+2267	11	Strong Hox Horn
+2268	11	Antol Pheromones
+2269	11	Hard Pincer
+2270	11	Shed Lizard Claw
+2271	11	Krabble Fixed Part
+2272	11	Rich Krabble Egg
+2273	11	Black Vang Fang
+2274	11	Cracked Part S
+2275	11	Cracked Part M
+2276	11	Cracked Part L
+2277	11	Upgraded Frame
+2278	11	Upgraded Spindle
+2279	11	Upgraded Shaft
+2280	11	Upgraded Plunger
+2281	11	Sticky Mucus
+2282	11	Cracked Claw
+2283	11	Ordinary Hide
+2284	11	Smelly Antenna
+2285	11	Shoddy Weapon
+2286	11	Rainstorm Element
+2287	11	Tornado Element
+2288	11	Glowing Upa Seed
+2289	11	Rhogul Axe Crest
+2290	11	Vang Milk Tooth
+2291	11	Twin Flamii Eggs
+2292	11	Quadwing Bag
+2293	11	Bunnia Scent Wood
+2294	11	Bunnia Ham
+2295	11	Potent Brog Poison
+2296	11	White Brog Liver
+2297	11	Fancy Volff Hide
+2298	11	Caterpile Vinegar
+2299	11	Igna Hide Jacket
+2300	11	Igna Stone Pot
+2301	11	Guardian's Wing
+2302	11	Gogol Snack Stash
+2303	11	Queen Cocoon
+2304	11	Upa Death Stone
+2305	11	Element Fragment
+2306	11	Caterpile Silk
+2307	11	Andos Fire Armour
+2308	11	Diamond Brog Eye
+2309	11	Immortal Moss
+2310	11	Tokilos King Egg
+2311	11	Demon Web Fibre
+2312	11	Lucky Arachno Box
+2313	11	Vang Star Wing
+2314	11	Gogol Horn
+2315	11	Black Queen Fibre
+2316	11	Arachno Sickle
+2317	11	Ardun Elder Beard
+2318	11	Ancient Sardi Meat
+2319	11	Lizard Moon Jewel
+2320	11	Tirkin Elder Medal
+2321	11	Bunniv Club
+2322	11	Quadwing Treasure
+2323	11	Flamii Waterfall Orb
+2324	11	Wisp Sun Bead
+2325	11	Hox Daylight Spur
+2326	11	Silver Rhogul Wing
+2327	11	Demonic Everflame
+2328	11	Ocean Elixir of Life
+2329	11	Bionis Ether
+2330	11	Infinite Telethia Pen
+2331	11	Telethia Compass
+2332	11	Glacier Element
+2333	11	Lucky Fang
+2334	11	Sky Jewel
+2335	11	Quirky Liver
+2336	11	Peachy Leg Joint
+2337	11	Thin Blood
+2338	11	Floppy Crest
+2339	11	Cloudy Eyeball
+2340	11	Sweaty Cloth
+2341	11	Worn Muscle Fibre
+2342	11	Musky Nectar
+2343	11	Decrepit Wing
+2344	11	Piranhax Belly Meat
+2345	11	Rich Sardi Meat
+2346	11	Bloody Brog Sweat
+2347	11	Eks Iron Heart
+2348	11	All-Seeing Eye
+2349	11	Tasty Ansel Wing
+2350	11	Feris Blood
+2351	11	Magic Stone
+2352	11	Upa Ember
+2353	11	Hode Camouflage
+2354	11	Hode Plank
+2355	11	Fancy Orluga Mask
+2356	11	Orluga Grass Skirt
+2357	11	Green Eluca Juice
+2358	11	Royal Apis Nectar
+2359	11	Delicious Vang Tail
+2360	11	Iron Antol Fibre
+2361	11	Telethia Feather
+2362	11	Telethia Pouch
+2363	11	Drizzle Element
+2364	11	Dust Element
+2365	11	Old Dragon Spine
+2366	11	Jagged Tail
+2367	11	Slimy Epithelium
+2368	11	Rotten Meat
+2369	11	Juicy Wild Meat
+2370	11	Scratched Jewel
+2371	11	Chipped Talon
+2372	11	Refined Ponytail
+2373	11	Large Hoof
+2374	11	Sturdy Armour
+2375	11	Lexos Beard
+2376	11	Hiln Coin Purse
+2377	11	Dense Ansel Meat
+2378	11	Ekidno Jaw Gristle
+2379	11	Juicy Laia Fish
+2380	11	Glossy Grady Fan
+2381	11	Pagul Hot Pot
+2382	11	Silver Eks Plate
+2383	11	Murky Eluca Water
+2384	11	Shiny Kromar Hide
+2385	11	Slick Kromar Stone
+2386	11	Hode Ponytail
+2387	11	Luxury Hode Wood
+2388	11	Orluga Slacks
+2389	11	Aqueous Andos Oil
+2390	11	Skyray Flesh
+2391	11	Squall Element
+2392	11	Ghost Mask
+2393	11	Assassin Mask
+2394	11	Protection Mask
+2395	11	Used Cylinder
+2396	11	New Cylinder
+2397	11	Old Remote Device
+2398	11	Andos Alloy Plate
+2399	11	Andos Antenna
+2400	11	Astas Remote Unit
+2401	11	Rufus Control Unit
+2402	11	Tyrea's Mask
+2403	11	Telethia Membrane
+2404	11	Black Fog Deposits
+2405	11	Lightning Element
+2406	11	Refined Horn
+2407	11	Hard Backbone
+2408	11	Salt-Roasted Bird
+2409	11	Fine-Quality Belt
+2410	11	Iron Lump
+2411	11	Dirty Snow Wing
+2412	11	Old Dragon Fang
+2413	11	Ories Horn
+2414	11	Frozen Aries Meat
+2415	11	Golden Eks Heart
+2416	11	Moramora Meat Pie
+2417	11	Ansel Fish Pie
+2418	11	Slobos Ice Rock
+2419	11	Apis Gold Nugget
+2420	11	Aged Chilkin Hair
+2421	11	Lucky Chilkin Ring
+2422	11	Silver Lexos Heart
+2423	11	Taos Phoenix Egg
+2424	11	Pagul Cold Pie
+2425	11	Soya Paste Shell
+2426	11	Antol Fire Pouch
+2427	11	Tasty Vang Feather
+2428	11	Feris Aged Ale
+2429	11	Hox Flint
+2430	11	Antol Sleeping Bag
+2431	11	Mumkhar's Razor
+2432	11	Snow Element
+2433	11	Fire Element
+2434	11	Dull Stone
+2435	11	Yellow Slobos Rock
+2436	11	Lexos Dragon Elixir
+2437	11	Element Chunk
+2438	11	Corona Element
+2439	11	Gigawatt Element
+2440	11	Regal Pterix Wing
+2441	11	Giant Sauros Fang
+2442	11	Mammut Horn
+2443	11	Royal Kromar Pike
+2444	11	Grady Colour Roe
+2445	11	Tude Jewel Shell
+2446	11	Thick Rhana Hide
+2447	11	Telethia Mirror
+2448	11	Telethia Ring
+2449	11	Telethia Tear
+2450	11	Lexos God Elixir
+2451	11	Normal Part S
+2452	11	Normal Part M
+2453	11	Normal Part L
+2454	11	Quality Jet
+2455	11	Quality Core
+2456	11	Quality Unit
+2457	11	Quality Fuse
+2458	11	Quality Plunger
+2459	11	Quality Shaft
+2460	11	Quality Plate
+2461	11	Quality Plug
+2462	11	Quality Frame
+2463	11	Quality Crank
+2464	11	Mumkhar's Claws
+2465	11	Precision Core
+2466	11	Refined Part S
+2467	11	Refined Part M
+2468	11	Refined Part L
+2469	11	Quality Thruster
+2470	11	Quality Lens
+2471	11	Old Part S
+2472	11	Old Part M
+2473	11	Twisted Leg
+2474	11	Fatty Fish Belly
+2475	11	Succulent Meat
+2476	11	Squishy Cartilage
+2477	11	Gooey Gunge
+2478	11	Dated Plug
+2479	11	Dated Crank
+2480	11	Dated Frame
+2481	11	Dated Plate
+2482	11	Pretty Flamii Leg
+2483	11	Piranhax Fishmeal
+2484	11	Pterix Energy Egg
+2485	11	Ponio Hoof Seal
+2486	11	Krabble Back Moss
+2487	11	Krabble Detergent
+2488	11	Royal Volff Hide
+2489	11	Electric Upa Tears
+2490	11	Silver Antol Fibre
+2491	11	Flier Bloom Scale
+2492	11	Wisp Bliss Ring
+2493	11	Tough Part S
+2494	11	Tough Part M
+2495	11	Tough Part L
+2496	11	Reinforced Jet
+2497	11	Reinforced Thruster
+2498	11	Reinforced Lens
+2499	11	Reinforced Plate
+2500	11	Reinforced Crank
+2501	11	Reinforced Frame
+2502	11	Reinforced Plug
+2503	11	Reinforced Plunger
+2504	11	Reinforced Unit
+2505	11	Fine Part S
+2506	11	Fine Part M
+2507	11	Fine Part L
+2508	11	Advanced Frame
+2509	11	Advanced Plug
+2510	11	Advanced Jet
+2511	11	Reinforced Core
+2512	11	Bloodstained Face
+2513	11	New Part S
+2514	11	New Part M
+2515	11	New Part L
+2516	11	Advanced Core
+2517	11	Advanced Lens
+2518	11	Advanced Thruster
+2519	11	Advanced Plate
+2520	11	Advanced Crank
+2521	11	Advanced Chamber
+2522	11	Gadolt's Gun Turret
+2523	11	Leader's Plate
+2524	11	Active Cells
+2525	11	Nutritious Microbes
+2526	11	Giant Protein
+2527	11	Wing of Light
+2528	11	Quality Selua Cell
+2529	11	Flexible Selua Cell
+2530	11	Steel Selua Cell
+2531	11	Hot Selua Cell
+2532	11	Telethia Tome
+2533	11	Telethia Stem Cell
+2534	11	Telethia Light Wing
+2535	11	Telethia Letter
+2536	11	Telethia Tear Jewel
+2537	11	Element Essence
+2538	11	Glowing Retina
+2539	11	Dark Claw
+2540	11	Sharp Ear
+2541	11	Tough Tendon
+2542	11	Gale Element
+2543	11	Desert Element
+2544	11	Flood Element
+2545	11	Inferno Element
+2546	11	Bolt Element
+2547	11	Blizzard Element
+2548	11	Ageshu Meat Cut
+2549	11	Crimson Egel Eye
+2550	11	Deinos Tongue
+2551	11	Laia Intestine
+2552	11	Steel Obart Claw
+2553	11	Long Barg Ear
+2554	11	Balgas Lung
+2555	11	Adam's Apple
+2556	11	Alcar's Inferno Eye
+2557	11	Dickson's Amulet
+2558	11	Heavy Hoof
+2559	11	Firm Skin
+2560	11	Pure-White Fang
+2561	11	Poisonous Needle
+2562	11	Lead Carapace
+2563	11	Grey Shell
+2564	11	Quality Pelt
+2565	11	Quality Horn
+2566	11	Quality Skin
+2567	11	Quality Beak
+2568	11	Quality Insect Jaw
+2569	11	Quality Scale
+2570	11	Quality Roe
+2571	11	Mana Fragment
+2572	11	Fossilised Bone
+2573	11	Mana Chunk
+2574	11	Warrior Race's Seal
+2575	11	Azure Flamii Wing
+2576	11	Libertas Glyph
+2577	11	Ratio Glyph
+2578	11	Experia Glyph
+2579	11	Scienti Glyph
+2580	11	Esse Glyph
+2581	11	Dialek Glyph
+2582	11	Spathi Glyph
+2583	11	Tempus Glyph
+2584	11	Creare Glyph
+2585	11	Natura Glyph
+2586	11	Veritas Glyph
+2587	11	Thick Shell
+2634	11	Orthlus' Liver
+2641	11	Stone
+2642	11	Stone
+2643	11	Stone
+2644	11	Stone
+2645	11	Stone
+2646	11	Wild Beast's Bone
+2647	11	Stone
+2648	11	Stone
+2649	11	Stone
+2650	11	Stone
+2651	11	Stone
+2652	11	Stone
+2653	11	Stone
+2654	11	Stone
+2655	11	Stone
+2656	11	Stone
+2657	11	Stone
+2658	11	Stone
+2659	11	Stone
+2660	11	Stone
+2661	11	Stone
+2662	11	Stone
+2663	11	Stone
+2664	12	Ether Cylinder
+2665	12	Queen's Gut Fluid
+2666	12	Blue Radiant
+2667	12	Rainbow Radiant
+2668	12	Dull Radiant
+2669	12	White Radiant
+2670	12	Swamp Item 5 (Temporary)
+2671	12	Water Ether Crystals
+2672	12	Magma Rock
+2673	12	Fortress Pass Key
+2674	12	Clean Water
+2675	12	Piezoelectric Unit
+2676	12	Bulkhead Key
+2677	12	Electrical Fuse
+2678	12	Ether Explosive
+2679	12	Timer
+2680	12	Dragon's Eye
+2681	12	Time Bomb
+2682	12	High Entia Emblem
+2683	12	Safety Device Key
+2684	12	Kitchen Door Key
+2707	12	Ultra Small Reactor
+2708	12	Mobile Furnace
+2709	12	Orthlus' Liver
+2710	12	Empress' Ornament
+2711	12	Transmission Bypass
+2712	12	Exhaust Pump
+2713	12	Mini Reactor
+2714	12	Marcia's Biscuits
+2715	12	Niranira's Letter
+2716	12	Désirée's Watch
+2717	12	Désirée's Watch
+2718	12	Tephra Drop
+2719	12	Top-Secret Orders
+2720	12	Sealed Package
+2721	12	Fragile Package
+2722	12	Old Ring
+2723	12	Marcia's Biscuits
+2724	12	Broken Pendant
+2725	12	Fixed Pendant
+2726	12	Message in a Bottle
+2727	12	Ether Cylinder
+2728	12	Letter for Emmy
+2729	12	Wedding Ring
+2730	12	Blue Glass Bead
+2731	12	Key
+2732	12	Spanner
+2733	12	Tatty Armour
+2734	12	Twisted Gun
+2735	12	Nicked Knife
+2736	12	Lost Pendant
+2737	12	Starlight Book
+2738	12	White Spider Heart
+2739	12	Inscription Rubbing
+2740	12	Sacrificial Tablet
+2741	12	Moonlight Book
+2742	12	Trader's Spare Key
+2743	12	Emergency Rations
+2744	12	Fixed Toy
+2745	12	Items from Ewan
+2746	12	Medicinal Herb
+2747	12	Lake Drop
+2748	12	Picture Book
+2749	12	Bird Necklace
+2750	12	Torn Paper
+2751	12	Clothes
+2752	12	Large Spider Shell
+2753	12	Giants' Mirror
+2754	12	Tokilos' Egg
+2755	12	Pandora Mushroom
+2756	12	Ether Wisdom
+2757	12	Nopon Coin
+2758	12	Daza's Letter
+2759	12	Gerugu's Letter
+2760	12	Top-Secret Data
+2761	12	Sky Frying Pan
+2762	12	Nature's Stove
+2763	12	Smelly Perfume
+2764	12	Pure Perfume
+2765	12	Statue Fragment
+2766	12	Bitter Pojics
+2767	12	Pojics
+2768	12	Swan Pendant
+2769	12	Mysterious Droplet
+2770	12	Poetry Anthology
+2771	12	Machina Energy
+2772	12	Tobogan Wing
+2773	12	Shilx's Delivery
+2774	12	Shilx's Delivery
+2775	12	Nasty Weed
+2776	12	Beautiful Portrait
+2777	12	Repulsive Portrait
+2778	12	Dynamite
+2779	12	Mushroom Cap
+2780	12	Nopon Potion
+2781	12	Red Pollen Orb
+2782	12	Highmore Caviar
+2783	12	Rear Door Key
+2784	12	Giants' Key
+2785	12	Daring of the Giants
+2786	12	Fresh Algora Sap
+2787	12	Yellow Pollen
+2788	12	Kilaki's Note
+2789	12	Filtered Water
+2790	12	Proof of Courage
+2791	12	Monster Egg
+2792	12	Ancient Document
+2793	12	Algora Sap
+2794	12	Sage's Food
+2795	12	Special Mixer
+2796	12	Sacred Flower
+2797	12	High Entia Medicine
+2798	12	Enlarging Seaweed
+2799	12	Cloth Shred
+2800	12	Dedeba's Evidence
+2801	12	Zazadan's Memo
+2802	12	Compost
+2803	12	Flower Bracelet
+2804	12	Deinos Hook
+2805	12	Shiny Ball
+2806	12	Lubricant Oil
+2807	12	Research Data
+2808	12	Chalk Container
+2809	12	Kasharpa Water
+2810	12	Statue Water
+2811	12	Makna Water
+2812	12	Affection Seal Half
+2813	12	Attachment Part
+2814	12	Armour Shard
+2815	12	Family Picture
+2816	12	Telethia Research
+2817	12	Arielle's Ring
+2818	12	Affection Seal Half
+2819	12	Secret Club Card
+2820	12	Pure Ice Flower
+2821	12	Morning Dew Ice
+2822	12	External Sensor
+2824	12	Memory 925 Piece
+2825	12	Memory 903
+2826	12	Oath Sword
+2827	12	Strong Lubricant Oil
+2828	12	Circulatory Fluid
+2829	12	Pure Water
+2830	12	Weapon Material
+2831	12	Mother's Necklace
+2832	12	Silver Ring
+2833	12	Merchant's Gift
+2834	12	Health Amulet
+2835	12	Divine Rock
+2836	12	Music Box
+2837	12	Boxed Meal
+2838	12	Deepwater Fish
+2839	12	Tear of the Sky
+2840	12	Mechonis Key
+2841	12	Ancient Lily
+2842	12	Emergency Rations
+2843	12	Carbo Shield
+2844	12	Nopon Claymore
+2845	12	Cloister Key
+2846	12	Truth of the Giants
+2847	12	Heart of the Giants
+2848	12	Mist Radiant
+2849	12	Ocean Radiant
+2850	12	Imperial Radiant
+2851	12	Snow Radiant
+2852	12	Red Pollen Orb
+2853	12	Grave Bouquet
+2854	12	Friendship Tokens
+2855	12	Miriall's Telescope
+2856	12	Stronger Telescope
+2857	12	Scarlen's Letter
+2858	12	Fallen Object
+2859	12	Kaleka's Repair Kit
+2860	12	Secret Nopon Elixir
+2861	12	Top-Secret Data
+2864	13	'Eater' Records
+2865	13	'Armour' Records
+2880	13	Double Blade (Intermediate)
+2881	13	Healing Energy (Intermediate)
+2882	13	Spear Blade (Intermediate)
+2883	13	Cross Impact (Intermediate)
+2884	13	Speed Shift (Intermediate)
+2885	13	Zero Gravity (Intermediate)
+2886	13	Lock-On (Intermediate)
+2887	13	Ether Drain (Intermediate)
+2888	13	Double Wind (Intermediate)
+2889	13	Mag Storm (Intermediate)
+2890	13	Shutdown (Intermediate)
+2891	13	Air Fang (Intermediate)
+2892	13	Power Drain (Intermediate)
+2893	13	Guard Shift (Intermediate)
+2894	13	Second Gear (Intermediate)
+2895	13	Final Cross (Intermediate)
+2896	13	Double Blade (Advanced)
+2897	13	Healing Energy (Advanced)
+2898	13	Spear Blade (Advanced)
+2899	13	Cross Impact (Advanced)
+2900	13	Speed Shift (Advanced)
+2901	13	Zero Gravity (Advanced)
+2902	13	Lock-On (Advanced)
+2903	13	Ether Drain (Advanced)
+2904	13	Double Wind (Advanced)
+2905	13	Mag Storm (Advanced)
+2906	13	Shutdown (Advanced)
+2907	13	Air Fang (Advanced)
+2908	13	Power Drain (Advanced)
+2909	13	Guard Shift (Advanced)
+2910	13	Second Gear (Advanced)
+2911	13	Final Cross (Advanced)
+2920	13	Slit Edge (Intermediate)
+2921	13	Back Slash (Intermediate)
+2922	13	Light Heal (Intermediate)
+2923	13	Shaker Edge (Intermediate)
+2924	13	Air Slash (Intermediate)
+2925	13	Shadow Eye (Intermediate)
+2926	13	Battle Soul (Intermediate)
+2927	13	Stream Edge (Intermediate)
+2928	13	Hammer Beat (Intermediate)
+2929	13	Wild Down (Intermediate)
+2930	13	Guard Shift (Intermediate)
+2931	13	War Swing (Intermediate)
+2932	13	Sword Drive (Intermediate)
+2933	13	Berserker (Intermediate)
+2934	13	Shield Bash (Intermediate)
+2935	13	Engage (Intermediate)
+2936	13	Last Stand (Intermediate)
+2937	13	Rage (Intermediate)
+2938	13	Magnum Charge (Intermediate)
+2939	13	Bone Upper (Intermediate)
+2940	13	Dive Sobat (Intermediate)
+2941	13	Aura Burst (Intermediate)
+2942	13	Anchor Chain (Intermediate)
+2943	13	Lariat (Intermediate)
+2944	13	Gale Slash (Intermediate)
+2945	13	Electric Gutbuster (Intermediate)
+2946	13	Peerless (Intermediate)
+2947	13	Worldly Slash (Intermediate)
+2948	13	Battle Eye (Intermediate)
+2949	13	Steel Strike (Intermediate)
+2950	13	Serene Heart (Intermediate)
+2951	13	Final Flicker (Intermediate)
+2952	13	Jaws of Death (Intermediate)
+2953	13	Tempest Kick (Intermediate)
+2954	13	Heat Haze (Intermediate)
+2955	13	Spirit Breath (Intermediate)
+2956	13	Soaring Tempest (Intermediate)
+2957	13	Thunder (Intermediate)
+2958	13	Demon Slayer (Intermediate)
+2959	13	Blinding Blossom (Intermediate)
+2960	13	Heal Bullet (Intermediate)
+2961	13	Thunder Bullet (Intermediate)
+2962	13	Shield Bullet (Intermediate)
+2963	13	Cure Bullet (Intermediate)
+2964	13	Drive Boost (Intermediate)
+2965	13	Heal Blast (Intermediate)
+2966	13	Heal Round (Intermediate)
+2967	13	Head Shot (Intermediate)
+2968	13	Metal Blast (Intermediate)
+2969	13	Aura Bullet (Intermediate)
+2970	13	Heat Bullet (Intermediate)
+2971	13	Head Shaker (Intermediate)
+2972	13	Covert Stance (Intermediate)
+2973	13	Heal Counter (Intermediate)
+2974	13	Tranquilliser (Intermediate)
+2975	13	Cure Round (Intermediate)
+2976	13	Happy Happy (Intermediate)
+2977	13	Bitey Bitey (Intermediate)
+2978	13	Sneaky (Intermediate)
+2979	13	Play Dead (Intermediate)
+2980	13	Lurgy (Intermediate)
+2981	13	Hero Time (Intermediate)
+2982	13	Roly-Poly (Intermediate)
+2983	13	Behave (Intermediate)
+2984	13	Riki is Angry (Intermediate)
+2985	13	Bedtime (Intermediate)
+2986	13	You Can Do It (Intermediate)
+2987	13	Peekaboo (Intermediate)
+2988	13	Say Sorry (Intermediate)
+2989	13	Burninate (Intermediate)
+2990	13	Freezinate (Intermediate)
+2991	13	Tantrum (Intermediate)
+2992	13	Summon Bolt (Intermediate)
+2993	13	Summon Flare (Intermediate)
+2994	13	Summon Ice (Intermediate)
+2995	13	Hypnotise (Intermediate)
+2996	13	Spear Break (Intermediate)
+2997	13	Shadow Stitch (Intermediate)
+2998	13	Summon Copy (Intermediate)
+2999	13	Reflection (Intermediate)
+3000	13	Summon Wind (Intermediate)
+3001	13	Summon Earth (Intermediate)
+3002	13	Summon Aqua (Intermediate)
+3003	13	Healing Gift (Intermediate)
+3004	13	Starlight Kick (Intermediate)
+3005	13	Power Effect (Intermediate)
+3006	13	Burst End (Intermediate)
+3007	13	Mind Blast (Intermediate)
+3016	13	Slit Edge (Advanced)
+3017	13	Back Slash (Advanced)
+3018	13	Light Heal (Advanced)
+3019	13	Shaker Edge (Advanced)
+3020	13	Air Slash (Advanced)
+3021	13	Shadow Eye (Advanced)
+3022	13	Battle Soul (Advanced)
+3023	13	Stream Edge (Advanced)
+3024	13	Hammer Beat (Advanced)
+3025	13	Wild Down (Advanced)
+3026	13	Guard Shift (Advanced)
+3027	13	War Swing (Advanced)
+3028	13	Sword Drive (Advanced)
+3029	13	Berserker (Advanced)
+3030	13	Shield Bash (Advanced)
+3031	13	Engage (Advanced)
+3032	13	Last Stand (Advanced)
+3033	13	Rage (Advanced)
+3034	13	Magnum Charge (Advanced)
+3035	13	Bone Upper (Advanced)
+3036	13	Dive Sobat (Advanced)
+3037	13	Aura Burst (Advanced)
+3038	13	Anchor Chain (Advanced)
+3039	13	Lariat (Advanced)
+3040	13	Gale Slash (Advanced)
+3041	13	Electric Gutbuster (Advanced)
+3042	13	Peerless (Advanced)
+3043	13	Worldly Slash (Advanced)
+3044	13	Battle Eye (Advanced)
+3045	13	Steel Strike (Advanced)
+3046	13	Serene Heart (Advanced)
+3047	13	Final Flicker (Advanced)
+3048	13	Jaws of Death (Advanced)
+3049	13	Tempest Kick (Advanced)
+3050	13	Heat Haze (Advanced)
+3051	13	Spirit Breath (Advanced)
+3052	13	Soaring Tempest (Advanced)
+3053	13	Thunder (Advanced)
+3054	13	Demon Slayer (Advanced)
+3055	13	Blinding Blossom (Advanced)
+3056	13	Heal Bullet (Advanced)
+3057	13	Thunder Bullet (Advanced)
+3058	13	Shield Bullet (Advanced)
+3059	13	Cure Bullet (Advanced)
+3060	13	Drive Boost (Advanced)
+3061	13	Heal Blast (Advanced)
+3062	13	Heal Round (Advanced)
+3063	13	Head Shot (Advanced)
+3064	13	Metal Blast (Advanced)
+3065	13	Aura Bullet (Advanced)
+3066	13	Heat Bullet (Advanced)
+3067	13	Head Shaker (Advanced)
+3068	13	Covert Stance (Advanced)
+3069	13	Heal Counter (Advanced)
+3070	13	Tranquilliser (Advanced)
+3071	13	Cure Round (Advanced)
+3072	13	Happy Happy (Advanced)
+3073	13	Bitey Bitey (Advanced)
+3074	13	Sneaky (Advanced)
+3075	13	Play Dead (Advanced)
+3076	13	Lurgy (Advanced)
+3077	13	Hero Time (Advanced)
+3078	13	Roly-Poly (Advanced)
+3079	13	Behave (Advanced)
+3080	13	Riki is Angry (Advanced)
+3081	13	Bedtime (Advanced)
+3082	13	You Can Do It (Advanced)
+3083	13	Peekaboo (Advanced)
+3084	13	Say Sorry (Advanced)
+3085	13	Burninate (Advanced)
+3086	13	Freezinate (Advanced)
+3087	13	Tantrum (Advanced)
+3088	13	Summon Bolt (Advanced)
+3089	13	Summon Flare (Advanced)
+3090	13	Summon Ice (Advanced)
+3091	13	Hypnotise (Advanced)
+3092	13	Spear Break (Advanced)
+3093	13	Shadow Stitch (Advanced)
+3094	13	Summon Copy (Advanced)
+3095	13	Reflection (Advanced)
+3096	13	Summon Wind (Advanced)
+3097	13	Summon Earth (Advanced)
+3098	13	Summon Aqua (Advanced)
+3099	13	Healing Gift (Advanced)
+3100	13	Starlight Kick (Advanced)
+3101	13	Power Effect (Advanced)
+3102	13	Burst End (Advanced)
+3103	13	Mind Blast (Advanced)
+3748	10	Cute Parsnip
+3749	10	Spicy Nut
+3750	10	Jujube Silver
+3751	10	Love Source
+3956	10	Rainbow Carrot
+3957	10	High Leaf
+3958	10	Cream Wheat
+3959	10	Morrow Cob
+3960	10	Kilopumpkin
+3961	10	Angel Bream
+3962	10	Gentleclam
+3963	10	Sky Mole
+3964	10	Blade Bird
+3965	10	Palmtop Elephant
+3966	10	Half Part
+3967	10	Snare Wire
+3968	10	Subzero Steel
+3969	10	Blaze Chain
+3970	10	Congenial Cogs
+3971	12	Dawn Smile
+3972	12	Airship Parts
+3973	12	Plump Wildgrass
+3974	12	Nonona's License
+3975	12	First-Aid Kit
+3976	12	Glutton's Herb
+3977	12	Letter for Melia
+3978	12	Faded ID Tag
+3979	12	Elastic Ivy
+3980	12	Sparkle Stone
+3981	12	Brightite
+3982	12	Tutu's Mirror
+3983	12	Warped Bangle
+3984	12	High Entia Feather
+3985	12	Hekasa's Stake
+3986	12	Pointy Stake
+3987	12	Tei-Tei's Charm
+3988	12	Melekanze's Camera
+3989	12	Photo of Glow Deinos
+3990	12	Photo of Dozy Eluca
+3991	12	Somebody's Memo
+3992	12	Peppity Herb
+3993	12	Hover Stone
+3994	12	Eks Beastmeat
+3995	12	Paleglow Ring
+3996	12	Katchafish DX
+3997	12	Sweet Cherry
+3998	12	Pororo's Favourite
+3999	12	Ether Pick
+4000	12	Reinforced Ether Pick
+4001	12	High Ether Crystal
+4002	12	Common Ether Pick
+4003	12	Broken Ether Pick
+4004	12	Cerulean Shard
+4005	12	Dried Golden Shroom
+4006	10	Swirly Slash
+4007	10	Hero Nipper
+4008	10	Highlightning
+4009	10	Dubious Sculpture
+4010	10	Shimmertumble
+4084	10	Mystic Dahlia
+4085	10	Cool Lemon
+4086	10	Heart Peach
+4087	10	Stardrop
+4088	10	Ha Ha Ha
+4089	10	Thunder Atmos
+4090	10	Nanoceros
+4091	10	Mane Cat
+4102	13	Slit Edge (Master)
+4103	13	Back Slash (Master)
+4104	13	Light Heal (Master)
+4105	13	Shaker Edge (Master)
+4106	13	Air Slash (Master)
+4107	13	Shadow Eye (Master)
+4108	13	Battle Soul (Master)
+4109	13	Stream Edge (Master)
+4110	13	Hammer Beat (Master)
+4111	13	Wild Down (Master)
+4112	13	Guard Shift (Master)
+4113	13	War Swing (Master)
+4114	13	Sword Drive (Master)
+4115	13	Berserker (Master)
+4116	13	Shield Bash (Master)
+4117	13	Engage (Master)
+4118	13	Last Stand (Master)
+4119	13	Rage (Master)
+4120	13	Magnum Charge (Master)
+4121	13	Bone Upper (Master)
+4122	13	Dive Sobat (Master)
+4123	13	Aura Burst (Master)
+4124	13	Anchor Chain (Master)
+4125	13	Lariat (Master)
+4126	13	Gale Slash (Master)
+4127	13	Electric Gutbuster (Master)
+4128	13	Peerless (Master)
+4129	13	Worldly Slash (Master)
+4130	13	Battle Eye (Master)
+4131	13	Steel Strike (Master)
+4132	13	Serene Heart (Master)
+4133	13	Final Flicker (Master)
+4134	13	Jaws of Death (Master)
+4135	13	Tempest Kick (Master)
+4136	13	Heat Haze (Master)
+4137	13	Spirit Breath (Master)
+4138	13	Soaring Tempest (Master)
+4139	13	Thunder (Master)
+4140	13	Demon Slayer (Master)
+4141	13	Blinding Blossom (Master)
+4142	13	Heal Bullet (Master)
+4143	13	Thunder Bullet (Master)
+4144	13	Shield Bullet (Master)
+4145	13	Cure Bullet (Master)
+4146	13	Drive Boost (Master)
+4147	13	Heal Blast (Master)
+4148	13	Heal Round (Master)
+4149	13	Head Shot (Master)
+4150	13	Metal Blast (Master)
+4151	13	Aura Bullet (Master)
+4152	13	Heat Bullet (Master)
+4153	13	Head Shaker (Master)
+4154	13	Covert Stance (Master)
+4155	13	Heal Counter (Master)
+4156	13	Tranquilliser (Master)
+4157	13	Cure Round (Master)
+4158	13	Happy Happy (Master)
+4159	13	Bitey Bitey (Master)
+4160	13	Sneaky (Master)
+4161	13	Play Dead (Master)
+4162	13	Lurgy (Master)
+4163	13	Hero Time (Master)
+4164	13	Roly-Poly (Master)
+4165	13	Behave (Master)
+4166	13	Riki is Angry (Master)
+4167	13	Bedtime (Master)
+4168	13	You Can Do It (Master)
+4169	13	Peekaboo (Master)
+4170	13	Say Sorry (Master)
+4171	13	Burninate (Master)
+4172	13	Freezinate (Master)
+4173	13	Tantrum (Master)
+4174	13	Summon Bolt (Master)
+4175	13	Summon Flare (Master)
+4176	13	Summon Ice (Master)
+4177	13	Hypnotise (Master)
+4178	13	Spear Break (Master)
+4179	13	Shadow Stitch (Master)
+4180	13	Summon Copy (Master)
+4181	13	Reflection (Master)
+4182	13	Summon Wind (Master)
+4183	13	Summon Earth (Master)
+4184	13	Summon Aqua (Master)
+4185	13	Healing Gift (Master)
+4186	13	Starlight Kick (Master)
+4187	13	Power Effect (Master)
+4188	13	Burst End (Master)
+4189	13	Mind Blast (Master)
+4190	13	Healy Bullet (Advanced)
+4191	13	Crackle Bullet (Advanced)
+4192	13	Shield Kaclang (Advanced)
+4193	13	Cure Thingamie (Advanced)
+4194	13	B-B-B-Boost (Advanced)
+4195	13	Heal Kaboom (Advanced)
+4196	13	Heal Round-a-Round (Advanced)
+4197	13	Noggin Shot (Advanced)
+4198	13	'Ittle Blast (Advanced)
+4199	13	Aurorora Bullet (Advanced)
+4200	13	Toasty-Hot Bullet (Advanced)
+4201	13	Egg Shaker (Advanced)
+4202	13	Yoghurt Stance (Advanced)
+4203	13	Healy Counter (Advanced)
+4204	13	Tranquilsnooze (Advanced)
+4205	13	Curedy-Pure Round (Advanced)
+4206	13	Hammer Beat (Advanced)
+4207	13	Mild Down (Advanced)
+4208	13	Guard Sift (Advanced)
+4209	13	Feather Swing (Advanced)
+4210	13	Sword Drive (Advanced)
+4211	13	Berserker (Advanced)
+4212	13	Shield Kersmash (Advanced)
+4213	13	Engage (Advanced)
+4214	13	Last Stand (Advanced)
+4215	13	Hangry (Advanced)
+4216	13	Magnum Starch (Advanced)
+4217	13	Bone Upper (Advanced)
+4218	13	Chive Sobat (Advanced)
+4219	13	Aura Toast (Advanced)
+4220	13	Anchor Chain (Advanced)
+4221	13	Lariat (Advanced)
+4257	12	Mystery Drink
+4258	12	予備枠
+4259	12	予備枠
+4260	12	予備枠
+4261	12	予備枠
+4551	13	Double Blade (Master)
+4552	13	Healing Energy (Master)
+4553	13	Spear Blade (Master)
+4554	13	Cross Impact (Master)
+4555	13	Speed Shift (Master)
+4556	13	Zero Gravity (Master)
+4557	13	Lock-On (Master)
+4558	13	Ether Drain (Master)
+4559	13	Double Wind (Master)
+4560	13	Mag Storm (Master)
+4561	13	Shutdown (Master)
+4562	13	Air Fang (Master)
+4563	13	Power Drain (Master)
+4564	13	Guard Shift (Master)
+4565	13	Second Gear (Master)
+4566	13	Final Cross (Master)
