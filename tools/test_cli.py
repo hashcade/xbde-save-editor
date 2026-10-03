@@ -460,6 +460,44 @@ def main() -> None:
         run("learn-max-all-arts", output, output)
         assert output.read_bytes() == all_learned and source.read_bytes() == original
 
+        event_source = root / "event-arts.sav"
+        event_original = bytearray(original)
+        struct.pack_into("<HH", event_original, 0x15231C, 7, 8)
+        event_original[0x152330] = 4
+        for owner in (7, 8):
+            struct.pack_into("<I", event_original, 0x152368 + (owner - 1) * 0x138, 99)
+        for art_id in (118, 143):
+            event_original[0x1536E8 + (art_id - 1) * 2 + 1] = 0x80
+        event_source.write_bytes(event_original)
+        for owner, art_id in ((7, 118), (8, 143)):
+            event_art = next(art for art in json.loads(run("arts", event_source, str(owner))) if art["Id"] == art_id)
+            assert event_art["CanLearn"] and event_art["RequiresEvent"] and not event_art["IsLevelLearned"]
+            run("learn-art", event_source, output, str(owner), str(art_id))
+            event_expected = bytearray(event_original)
+            event_expected[0x1536E8 + (art_id - 1) * 2] = 1
+            assert output.read_bytes() == event_expected
+            run("learn-art", output, output, str(owner), str(art_id), success=False)
+            assert output.read_bytes() == event_expected
+            run("learn-max-arts", event_source, output, str(owner))
+            assert output.read_bytes()[0x1536E8 + (art_id - 1) * 2:0x1536E8 + art_id * 2] == bytes((12, 0x87))
+            assert output.read_bytes()[:0x1536E8] == event_original[:0x1536E8]
+        run("learn-max-all-arts", event_source, output)
+        event_all = output.read_bytes()
+        assert all(event_all[0x1536E8 + (art_id - 1) * 2:0x1536E8 + art_id * 2] == bytes((12, 0x87))
+                   for art_id in (118, 143))
+        run("learn-max-all-arts", output, output)
+        assert output.read_bytes() == event_all and event_source.read_bytes() == event_original
+        protected_event = root / "protected-event-arts.sav"
+        for future, version in ((False, 8), (True, 7)):
+            protected_bytes = bytearray(event_original)
+            struct.pack_into("<I", protected_bytes, 0, version)
+            if future:
+                struct.pack_into("<H", protected_bytes, 0x15231E, 14)
+                struct.pack_into("<I", protected_bytes, 0x152368 + 13 * 0x138, 99)
+            protected_event.write_bytes(protected_bytes)
+            run("learn-art", protected_event, output, "7", "118", success=False)
+            assert output.read_bytes() == event_all and protected_event.read_bytes() == protected_bytes
+
         links_original = bytearray(original)
         struct.pack_into("<H", links_original, 0xDF0, 390)
         for record in (0x152368, 0x1524A0):

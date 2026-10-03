@@ -66,6 +66,7 @@ public sealed partial class SaveDocument
     public bool CanEditAchievements => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
     public bool CanEditSkillLinks => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
     public bool CanEditSkills => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
+    internal bool CanLearnEventArts => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
     public bool CanEditAffinity => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
     public bool CanEditRegionAffinity => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
     public IReadOnlyList<RegionAffinityRecord> RegionAffinities => Campaign == Campaign.MainStory

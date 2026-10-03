@@ -31,12 +31,16 @@ The extracted `pc_arts.get_type` distinguishes level-based learning (`1`) from
 event-based learning (`2`); `get_lv` records the normal acquisition level. The
 editor can learn ordinary level-based arts before that level, without raising the
 character's level. Talent and Monado arts are excluded from direct learning.
-Missing event arts, including Mind Blast and Final Cross, remain protected.
+In main-story format-7 saves, Mind Blast (118) and Final Cross (143) can also be
+learned directly without marking associated events or quests complete. Missing
+Monado arts remain protected, as their story/manual permission is separate.
+Future Connected and unverified formats do not permit event-art learning.
 
 The GUI provides a Learn Art action for an eligible missing art, a selected-character
 Learn & Max Arts action below its art list, and a global Learn & Max All Arts action
 below the character list. Batch actions operate independently of search filters.
-They learn eligible missing arts and maximize already-learned upgradeable arts;
+They learn eligible missing arts, including the two supported main-story event
+arts, and maximize already-learned upgradeable arts;
 already-learned event arts may be leveled within their existing permissions.
 
 CLI commands are `learn-art <save> <output> <character-id> <art-id>`,
@@ -68,6 +72,17 @@ build ID `7E1DF8E08D60544BBDCA1E333C153C97`:
 - `0xB9880–0xB9B7C`: ordinary art acquisition sets level 1 through `0x75EA0`.
   The editor uses this saved-state representation, without running notifications
   or the game's optional empty-palette assignment. Existing palettes stay intact.
+- The script acquisition wrapper `0x5188C0–0x5188E8` dispatches an art ID to
+  `0x5238A0`, which calls the same `0xB9880` acquisition function. Its persistent
+  learned state is the level byte. `0x7F330` marks menu NEW notifications; the
+  remaining acquisition path optionally fills an empty palette slot. Mind Blast
+  additionally supports replacing slot 8 when the script requests it. Neither
+  path completes quests or rewrites story progress. Direct learning intentionally
+  leaves notification flags and palettes untouched; it does not claim the source
+  event was completed. Tests compare the complete save for both event-art IDs,
+  including unknown manual bits, rejection before writes, repeated learning and
+  campaign/format restrictions. Loading newly learned event arts in-game still
+  requires verification.
 
 Catalog IDs, ownership, talent flags and menu order come from the extracted
 [pc_arts table](https://xenoblade.github.io/xb1de/bdat/bdat_common/pc_arts.html).

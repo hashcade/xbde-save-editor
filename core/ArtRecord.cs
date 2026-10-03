@@ -21,7 +21,9 @@ public sealed class ArtRecord
     public bool IsLevelLearned => _definition.IsLevelLearned;
     public bool RequiresEvent => _definition.LearnType == 2;
     public int LearnLevel => _definition.LearnLevel;
-    public bool CanLearn => !Learned && IsLevelLearned && _document.GetCharacter(_definition.CharacterId).CanEditProgression;
+    public bool CanLearn => !Learned && (IsLevelLearned || CanLearnEvent)
+        && _document.GetCharacter(_definition.CharacterId).CanEditProgression;
+    private bool CanLearnEvent => (Id is 118 or 143) && _document.CanLearnEventArts;
     public bool CanEdit => Learned && !IsTalent && _document.GetCharacter(_definition.CharacterId).CanEditProgression
         && !(_document.Campaign == Campaign.FutureConnected && Id == 4);
     private int ManualLevelLimit => (ManualFlags & 7) switch
@@ -48,7 +50,7 @@ public sealed class ArtRecord
 
     public void Learn(int level = 1)
     {
-        if (!CanLearn) throw new ArgumentException("Only unlearned ordinary level-based arts can be learned directly.");
+        if (!CanLearn) throw new ArgumentException("Only supported unlearned arts can be learned directly.");
         ValidateLevel(level);
         WriteLevel(level);
     }

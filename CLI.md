@@ -154,8 +154,11 @@ level or EXP. Spend it through the game's Expert Mode menu to raise a level.
 as JSON. `art --level` sets a learned art's level; `max-art` maximizes one art;
 `max-arts` maximizes all learned, upgradeable arts for that character, independent
 of GUI search filters. Ordinary arts grant the required manual permission without
-spending AP. Monado arts retain their story permission, and missing/talent arts
-are never upgraded. Melia's discharge levels follow their summon arts. See the
+spending AP. Mind Blast (118) and Final Cross (143) can be learned in main-story
+format-7 saves through `learn-art`, `learn-max-arts` or `learn-max-all-arts`, without
+completing their source events or changing palettes. Monado arts retain their
+story permission; missing Monado arts and fixed Talent Arts stay protected.
+Melia's discharge levels follow their summon arts. See the
 [validated limits](docs/arts.md); art IDs are returned by `arts`, not list positions.
 
 `skills` lists five trees and their nodes, learned counts, remaining SP and unlock

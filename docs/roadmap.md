@@ -11,7 +11,8 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Characters: linked current level/EXP editing with verified highest-level bookkeeping.
 - [x] Arts: verified levels, single/character-wide maximum and CLI support.
 - [x] Arts: ordinary level-based learning and single/character-wide/global learning and maximum, with protected story/quest arts and matching CLI support.
-- [ ] Arts: validated story/quest unlock editing, only where linked progression can be preserved.
+- [x] Arts: isolated Mind Blast/Final Cross learning in main-story format-7 saves, leaving events, quests and palettes unchanged; Monado story permissions remain protected.
+- [ ] Arts: in-game verification of newly learned event arts.
 - [x] Skills: inspect hidden-tree unlocks, edit learned count/remaining SP and maximize unlocked trees, with CLI support.
 - [x] Skills: single hidden-branch unlocking and selected-character/party-wide unlock-and-learn operations, with native shared-Fiora flags, format protections and matching CLI support.
 - [ ] Skills: in-game verification of newly unlocked hidden branches.
@@ -39,8 +40,13 @@ editing remain available for progression changes without grinding.
 
 ## Remaining priorities
 
-1. Reduce Colony 6 recruitment grinding only where all linked state can be validated. NPC relationship states are discrete quest conditions, not a monotonic affinity meter; do not offer a blanket maximum.
-2. Assess protected Art unlocks only where they remove a concrete progression obstacle and preserve linked quest state.
+Reduce Colony 6 recruitment grinding only where all linked state can be validated.
+NPC relationship states are discrete quest conditions, not a monotonic affinity
+meter; do not offer a blanket maximum or recruit mutually exclusive residents.
+
+Missing Monado arts retain their story/manual permissions; blanket story-progress
+or quest completion is not planned as an Art-learning feature.
+
 An unverified or low-value candidate is deferred, not added merely to expand
 feature coverage. Time Attack rewards are already obtainable through existing
 item operations. Ponspector recruitment is deferred with quest-linked editing,

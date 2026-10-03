@@ -71,7 +71,7 @@ public partial class MainWindow
 
     private static string ArtState(ArtRecord art)
     {
-        if (!art.Learned) return art.RequiresEvent ? "ArtEventLocked" : "NotLearned";
+        if (!art.Learned) return art.RequiresEvent && !art.CanLearn ? "ArtEventLocked" : "NotLearned";
         if (art.IsTalent) return "FixedTalent";
         return art.CanEdit ? "Upgradeable" : "Unavailable";
     }

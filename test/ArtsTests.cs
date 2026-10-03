@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using XbdeEditor.Core;
 
 internal static class ArtsTests
@@ -126,6 +127,7 @@ internal static class ArtsTests
         foreach (bool future in new[] { false, true })
         {
             byte[] original = fixture(future);
+            BinaryPrimitives.WriteUInt32LittleEndian(original, 7);
             original.AsSpan(table, 188 * 2).Clear();
             foreach (var definition in ArtCatalog.All)
             {
@@ -140,9 +142,38 @@ internal static class ArtsTests
             reject(() => art.Learn(art.MaximumLevel + 1), "Art learning exceeded the campaign cap.");
             reject(() => save.GetCharacter(1).GetArt(5).Learn(), "Learning bypassed a Monado event.");
             reject(() => save.GetCharacter(1).GetArt(1).Learn(), "Learning changed a talent art.");
-            reject(() => save.GetCharacter(7).GetArt(118).Learn(), "Learning bypassed Mind Blast's quest.");
-            if (!future) reject(() => save.GetCharacter(8).GetArt(143).Learn(), "Learning bypassed Final Cross's event.");
+            if (future) reject(() => save.GetCharacter(7).GetArt(118).Learn(), "Future Connected allowed event-art learning.");
             check(save.Serialize().AsSpan().SequenceEqual(original), "Rejected learning changed the save.");
+            if (!future)
+            {
+                foreach ((int owner, int id) in new[] { (7, 118), (8, 143) })
+                {
+                    var eventCopy = SaveDocument.Parse(original);
+                    var eventArt = eventCopy.GetCharacter(owner).GetArt(id);
+                    check(eventArt.CanLearn && eventArt.RequiresEvent && !eventArt.IsLevelLearned,
+                        "Supported event-art eligibility differs.");
+                    eventArt.Learn();
+                    byte[] expected = (byte[])original.Clone();
+                    expected[table + (id - 1) * 2] = 1;
+                    check(eventCopy.Serialize().AsSpan().SequenceEqual(expected),
+                        "Event-art learning changed quests, palette, notification flags or other art records.");
+                    reject(() => eventArt.Learn(), "Event art was learned twice.");
+                    eventArt.SetLevel(12);
+                    expected[table + (id - 1) * 2] = 12;
+                    expected[table + (id - 1) * 2 + 1] = 0x87;
+                    check(eventCopy.Serialize().AsSpan().SequenceEqual(expected), "Event-art maximum changed unrelated fields.");
+                    foreach (uint format in new[] { 0u, 8u })
+                    {
+                        byte[] unverified = (byte[])original.Clone();
+                        BinaryPrimitives.WriteUInt32LittleEndian(unverified, format);
+                        var protectedCopy = SaveDocument.Parse(unverified);
+                        reject(() => protectedCopy.GetCharacter(owner).GetArt(id).Learn(),
+                            "Unverified format allowed event-art learning.");
+                        check(protectedCopy.Serialize().AsSpan().SequenceEqual(unverified),
+                            "Rejected event-art learning changed bytes.");
+                    }
+                }
+            }
             art.Learn();
             var single = save.Serialize();
             int offset = table + (art.Id - 1) * 2;
@@ -161,9 +192,11 @@ internal static class ArtsTests
             check(editable.All(item => item.Level == item.MaximumLevel)
                 && save.Characters.SelectMany(character => character.Arts).All(item => !item.CanLearn),
                 "Global learning/maximum missed an ordinary art.");
-            check(!save.GetCharacter(1).GetArt(5).Learned && !save.GetCharacter(7).GetArt(118).Learned
+            check(!save.GetCharacter(1).GetArt(5).Learned
                 && save.GetCharacter(1).GetArt(1).Level == 1, "Global learning changed protected event or talent arts.");
-            if (!future) check(!save.GetCharacter(8).GetArt(143).Learned, "Global learning unlocked Final Cross.");
+            check(save.GetCharacter(7).GetArt(118).Learned == !future,
+                "Mind Blast learning did not follow campaign protection.");
+            if (!future) check(save.GetCharacter(8).GetArt(143).Level == 12, "Global learning missed Final Cross.");
             var allowed = editable.SelectMany(item => new[] { table + (item.Id - 1) * 2, table + (item.Id - 1) * 2 + 1 })
                 .Concat(ArtCatalog.All.Where(item => item.LinkedArtId is { } id && editable.Any(source => source.Id == id))
                     .Select(item => table + (item.Id - 1) * 2)).ToHashSet();

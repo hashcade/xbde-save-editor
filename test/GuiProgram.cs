@@ -427,6 +427,43 @@ try
     var artsSaved = SaveDocument.Parse(File.ReadAllBytes(Path.Combine(temporary, "arts-edited.sav")));
     Check(artsSaved.GetCharacter(1).GetArt(12).Level == 12, "GUI art edit was not persisted.");
     Check(File.ReadAllBytes(source).AsSpan().SequenceEqual(beforeArtEditing), "GUI art edit overwrote the input save.");
+    byte[] eventArtsFixture = (byte[])original.Clone();
+    BinaryPrimitives.WriteUInt32LittleEndian(eventArtsFixture, 7);
+    BinaryPrimitives.WriteUInt16LittleEndian(eventArtsFixture.AsSpan(0x15231c), 7);
+    BinaryPrimitives.WriteUInt16LittleEndian(eventArtsFixture.AsSpan(0x15231e), 8);
+    eventArtsFixture[0x152330] = 4;
+    foreach (int owner in new[] { 7, 8 })
+        BinaryPrimitives.WriteUInt32LittleEndian(eventArtsFixture.AsSpan(0x152368 + (owner - 1) * 0x138), 99);
+    foreach (int id in new[] { 118, 143 }) eventArtsFixture[0x1536e8 + (id - 1) * 2 + 1] = 0x80;
+    string eventArtsPath = Path.Combine(temporary, "event-arts.sav");
+    File.WriteAllBytes(eventArtsPath, eventArtsFixture);
+    foreach ((int characterIndex, int id, string name) in new[] { (2, 118, "Mind Blast"), (3, 143, "Final Cross") })
+    {
+        Check(window.LoadSave(eventArtsPath), "Could not open the event-art fixture.");
+        window.ShowArts();
+        characterList.SelectedIndex = characterIndex;
+        artSearch.Text = name;
+        Dispatcher.UIThread.RunJobs();
+        Check(learnArt.IsVisible && learnArt.IsEnabled && !artLevel.IsVisible
+            && window.FindControl<TextBlock>("ArtStatusValue")!.Text == UiLanguage.Get("NotLearned"),
+            "Supported event art still appears blocked.");
+        learnArt.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        byte[] expectedEvent = (byte[])eventArtsFixture.Clone();
+        int eventOffset = 0x1536e8 + (id - 1) * 2;
+        expectedEvent[eventOffset] = 1;
+        Check(window.Session!.Document.Serialize().AsSpan().SequenceEqual(expectedEvent)
+            && !learnArt.IsVisible && artLevel.IsVisible && maxArt.IsEnabled,
+            "GUI event learning changed unrelated state or failed to refresh.");
+        maxArt.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        expectedEvent[eventOffset] = 12;
+        expectedEvent[eventOffset + 1] = 0x87;
+        string eventOutput = Path.Combine(temporary, $"event-{id}-edited.sav");
+        Check(window.SaveTo(eventOutput) && File.ReadAllBytes(eventOutput).AsSpan().SequenceEqual(expectedEvent),
+            "GUI event-art maximum was not saved with isolated bytes.");
+        Check(File.ReadAllBytes(eventArtsPath).AsSpan().SequenceEqual(eventArtsFixture),
+            "Event-art GUI editing overwrote its input.");
+    }
+    artSearch.Text = "";
     byte[] linksFixture = SkillLinksTests.Fixture((byte[])original.Clone());
     string linksPath = Path.Combine(temporary, "links.sav");
     File.WriteAllBytes(linksPath, linksFixture);
