@@ -158,7 +158,10 @@
                   <suki:GlassCard Padding="16" Margin="6,0,6,12" VerticalAlignment="Top">
                     <StackPanel Spacing="12">
                       <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
-                      <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
+                      <ComboBox Name="EquipmentItemInput" Margin="0" Tag="{Binding}" ItemsSource="{Binding Choices}" SelectedItem="{Binding Selected, Mode=OneWay}" IsVisible="{Binding CanSwitch}" HorizontalAlignment="Stretch" SelectionChanged="EquipmentItem_Changed">
+                        <ComboBox.ItemTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate></ComboBox.ItemTemplate>
+                      </ComboBox>
+                      <TextBlock Text="{Binding Name}" IsVisible="{Binding ReadOnly}" TextWrapping="Wrap" />
                       <TextBlock Text="{DynamicResource NoGemSockets}" IsVisible="{Binding NoSockets}" />
                       <ItemsControl ItemsSource="{Binding Sockets}">
                         <ItemsControl.ItemTemplate>

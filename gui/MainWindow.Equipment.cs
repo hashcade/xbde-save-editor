@@ -7,6 +7,7 @@ namespace XbdeEditor.Gui;
 public partial class MainWindow
 {
     private sealed record GemChoice(int? Index, string Label);
+    private sealed record EquipmentChoice(int Index, string Label);
     private sealed class EquipmentSocketRow
     {
         public EquipmentSocketRow(EquipmentRecord equipment, GemSocketRecord socket)
@@ -28,8 +29,25 @@ public partial class MainWindow
         public GemChoice[] Choices { get; }
         public GemChoice Selected { get; }
     }
-    private sealed record EquipmentRow(EquipmentRecord Equipment, EquipmentSocketRow[] Sockets)
+    private sealed class EquipmentRow
     {
+        public EquipmentRow(EquipmentRecord equipment)
+        {
+            Equipment = equipment;
+            Sockets = equipment.GemSockets.Select(socket => new EquipmentSocketRow(equipment, socket)).ToArray();
+            var items = equipment.AvailableItems;
+            var duplicates = items.GroupBy(item => item.Name).Where(group => group.Count() > 1)
+                .Select(group => group.Key).ToHashSet();
+            Choices = items.Select(item => new EquipmentChoice(item.Index,
+                duplicates.Contains(item.Name) ? $"{item.Name} · #{item.Index}" : item.Name)).ToArray();
+            Selected = Choices.FirstOrDefault(choice => choice.Index == equipment.Index);
+        }
+        public EquipmentRecord Equipment { get; }
+        public EquipmentSocketRow[] Sockets { get; }
+        public EquipmentChoice[] Choices { get; }
+        public EquipmentChoice? Selected { get; }
+        public bool CanSwitch => Equipment.CanSwitch;
+        public bool ReadOnly => !CanSwitch;
         public string Title => UiLanguage.Get(Equipment.Slot.ToString());
         public string Name => Equipment.Name;
         public bool NoSockets => Sockets.Length == 0;
@@ -48,8 +66,7 @@ public partial class MainWindow
         _refreshingEquipment = true;
         try
         {
-            EquipmentList.ItemsSource = _character?.Equipment.Select(equipment => new EquipmentRow(equipment,
-                equipment.GemSockets.Select(socket => new EquipmentSocketRow(equipment, socket)).ToArray())).ToArray() ?? [];
+            EquipmentList.ItemsSource = _character?.Equipment.Select(equipment => new EquipmentRow(equipment)).ToArray() ?? [];
         }
         finally { _refreshingEquipment = false; }
     }
@@ -69,6 +86,23 @@ public partial class MainWindow
         {
             RefreshEquipment();
             ShowStatus(UiLanguage.Get("InvalidGem"));
+        }
+    }
+
+    private void EquipmentItem_Changed(object? sender, SelectionChangedEventArgs e)
+    {
+        if (_refreshingEquipment || sender is not ComboBox { Tag: EquipmentRow row, SelectedItem: EquipmentChoice choice }
+            || !row.CanSwitch || choice.Index == row.Equipment.Index || !CommitProgressionDraft()) return;
+        try
+        {
+            row.Equipment.Equip(choice.Index);
+            RefreshCharacters();
+            ShowStatus(null);
+        }
+        catch (ArgumentException)
+        {
+            RefreshEquipment();
+            ShowStatus(UiLanguage.Get("InvalidEquipment"));
         }
     }
 }

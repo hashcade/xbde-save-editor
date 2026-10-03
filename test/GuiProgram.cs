@@ -408,6 +408,44 @@ try
     window.Width = 1120;
     window.Height = 780;
     Check(File.ReadAllBytes(equipmentPath).AsSpan().SequenceEqual(equipmentFixture), "GUI equipment edit overwrote its source.");
+    var switchingFixture = EquipmentSwitchTests.Fixture((byte[])original.Clone());
+    string switchingPath = Path.Combine(temporary, "switching.sav");
+    File.WriteAllBytes(switchingPath, switchingFixture);
+    Check(window.LoadSave(switchingPath), "Could not open the switching fixture.");
+    window.ShowEquipment();
+    Dispatcher.UIThread.RunJobs();
+    ComboBox ItemInput(int slot = 0)
+    {
+        Dispatcher.UIThread.RunJobs();
+        return window.FindControl<ItemsControl>("EquipmentList")!.GetVisualDescendants().OfType<ComboBox>()
+            .Where(input => input.Name == "EquipmentItemInput").ElementAt(slot);
+    }
+    Check(ItemInput().IsVisible && ItemInput().Items.Cast<object>().Select(ChoiceIndex).SequenceEqual(new int?[] { 0, 2 }),
+        "GUI equipment choices include incompatible or occupied items.");
+    Check(!window.Session!.HasChanges, "Opening equipment selectors changed the save.");
+    ItemInput().SelectedItem = ItemInput().Items.Cast<object>().Single(choice => ChoiceIndex(choice) == 2);
+    Check(window.Session.Document.GetCharacter(1).GetEquipment(EquipmentSlot.Weapon).Index == 2
+        && window.Session.Document.GetCharacter(1).GetEquipment(EquipmentSlot.Weapon).GemSockets[0].GemIndex == 2,
+        "GUI weapon selection lost its existing gem or did not change the reference.");
+    string switchingOutput = Path.Combine(temporary, "switching-edited.sav");
+    Check(window.SaveTo(switchingOutput), "Could not save equipment switching.");
+    var expectedSwitching = (byte[])switchingFixture.Clone();
+    BinaryPrimitives.WriteUInt32LittleEndian(expectedSwitching.AsSpan(0x152368 + 0x28), 2u | (2u << 16));
+    Check(File.ReadAllBytes(switchingOutput).AsSpan().SequenceEqual(expectedSwitching),
+        "GUI switching changed more than the selected reference.");
+    foreach (string language in UiLanguage.Languages.Keys)
+    {
+        window.SetLanguage(language);
+        VerifyPageSpacing();
+        Check(ChoiceIndex(ItemInput().SelectedItem!) == 2 && window.Session.Document.Serialize().AsSpan().SequenceEqual(expectedSwitching),
+            "Language switching changed equipment selection or the save.");
+    }
+    window.Width = 860;
+    window.Height = 600;
+    VerifyPageSpacing();
+    window.Width = 1120;
+    window.Height = 780;
+    Check(File.ReadAllBytes(switchingPath).AsSpan().SequenceEqual(switchingFixture), "GUI switching overwrote the source.");
     window.SetLanguage("en");
     byte[] ambiguous = (byte[])original.Clone();
     ambiguous[0x152330] = 1;
@@ -452,7 +490,11 @@ try
                 && window.FindControl<Button>("MaxCharacterSkillsButton")!.IsEnabled,
                 "Real main-story save cannot maximize skills.");
         }
-        else if (page.Length > 0 && page[0] == "equipment") window.ShowEquipment();
+        else if (page.Length > 0 && page[0] == "equipment")
+        {
+            window.ShowEquipment();
+            if (page.Length > 2) window.FindControl<ListBox>("CharacterList")!.SelectedIndex = int.Parse(page[2]);
+        }
         else if (page.Length > 0 && page[0] == "characters")
         {
             window.ShowCharacters();

@@ -1,4 +1,5 @@
 {
+  "InvalidEquipment": "Elige un objeto que tengas, compatible y no equipado por otro personaje.",
   "Equipment": "Equipo", "Weapon": "Arma", "Head": "Cabeza", "Torso": "Torso", "Arms": "Brazos", "Legs": "Piernas", "Feet": "Pies", "GemSocket": "Ranura de gema", "FixedGem": "Gema fija", "NoGemSockets": "Sin ranuras de gemas", "None": "Ninguna", "InvalidGem": "Elige una gema válida que no esté en uso.",
   "Skills": "Habilidades", "Locked": "Bloqueado", "LearnedSkills": "Habilidades aprendidas", "SkillProgress": "PH restantes", "SkillCost": "{0} PH", "MaxTree": "Maximizar rama", "MaxCharacterSkills": "Maximizar habilidades del personaje", "MaxAllSkills": "Maximizar todas las habilidades",
   "Arts": "Artes", "ArtStatus": "Estado", "NotLearned": "Sin aprender", "FixedTalent": "Arte especial (nivel fijo)", "Upgradeable": "Mejorable", "Unavailable": "No disponible", "MaximumLevel": "Nivel máximo", "MaxArt": "Nivel máximo", "MaxCharacterArts": "Maximizar todas las artes",

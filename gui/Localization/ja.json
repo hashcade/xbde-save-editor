@@ -1,4 +1,5 @@
 {
+  "InvalidEquipment": "所有している装備可能な未使用のアイテムを選んでください。",
   "Equipment": "装備", "Weapon": "武器", "Head": "頭", "Torso": "胴", "Arms": "腕", "Legs": "脚", "Feet": "足", "GemSocket": "ジェムスロット", "FixedGem": "固定ジェム", "NoGemSockets": "ジェムスロットなし", "None": "なし", "InvalidGem": "未使用の有効なジェムを選択してください。",
   "Skills": "スキル", "Locked": "未解放", "LearnedSkills": "習得スキル数", "SkillProgress": "残り SP", "SkillCost": "{0} SP", "MaxTree": "この分岐を全習得", "MaxCharacterSkills": "選択キャラクターのスキルを最大にする", "MaxAllSkills": "全員のスキルを最大にする",
   "Arts": "アーツ", "ArtStatus": "状態", "NotLearned": "未習得", "FixedTalent": "タレントアーツ（レベル固定）", "Upgradeable": "レベル変更可", "Unavailable": "変更不可", "MaximumLevel": "最大レベル", "MaxArt": "最大レベルにする", "MaxCharacterArts": "全アーツを最大レベルにする",

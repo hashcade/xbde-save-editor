@@ -1,4 +1,5 @@
 {
+  "InvalidEquipment": "請選擇已擁有、角色可用且未被別人裝備的物品。",
   "Equipment": "裝備", "Weapon": "武器", "Head": "頭部", "Torso": "身體", "Arms": "手臂", "Legs": "腿部", "Feet": "腳部", "GemSocket": "寶石插槽", "FixedGem": "自帶寶石", "NoGemSockets": "無寶石插槽", "None": "無", "InvalidGem": "請選擇未被使用的有效寶石。",
   "Skills": "技能", "Locked": "未解鎖", "LearnedSkills": "已學會技能數", "SkillProgress": "剩餘 SP", "SkillCost": "{0} SP", "MaxTree": "分支學滿", "MaxCharacterSkills": "目前角色技能全滿", "MaxAllSkills": "全員技能全滿",
   "Arts": "戰技", "ArtStatus": "狀態", "NotLearned": "未學會", "FixedTalent": "天賦戰技（固定等級）", "Upgradeable": "可升級", "Unavailable": "不可用", "MaximumLevel": "最高等級", "MaxArt": "滿級", "MaxCharacterArts": "全部戰技滿級",
