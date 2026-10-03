@@ -58,6 +58,12 @@ public sealed class SaveDocument
 
     public byte[] Serialize() => (byte[])_data.Clone();
 
+    public void MaxAllAP()
+    {
+        foreach (var character in Characters)
+            character.SetResources(ap: CharacterRecord.MaximumAP);
+    }
+
     internal uint ReadUInt32(int offset) => BinaryPrimitives.ReadUInt32LittleEndian(_data.AsSpan(offset, 4));
     internal ushort ReadUInt16(int offset) => BinaryPrimitives.ReadUInt16LittleEndian(_data.AsSpan(offset, 2));
     internal void WriteUInt32(int offset, uint value) => BinaryPrimitives.WriteUInt32LittleEndian(_data.AsSpan(offset, 4), value);

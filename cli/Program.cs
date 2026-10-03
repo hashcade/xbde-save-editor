@@ -10,7 +10,7 @@ try
     }
     if (args is [] or ["--help"])
     {
-        Console.WriteLine("XBDE Save Editor\n\ninspect <save>\ncopy <save> <output>\nresources <save> <output> [--money N] [--noponstones N]\ncharacter <save> <output> <id> [--ap N] [--coins N]\n--version");
+        Console.WriteLine("XBDE Save Editor\n\ninspect <save>\ncopy <save> <output>\nresources <save> <output> [--money N] [--noponstones N]\ncharacter <save> <output> <id> [--ap N] [--coins N] [--reserve-exp N]\nmax-ap <save> <output>\n--version");
         return 0;
     }
     if (args is ["inspect", var source])
@@ -59,6 +59,13 @@ try
         session.Save(resourceOutput);
         return 0;
     }
+    if (args is ["max-ap", var apSource, var apOutput])
+    {
+        var session = SaveSession.Open(apSource);
+        session.Document.MaxAllAP();
+        session.Save(apOutput);
+        return 0;
+    }
     if (args is ["character", var characterSource, var characterOutput, var characterId, .. var fields])
     {
         var session = SaveSession.Open(characterSource);
@@ -66,15 +73,17 @@ try
         var character = session.Document.GetCharacter(id);
         uint? ap = null;
         uint? coins = null;
-        foreach (var (name, value) in ParseOptions(fields, "--ap", "--coins"))
+        uint? reserveExperience = null;
+        foreach (var (name, value) in ParseOptions(fields, "--ap", "--coins", "--reserve-exp"))
         {
             switch (name)
             {
                 case "--ap": ap = value; break;
                 case "--coins": coins = value; break;
+                case "--reserve-exp": reserveExperience = value; break;
             }
         }
-        character.SetResources(ap, coins);
+        character.SetResources(ap, coins, reserveExperience);
         session.Save(characterOutput);
         return 0;
     }

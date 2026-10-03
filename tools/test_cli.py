@@ -47,6 +47,23 @@ def main() -> None:
         assert struct.unpack_from("<II", character_bytes, 0x152370) == (321, 999)
         assert character_bytes[:0x152370] == original[:0x152370]
         assert character_bytes[0x152378:] == original[0x152378:]
+        run("character", source, output, "1", "--reserve-exp", "199999998")
+        reserve_bytes = output.read_bytes()
+        assert struct.unpack_from("<I", reserve_bytes, 0x15245C)[0] == 199999998
+        assert reserve_bytes[:0x15245C] == original[:0x15245C]
+        assert reserve_bytes[0x152460:] == original[0x152460:]
+        for field, invalid_value in (("--ap", "100000000"), ("--reserve-exp", "199999999")):
+            run("character", source, output, "1", field, invalid_value, success=False)
+            assert output.read_bytes() == reserve_bytes
+        run("character", source, output, "1", "--ap", "1", "--reserve-exp", "199999999", success=False)
+        assert output.read_bytes() == reserve_bytes
+        run("max-ap", source, output)
+        bulk = output.read_bytes()
+        for record in (0x152368, 0x1524A0):
+            assert struct.unpack_from("<I", bulk, record + 8)[0] == 99999999
+        for index, (before, after) in enumerate(zip(original, bulk)):
+            assert before == after or 0x152370 <= index < 0x152374 or 0x1524A8 <= index < 0x1524AC
+        output.write_bytes(character_bytes)
         run("character", source, output, "1", "--ap", "1", "--coins", "1000", success=False)
         assert output.read_bytes() == character_bytes
         run("character", source, output, "14", "--ap", "1", success=False)

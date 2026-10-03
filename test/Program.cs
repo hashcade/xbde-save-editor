@@ -52,6 +52,36 @@ foreach (bool future in new[] { false, true })
         if (!(offset >= characterOffset + 8 && offset < characterOffset + 12)
             && beforeCharacterEdit[offset] != afterCharacterEdit[offset])
             throw new InvalidOperationException($"Character edit altered byte {offset:X}.");
+    foreach (uint reserve in new[] { 0u, CharacterRecord.MaximumReserveExperience })
+    {
+        byte[] beforeReserve = save.Serialize();
+        character.SetResources(reserveExperience: reserve);
+        byte[] afterReserve = save.Serialize();
+        Check(character.ReserveExperience == reserve, "Reserve EXP boundary failed.");
+        Check(afterReserve.AsSpan(0, characterOffset + 0xf4).SequenceEqual(beforeReserve.AsSpan(0, characterOffset + 0xf4))
+            && afterReserve.AsSpan(characterOffset + 0xf8).SequenceEqual(beforeReserve.AsSpan(characterOffset + 0xf8)),
+            "Reserve EXP editing changed a level, current EXP or another record.");
+    }
+    character.SetResources(ap: CharacterRecord.MaximumAP);
+    Check(character.AP == CharacterRecord.MaximumAP, "AP maximum failed.");
+    character.SetResources(ap: 0);
+    Check(character.AP == 0, "AP minimum failed.");
+    byte[] beforeLimits = save.Serialize();
+    Reject(() => character.SetResources(ap: CharacterRecord.MaximumAP + 1, reserveExperience: 1), "AP above the game cap was accepted.");
+    Reject(() => character.SetResources(ap: 1, reserveExperience: CharacterRecord.MaximumReserveExperience + 1), "Reserve EXP above the game cap was accepted.");
+    Check(save.Serialize().AsSpan().SequenceEqual(beforeLimits), "A rejected resource edit partially mutated the document.");
+    save.MaxAllAP();
+    byte[] afterBulk = save.Serialize();
+    Check(save.Characters.All(member => member.AP == CharacterRecord.MaximumAP), "Bulk AP missed a joined character.");
+    int[] apOffsets = save.Characters.Select(member => 0x152368 + (member.Id - 1) * 0x138 + 8).ToArray();
+    for (int offset = 0; offset < afterBulk.Length; offset++)
+    {
+        bool allowed = apOffsets.Any(start => offset >= start && offset < start + 4);
+        if (!allowed && beforeLimits[offset] != afterBulk[offset])
+            throw new InvalidOperationException($"Bulk AP changed byte {offset:X}.");
+    }
+    save.MaxAllAP();
+    Check(save.Serialize().AsSpan().SequenceEqual(afterBulk), "Bulk AP is not idempotent.");
     byte[] beforeRejected = save.Serialize();
     Reject(() => character.SetResources(123, 1000), "Out-of-range Affinity Coins were accepted.");
     Check(save.Serialize().AsSpan().SequenceEqual(beforeRejected), "Invalid character update partially mutated AP.");
@@ -136,6 +166,12 @@ try
                 Check(editedBytes.AsSpan(0, recordOffset + 8).SequenceEqual(before.AsSpan(0, recordOffset + 8))
                     && editedBytes.AsSpan(recordOffset + 12).SequenceEqual(before.AsSpan(recordOffset + 12)),
                     "Real character edit changed a neighboring record.");
+                var reserveCopy = SaveDocument.Parse(before);
+                reserveCopy.GetCharacter(actualCharacter.Id).SetResources(reserveExperience: CharacterRecord.MaximumReserveExperience);
+                byte[] reserveBytes = reserveCopy.Serialize();
+                Check(reserveBytes.AsSpan(0, recordOffset + 0xf4).SequenceEqual(before.AsSpan(0, recordOffset + 0xf4))
+                    && reserveBytes.AsSpan(recordOffset + 0xf8).SequenceEqual(before.AsSpan(recordOffset + 0xf8)),
+                    "Real reserve edit changed level, EXP or unrelated data.");
             }
             string realCopy = Path.Combine(temporary, Path.GetFileName(realPath));
             realSession.Save(realCopy);
