@@ -5,5 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="Data/arts.tsv" />
+    <EmbeddedResource Include="Data/skills.tsv" />
+    <EmbeddedResource Include="Data/skill-trees.tsv" />
   </ItemGroup>
 </Project>

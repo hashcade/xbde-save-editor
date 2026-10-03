@@ -65,7 +65,21 @@ public sealed class SaveDocument
             character.SetResources(ap: CharacterRecord.MaximumAP);
     }
 
+    public void MaxAllSkills()
+    {
+        if (Campaign != Campaign.MainStory || Characters.Any(character => character.Id is < 1 or > 8))
+            throw new ArgumentException("Skill learning requires an identified main-story party.");
+        foreach (var character in Characters) character.MaxSkills();
+    }
+
     internal byte ReadByte(int offset) => _data[offset];
+    internal bool IsSkillTreeUnlocked(int flag)
+    {
+        if (flag is < 1 or > 14)
+            throw new ArgumentOutOfRangeException(nameof(flag));
+        int bit = 0x2cdd + flag;
+        return (ReadByte(0x50 + (bit >> 3)) & (1 << (bit & 7))) != 0;
+    }
     internal void WriteByte(int offset, byte value) => _data[offset] = value;
     internal uint ReadUInt32(int offset) => BinaryPrimitives.ReadUInt32LittleEndian(_data.AsSpan(offset, 4));
     internal ushort ReadUInt16(int offset) => BinaryPrimitives.ReadUInt16LittleEndian(_data.AsSpan(offset, 2));

@@ -37,6 +37,19 @@ public sealed class CharacterRecord
     public ArtRecord GetArt(int id) => Arts.FirstOrDefault(art => art.Id == id)
         ?? throw new ArgumentException("This art does not belong to the selected character.", nameof(id));
 
+    public IReadOnlyList<SkillTreeRecord> SkillTrees => SkillCatalog.All.Where(tree => tree.CharacterId == Id)
+        .OrderBy(tree => tree.Index).Select(tree => new SkillTreeRecord(_document, tree)).ToArray();
+
+    public SkillTreeRecord GetSkillTree(int index) => SkillTrees.FirstOrDefault(tree => tree.Index == index)
+        ?? throw new ArgumentException("This skill tree does not belong to the selected character.", nameof(index));
+
+    public void MaxSkills()
+    {
+        if (_document.Campaign != Campaign.MainStory || Id is < 1 or > 8)
+            throw new ArgumentException("Skill learning requires an identified main-story character.");
+        foreach (var tree in SkillTrees.Where(tree => tree.CanEdit)) tree.Maximize();
+    }
+
     public void MaxArts()
     {
         if (!CanEditProgression) throw new ArgumentException("Arts require an identified campaign and supported character.");

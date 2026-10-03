@@ -105,6 +105,7 @@ foreach (bool future in new[] { false, true })
     Check(copy[0] != save.Serialize()[0], "Serialization exposes mutable storage.");
 }
 ArtsTests.Run(Fixture, Check, Reject);
+SkillsTests.Run(Fixture, Check, Reject);
 Reject(() => SaveDocument.Parse(new byte[1688]), "System save was accepted.");
 Reject(() => SaveDocument.Parse(new byte[SaveDocument.FileSize]), "Invalid party was accepted.");
 byte[] bad = Fixture();
@@ -206,6 +207,7 @@ try
             byte[] before = File.ReadAllBytes(realPath);
             var realSession = SaveSession.Open(realPath);
             Check(realSession.Document.Serialize().AsSpan().SequenceEqual(before), "Real save round-trip differs.");
+            SkillsTests.VerifyRealSave(before, Check);
             foreach (var actualCharacter in realSession.Document.Characters)
             {
                 Check(actualCharacter.Level is >= 1 and <= 99, "Real character mapping produced an invalid level.");

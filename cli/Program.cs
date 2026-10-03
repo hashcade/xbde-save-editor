@@ -10,7 +10,7 @@ try
     }
     if (args is [] or ["--help"])
     {
-        Console.WriteLine("XBDE Save Editor\n\ninspect <save>\ncopy <save> <output>\nresources <save> <output> [--money N] [--noponstones N]\ncharacter <save> <output> <id> [--ap N] [--coins N] [--reserve-exp N]\nprogression <save> <output> <id> [--level N] [--exp N]\nmax-ap <save> <output>\narts <save> <character-id>\nart <save> <output> <character-id> <art-id> --level N\nmax-art <save> <output> <character-id> <art-id>\nmax-arts <save> <output> <character-id>\n--version");
+        Console.WriteLine("XBDE Save Editor\n\ninspect <save>\ncopy <save> <output>\nresources <save> <output> [--money N] [--noponstones N]\ncharacter <save> <output> <id> [--ap N] [--coins N] [--reserve-exp N]\nprogression <save> <output> <id> [--level N] [--exp N]\nmax-ap <save> <output>\narts <save> <character-id>\nart <save> <output> <character-id> <art-id> --level N\nmax-art <save> <output> <character-id> <art-id>\nmax-arts <save> <output> <character-id>\nskills <save> <character-id>\nskill-tree <save> <output> <character-id> <tree-index> --learned N\nskill-tree <save> <output> <character-id> <tree-index> --sp N\nmax-skill-tree <save> <output> <character-id> <tree-index>\nmax-skills <save> <output> <character-id>\nmax-all-skills <save> <output>\n--version");
         return 0;
     }
     if (args is ["inspect", var source])
@@ -32,6 +32,52 @@ try
                 character.ExpertLevel, character.ExpertExperience, character.ReserveExperience
             })
         }, new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["skills", var skillsSource, var skillsCharacter])
+    {
+        var character = SaveSession.Open(skillsSource).Document.GetCharacter(ParseId(skillsCharacter));
+        Console.WriteLine(JsonSerializer.Serialize(character.SkillTrees.Select(tree => new
+        {
+            tree.Index, tree.Name, tree.IsUnlocked, tree.CanEdit, tree.LearnedCount,
+            tree.Progress, tree.MaximumProgress, tree.Skills
+        }), new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["max-all-skills", var allSkillsSource, var allSkillsOutput])
+    {
+        var session = SaveSession.Open(allSkillsSource);
+        session.Document.MaxAllSkills();
+        session.Save(allSkillsOutput);
+        return 0;
+    }
+    if (args is ["max-skills", var maxSkillsSource, var maxSkillsOutput, var maxSkillsCharacter])
+    {
+        var session = SaveSession.Open(maxSkillsSource);
+        session.Document.GetCharacter(ParseId(maxSkillsCharacter)).MaxSkills();
+        session.Save(maxSkillsOutput);
+        return 0;
+    }
+    if (args is ["max-skill-tree", var maxTreeSource, var maxTreeOutput, var maxTreeCharacter, var maxTreeIndex])
+    {
+        var session = SaveSession.Open(maxTreeSource);
+        session.Document.GetCharacter(ParseId(maxTreeCharacter)).GetSkillTree(ParseId(maxTreeIndex)).Maximize();
+        session.Save(maxTreeOutput);
+        return 0;
+    }
+    if (args is ["skill-tree", var skillSource, var skillOutput, var skillCharacter, var skillIndex, var field, var amount])
+    {
+        var session = SaveSession.Open(skillSource);
+        var tree = session.Document.GetCharacter(ParseId(skillCharacter)).GetSkillTree(ParseId(skillIndex));
+        var skillOptions = ParseOptions([field, amount], "--learned", "--sp");
+        uint value = skillOptions[field];
+        if (field == "--learned")
+        {
+            if (value > int.MaxValue) throw new ArgumentOutOfRangeException(nameof(value));
+            tree.SetLearnedCount((int)value);
+        }
+        else tree.SetProgress(value);
+        session.Save(skillOutput);
         return 0;
     }
     if (args is ["arts", var artsSource, var artsCharacter])

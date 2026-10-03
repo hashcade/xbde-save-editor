@@ -115,13 +115,110 @@ def main() -> None:
         assert bulk_arts[:0x1536E8 + 20] == original[:0x1536E8 + 20]
         assert bulk_arts[0x1536E8 + 24:] == original[0x1536E8 + 24:]
         assert source.read_bytes() == original
+
+        skills_original = bytearray(original)
+        for character_id in (1, 2):
+            record = 0x152368 + (character_id - 1) * 0x138
+            struct.pack_into("<5I", skills_original, record + 0x7C, 123, 234, 45, 56, 67)
+            struct.pack_into("<5I", skills_original, record + 0x90, 1, 0, 0, 0, 0)
+        for flag in (1, 4):  # Shulk's fourth tree and Reyn's fifth tree.
+            bit = 0x2CDD + flag
+            skills_original[0x50 + (bit >> 3)] |= 1 << (bit & 7)
+        skills_source = root / "skills.sav"
+        skills_source.write_bytes(skills_original)
+        skills = json.loads(run("skills", skills_source, "1"))
+        assert [tree["Index"] for tree in skills] == [1, 2, 3, 4, 5]
+        assert [tree["IsUnlocked"] for tree in skills] == [True, True, True, True, False]
+        assert [tree["CanEdit"] for tree in skills] == [True, True, True, True, False]
+        assert [tree["LearnedCount"] for tree in skills] == [1, 0, 0, 0, 0]
+        assert [tree["Progress"] for tree in skills] == [123, 234, 45, 56, 67]
+        assert [tree["MaximumProgress"] for tree in skills] == [699, 299, 299, 199, 199]
+        assert [skill["RequiredSP"] for skill in skills[0]["Skills"]] == [0, 700, 1000, 2000, 3500]
+        for count in (0, 3, 5):
+            run("skill-tree", skills_source, output, "1", "2", "--learned", count)
+            expected = bytearray(skills_original)
+            struct.pack_into("<I", expected, 0x152368 + 0x80, 0)
+            struct.pack_into("<I", expected, 0x152368 + 0x94, count)
+            assert output.read_bytes() == expected
+        for progress in (0, 299):
+            run("skill-tree", skills_source, output, "1", "2", "--sp", progress)
+            expected = bytearray(skills_original)
+            struct.pack_into("<I", expected, 0x152368 + 0x80, progress)
+            assert output.read_bytes() == expected
+        skill_bytes = output.read_bytes()
+        for field, invalid_value in (("--learned", "6"), ("--learned", "1.5"),
+                                     ("--sp", "300"), ("--sp", "1.5"),
+                                     ("--sp", "-1"), ("--sp", "4294967296")):
+            run("skill-tree", skills_source, output, "1", "2", field, invalid_value, success=False)
+            assert output.read_bytes() == skill_bytes
+        run("skill-tree", skills_source, output, "1", "1", "--learned", "0", success=False)
+        assert output.read_bytes() == skill_bytes
+        for arguments in (("skill-tree", "--learned", "5"), ("skill-tree", "--sp", "0"),
+                          ("max-skill-tree",)):
+            run(arguments[0], skills_source, output, "1", "5", *arguments[1:], success=False)
+            assert output.read_bytes() == skill_bytes
+        for tree_index in ("0", "6"):
+            run("max-skill-tree", skills_source, output, "1", tree_index, success=False)
+            assert output.read_bytes() == skill_bytes
+        run("max-skill-tree", skills_source, output, "1", "4")
+        expected = bytearray(skills_original)
+        struct.pack_into("<I", expected, 0x152368 + 0x88, 0)
+        struct.pack_into("<I", expected, 0x152368 + 0x9C, 5)
+        assert output.read_bytes() == expected
+        completed_source = root / "completed-skills.sav"
+        completed_source.write_bytes(expected)
+        skill_bytes = output.read_bytes()
+        run("skill-tree", completed_source, output, "1", "4", "--sp", "0", success=False)
+        assert output.read_bytes() == skill_bytes
+        run("max-skills", skills_source, output, "1")
+        expected = bytearray(skills_original)
+        for tree_index in (1, 2, 3, 4):
+            struct.pack_into("<I", expected, 0x152368 + 0x7C + (tree_index - 1) * 4, 0)
+            struct.pack_into("<I", expected, 0x152368 + 0x90 + (tree_index - 1) * 4, 5)
+        assert output.read_bytes() == expected
+        run("max-all-skills", skills_source, output)
+        for tree_index in (1, 2, 3, 5):
+            struct.pack_into("<I", expected, 0x1524A0 + 0x7C + (tree_index - 1) * 4, 0)
+            struct.pack_into("<I", expected, 0x1524A0 + 0x90 + (tree_index - 1) * 4, 5)
+        assert output.read_bytes() == expected
+        skill_bytes = output.read_bytes()
+        run("max-all-skills", output, output)
+        assert output.read_bytes() == skill_bytes
+        assert skills_source.read_bytes() == skills_original
+
+        future = bytearray(skills_original)
+        struct.pack_into("<4H", future, 0x152318, 1, 7, 14, 15)
+        future[0x152330] = 4
+        for character_id in (1, 7, 14, 15):
+            struct.pack_into("<I", future, 0x152368 + (character_id - 1) * 0x138, 60)
+        future_source = root / "future-skills.sav"
+        future_source.write_bytes(future)
+        for character_id in (1, 7, 14, 15):
+            future_skills = json.loads(run("skills", future_source, character_id))
+            if character_id in (1, 7):
+                assert len(future_skills) == 5 and all(not tree["CanEdit"] for tree in future_skills)
+            else:
+                assert future_skills == []
+            for arguments in (("skill-tree", "1", "--learned", "5"),
+                              ("skill-tree", "1", "--sp", "0"),
+                              ("max-skill-tree", "1"), ("max-skills",)):
+                run(arguments[0], future_source, output, character_id, *arguments[1:], success=False)
+                assert output.read_bytes() == skill_bytes
+        run("max-all-skills", future_source, output, success=False)
+        assert output.read_bytes() == skill_bytes
+        assert future_source.read_bytes() == future
+        assert source.read_bytes() == original
+
         ambiguous = bytearray(original)
         ambiguous[0x152330] = 1
         source.write_bytes(ambiguous)
         run("character", source, output, "1", "--coins", "1", success=False)
         run("max-arts", source, output, "1", success=False)
-        assert output.read_bytes() == bulk_arts
+        run("max-skills", source, output, "1", success=False)
+        run("max-all-skills", source, output, success=False)
+        assert output.read_bytes() == skill_bytes
         assert source.read_bytes() == ambiguous
+        assert not list(root.glob(".xbde-*.tmp"))
     print("CLI tests passed.")
 
 
