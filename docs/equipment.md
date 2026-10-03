@@ -46,6 +46,34 @@ unconfirmed campaign reject edits. Setters validate the complete request before
 changing bytes. Selecting a gem applies it to the in-memory document; File →
 Save or Save As writes the file.
 
+## Weapon and armor selection
+
+Selectors list owned, structurally valid items for that slot and character.
+Items already referenced by another joined character are excluded, even if that
+character's reference has an invalid type. Shared current references cannot be
+switched. The inventory record's armor class must match the extracted table.
+Only duplicate names include an inventory index to distinguish individual items.
+
+Main-story medium and heavy armor require a learned equipment skill or an
+existing link to a learned skill in the correct donor row. Medium skills are
+1, 26, 51, 76 and 101; heavy skills are 31, 98, 115 and 141. Hidden branches must
+already be unlocked. Link entries are inspected, not added or rewritten.
+The eight donor rows contain five one-byte skill IDs each at character `+0xC4`.
+Mechon Fiora is restricted to her weapon/armor definitions. Human Fiora is not
+offered heavy armor. Future Connected does not use passive skill trees and
+allows normal armor classes for characters supported by the equipment table.
+
+Flag-zero ordinary weapons and Mechon Fiora's flag-three weapons are selectable.
+Other flagged weapons are conservatively excluded from switching,
+including a currently equipped story-flagged Monado. Their existing gems can
+still be edited. Unknown campaigns, malformed items and absent characters reject
+switches rather than constructing a replacement. Appearance is not changed.
+
+Selecting an item changes only the four-byte character equipment reference.
+The new item's fixed/normal gems, damage values and other inventory bytes are
+preserved. The old item and its gems remain in inventory. File → Save persists
+the edit; no equipment is created, deleted or moved between inventory records.
+
 ## Evidence and limits
 
 Field layouts were checked against the documented
@@ -55,6 +83,19 @@ from the game-data [item](https://xenoblade.github.io/xb1de/bdat/bdat_common/ITM
 and [skill](https://xenoblade.github.io/xb1de/bdat/bdat_common/BTL_skilllist.html) tables.
 No upstream parser code is included.
 
+Eligibility metadata comes from the extracted
+[weapon](https://xenoblade.github.io/xb1de/bdat/bdat_common/ITM_wpnlist.html) and
+[armor](https://xenoblade.github.io/xb1de/bdat/bdat_common/ITM_equiplist.html)
+tables, mapped through global item references rather than table row numbers.
+Equipment slots use the item table's type: Mechon Fiora's armor `parts` values
+do not follow the normal head/torso/arms/legs/feet convention.
+The 1,572 mapped definitions are reproducible with
+`uv run --with beautifulsoup4 python tools/fetch_equipment_rules.py` (JSON output).
+Armor skills were checked against `BTL_PSVskill` and the passive skill catalog.
+In the supplied executable (build ID `7E1DF8E08D60544BBDCA1E333C153C97`),
+the armor initializer at `0xBDAC0` stores table `arm_type` at inventory `+0x14`
+and `jwl_slot` at `+0x15`. This field is an armor class, not an editable weight.
+
 Core tests cover both campaigns, index-zero gems, fixed sockets, empty sockets,
 duplicate use, cylinders, malformed references, invalid quantities and atomic
 rejection. Real-save tests change copies in memory and require every byte outside
@@ -62,6 +103,12 @@ the intended normal reference to remain identical. CLI and GUI tests exercise
 selection/removal, saving and invalid operations. GUI tests also check nine
 language switches and page spacing at normal and reduced window sizes.
 
-Weapon/armor selection, appearance editing, gem creation and effect/rank editing
+Switching tests cover both campaigns, incompatible characters, medium/heavy
+permissions and donor rows, Mechon Fiora, protected weapons, occupied and malformed
+records, rejected edits and exact restoration when switching back. Every offered
+equipment choice in all supplied saves is exercised on an in-memory copy, with
+all bytes outside the character reference required to remain identical.
+
+Story-weapon switching, appearance editing, gem creation and effect/rank editing
 are not implemented. In-game loading still needs user verification; lossless
 round trips and isolated byte changes are not proof of every gameplay rule.

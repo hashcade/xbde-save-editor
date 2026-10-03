@@ -23,6 +23,7 @@ XbdeEditor.Cli max-skill-tree bfsgame00.sav edited.sav 1 1
 XbdeEditor.Cli max-skills bfsgame00.sav edited.sav 1
 XbdeEditor.Cli max-all-skills bfsgame00.sav edited.sav
 XbdeEditor.Cli equipment bfsgame00.sav 1
+XbdeEditor.Cli equip bfsgame00.sav edited.sav 2 Weapon 7
 XbdeEditor.Cli equipment-gem bfsgame00.sav edited.sav 1 Weapon 1 3
 XbdeEditor.Cli equipment-gem bfsgame00.sav edited.sav 1 Weapon 1 none
 ```
@@ -75,7 +76,7 @@ Existing unusual values remain intact unless explicitly normalized. See
 [skill validation](docs/skills.md).
 
 `equipment` lists the current weapon and armor references, socket contents and
-available normal gems as JSON. Equipment slots use `Weapon`, `Head`, `Torso`,
+available items and normal gems as JSON. Equipment slots use `Weapon`, `Head`, `Torso`,
 `Arms`, `Legs` or `Feet`; sockets are one-based. Gem indices are zero-based
 inventory references returned in `AvailableGems`, not effect IDs. Gem index zero
 is valid; use `none` to empty a normal socket. The JSON gem `Value` is the raw
@@ -86,3 +87,11 @@ cylinders, missing/invalid gems, already-fitted gems, unsupported references and
 out-of-range indices. Ownership checks include unequipped inventory equipment.
 It does not create gems or change equipment, appearance, rank or effect strength.
 See [equipment validation](docs/equipment.md).
+
+`equip` switches one equipment reference to an index returned in `AvailableItems`.
+Indices are zero-based and specific to that slot's inventory bank, not global
+item IDs. Selection requires an owned, compatible item not equipped by another
+joined character. Main-story armor permissions account for learned skills and
+existing links; story-flagged weapons remain protected. The target equipment and
+all of its gems stay byte-identical. No command creates equipment or changes its
+appearance. `CanSwitch: false` means the current item cannot safely be switched.

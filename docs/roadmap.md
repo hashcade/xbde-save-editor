@@ -14,7 +14,8 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Skills: inspect hidden-tree unlocks, edit learned count/remaining SP and maximize unlocked trees, with CLI support.
 - [ ] Skills: localized game names and skill-link editing.
 - [x] Equipment: resolve equipped inventory items, inspect fixed gems and fit/remove owned normal gems, with CLI support.
-- [ ] Equipment: validated weapon/armor switching, appearance and localized game names.
+- [x] Equipment: validated owned weapon/armor switching with character and armor-skill restrictions, preserving gems and protecting story weapons.
+- [ ] Equipment: story-weapon switching, appearance and localized game names.
 - [ ] Items: localized catalogs and validated editing.
 - [ ] Party: reorder existing members without altering recruitment.
 
