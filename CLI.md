@@ -126,7 +126,8 @@ XbdeEditor.Cli delete-item bfsgame00.sav edited.sav Materials 0
 including their IDs and Expert Mode records. Character IDs in CLI commands
 are the IDs returned by inspection, not the zero-based storage indices.
 
-Money and Noponstones accept unsigned 32-bit integers. AP accepts 0–99,999,999;
+Money and Noponstones accept 0–999,999,999. Omitted currencies retain their
+existing values, including unusual higher amounts. AP accepts 0–99,999,999;
 reserve EXP accepts 0–199,999,998. Affinity Coins accept 0–999 and are available
 only in identified main-story saves. Fields not specified remain unchanged,
 including existing amounts above these edit limits. Duplicate options, fractions,

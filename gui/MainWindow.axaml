@@ -50,9 +50,9 @@
               <StackPanel Name="ResourceInputs" Spacing="12" IsEnabled="False">
                 <Grid ColumnDefinitions="160,*" RowDefinitions="Auto,Auto" ColumnSpacing="16" RowSpacing="12">
                   <TextBlock Text="{DynamicResource Money}" VerticalAlignment="Center" />
-                  <NumericUpDown Name="MoneyInput" Grid.Column="1" Minimum="0" Maximum="4294967295" Increment="1" FormatString="0" Height="42" Margin="0" ValueChanged="Resources_Changed" />
+                  <NumericUpDown Name="MoneyInput" Grid.Column="1" Minimum="0" Maximum="999999999" Increment="1" FormatString="0" Height="42" Margin="0" ValueChanged="Resources_Changed" />
                   <TextBlock Grid.Row="1" Text="{DynamicResource Noponstones}" VerticalAlignment="Center" />
-                  <NumericUpDown Name="NoponstonesInput" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="4294967295" Increment="1" FormatString="0" Height="42" Margin="0" ValueChanged="Resources_Changed" />
+                  <NumericUpDown Name="NoponstonesInput" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="999999999" Increment="1" FormatString="0" Height="42" Margin="0" ValueChanged="Resources_Changed" />
                 </Grid>
               </StackPanel>
             </StackPanel>

@@ -200,10 +200,35 @@ try
     original[0x1536e8 + 22] = 3;
     original[0x1536e8 + 20] = 1;
     string source = Path.Combine(temporary, "bfsgame00.sav");
+    byte[] highResources = (byte[])original.Clone();
+    BinaryPrimitives.WriteUInt32LittleEndian(highResources.AsSpan(0x151b40), uint.MaxValue);
+    BinaryPrimitives.WriteUInt32LittleEndian(highResources.AsSpan(0x10), uint.MaxValue);
+    string highResourcesPath = Path.Combine(temporary, "high-resources.sav");
+    File.WriteAllBytes(highResourcesPath, highResources);
+    Check(window.LoadSave(highResourcesPath), "Could not load existing over-cap currencies.");
+    var highMoney = window.FindControl<NumericUpDown>("MoneyInput")!;
+    var highStones = window.FindControl<NumericUpDown>("NoponstonesInput")!;
+    Check(highMoney.Value == uint.MaxValue && highStones.Value == uint.MaxValue && !window.Session!.HasChanges,
+        "GUI clamped existing high currencies.");
+    string highCopyPath = Path.Combine(temporary, "high-resource-copy.sav");
+    Check(window.SaveTo(highCopyPath) && File.ReadAllBytes(highCopyPath).AsSpan().SequenceEqual(highResources),
+        "Saving untouched over-cap currencies changed the file.");
+    highMoney.Value = SaveDocument.MaximumCurrency + 1;
+    Check(!window.Session!.HasChanges && !window.SaveTo(Path.Combine(temporary, "invalid-currency.sav")),
+        "GUI accepted changed over-cap currency.");
+    highMoney.Value = 123;
+    Check(window.Session.Document.Money == 123 && window.Session.Document.Noponstones == uint.MaxValue,
+        "Editing money normalized untouched over-cap Noponstones.");
+    highStones.Value = 456;
+    Check(window.Session.Document.Money == 123 && window.Session.Document.Noponstones == 456,
+        "GUI failed to correct over-cap currencies.");
     File.WriteAllBytes(source, original);
     Check(window.LoadSave(source), "Could not load a game save.");
     Check(!window.Session!.HasChanges, "GUI load changes a save.");
     var money = window.FindControl<NumericUpDown>("MoneyInput")!;
+    Check(money.Maximum == SaveDocument.MaximumCurrency
+        && window.FindControl<NumericUpDown>("NoponstonesInput")!.Maximum == SaveDocument.MaximumCurrency,
+        "GUI currency limits differ from the native cap.");
     Check(money.Value == 999999999, "Existing resource amount was clamped.");
     money.Value = 123;
     Check(window.Session.Document.Money == 123, "GUI edits are not linked to the core.");

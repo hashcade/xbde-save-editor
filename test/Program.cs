@@ -33,6 +33,26 @@ foreach (bool future in new[] { false, true })
     byte[] original = Fixture(future);
     var save = SaveDocument.Parse(original);
     Check(save.Serialize().AsSpan().SequenceEqual(original), "Round-trip altered unknown bytes.");
+    foreach (uint amount in new[] { 0u, SaveDocument.MaximumCurrency })
+    {
+        var currencyCopy = SaveDocument.Parse(original);
+        currencyCopy.SetResources(amount, amount);
+        Check(currencyCopy.Money == amount && currencyCopy.Noponstones == amount,
+            "Currency boundary differs from the native cap.");
+    }
+    var currencyProtected = SaveDocument.Parse(original);
+    Reject(() => currencyProtected.SetResources(123, SaveDocument.MaximumCurrency + 1),
+        "Invalid Noponstones accepted a partial money edit.");
+    Reject(() => currencyProtected.SetResources(SaveDocument.MaximumCurrency + 1, 456),
+        "Invalid money accepted a partial Noponstones edit.");
+    Check(currencyProtected.Serialize().AsSpan().SequenceEqual(original), "Rejected currency edit changed the file.");
+    currencyProtected.SetResources(money: 123);
+    Check(currencyProtected.Noponstones == BinaryPrimitives.ReadUInt32LittleEndian(original.AsSpan(0x10)),
+        "Omitted Noponstones were normalized.");
+    currencyProtected = SaveDocument.Parse(original);
+    currencyProtected.SetResources(noponstones: 456);
+    Check(currencyProtected.Money == BinaryPrimitives.ReadUInt32LittleEndian(original.AsSpan(0x151b40)),
+        "Omitted money was normalized.");
     save.SetResources(123, 456);
     byte[] edited = save.Serialize();
     Check(save.Money == 123 && save.Noponstones == 456, "Resource edit differs.");

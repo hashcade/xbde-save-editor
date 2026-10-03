@@ -64,7 +64,7 @@ public partial class MainWindow : Window
     public bool SaveTo(string path)
     {
         if (Session is null) return false;
-        if (!WholeNumber(MoneyInput.Value, out _) || !WholeNumber(NoponstonesInput.Value, out _))
+        if (!ResourceValuesValid(out _, out _))
         {
             ShowStatus(UiLanguage.Get("InvalidValue"));
             return false;
@@ -125,6 +125,8 @@ public partial class MainWindow : Window
             RefreshColony6();
             ResourceInputs.IsEnabled = SaveMenu.IsEnabled = SaveAsMenu.IsEnabled = Session is not null;
             if (Session is null) return;
+            MoneyInput.Maximum = Math.Max(SaveDocument.MaximumCurrency, Session.Document.Money);
+            NoponstonesInput.Maximum = Math.Max(SaveDocument.MaximumCurrency, Session.Document.Noponstones);
             MoneyInput.Value = Session.Document.Money;
             NoponstonesInput.Value = Session.Document.Noponstones;
             FileNameValue.Text = Path.GetFileName(Session.SourcePath);
@@ -137,13 +139,24 @@ public partial class MainWindow : Window
     private void Resources_Changed(object? sender, NumericUpDownValueChangedEventArgs e)
     {
         if (_refreshing || Session is null) return;
-        if (!WholeNumber(MoneyInput.Value, out uint money) || !WholeNumber(NoponstonesInput.Value, out uint noponstones))
+        if (!ResourceValuesValid(out uint money, out uint noponstones))
         {
             ShowStatus(UiLanguage.Get("InvalidValue"));
             return;
         }
-        Session.Document.SetResources(money, noponstones);
+        Session.Document.SetResources(money == Session.Document.Money ? null : money,
+            noponstones == Session.Document.Noponstones ? null : noponstones);
         ShowStatus(null);
+    }
+
+    private bool ResourceValuesValid(out uint money, out uint noponstones)
+    {
+        money = noponstones = 0;
+        return Session is { } session
+            && WholeNumber(MoneyInput.Value, out money)
+            && WholeNumber(NoponstonesInput.Value, out noponstones)
+            && (money <= SaveDocument.MaximumCurrency || money == session.Document.Money)
+            && (noponstones <= SaveDocument.MaximumCurrency || noponstones == session.Document.Noponstones);
     }
 
     public static bool WholeNumber(decimal? value, out uint number)

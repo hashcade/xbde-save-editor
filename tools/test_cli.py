@@ -335,6 +335,31 @@ def main() -> None:
         assert struct.unpack_from("<I", changed, 0x10)[0] == 456
         for index, (before, after) in enumerate(zip(original, changed)):
             assert before == after or 0x10 <= index < 0x14 or 0x151B40 <= index < 0x151B44
+        for amount in ("0", "999999999"):
+            run("resources", source, output, "--money", amount, "--noponstones", amount)
+            resource_bytes = output.read_bytes()
+            assert struct.unpack_from("<I", resource_bytes, 0x151B40)[0] == int(amount)
+            assert struct.unpack_from("<I", resource_bytes, 0x10)[0] == int(amount)
+        prior_output = output.read_bytes()
+        for option in ("--money", "--noponstones"):
+            for invalid in ("1000000000", "4294967295", "-1", "1.5"):
+                run("resources", source, output, option, invalid, success=False)
+                assert output.read_bytes() == prior_output and source.read_bytes() == original
+        high_resources = bytearray(original)
+        struct.pack_into("<I", high_resources, 0x151B40, 0xFFFFFFFF)
+        struct.pack_into("<I", high_resources, 0x10, 0xFFFFFFFF)
+        high_resource_path = root / "high-resources.sav"
+        high_resource_path.write_bytes(high_resources)
+        run("resources", high_resource_path, output, "--money", "123")
+        expected_resources = bytearray(high_resources)
+        struct.pack_into("<I", expected_resources, 0x151B40, 123)
+        assert output.read_bytes() == expected_resources
+        run("resources", high_resource_path, output, "--noponstones", "456")
+        expected_resources = bytearray(high_resources)
+        struct.pack_into("<I", expected_resources, 0x10, 456)
+        assert output.read_bytes() == expected_resources
+        run("resources", high_resource_path, output, "--money", "123", "--noponstones", "1000000000", success=False)
+        assert output.read_bytes() == expected_resources and high_resource_path.read_bytes() == high_resources
         run("character", source, output, "1", "--ap", "321", "--coins", "999")
         character_bytes = output.read_bytes()
         assert struct.unpack_from("<II", character_bytes, 0x152370) == (321, 999)

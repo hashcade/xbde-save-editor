@@ -1,5 +1,16 @@
 # Character progression validation
 
+## Currency limits
+
+Money at saved offset `0x151B40` and Noponstones at `0x10` accept 0–999,999,999.
+The native setters `0xBC7F0–0xBC82C` and `0xBCB20–0xBCB54` clamp to
+`0x3B9AC9FF`, writing runtime offsets `0x1521F0` and `0x6C0` respectively
+(saved offsets are runtime offsets minus `0x6B0`). These addresses use the
+executable build identified below. All supplied currencies are validated before
+either is written. Omitted fields, existing higher amounts and unrelated bytes
+remain untouched. GUI validation also rejects changed high-value drafts before
+saving, without silently clamping an existing amount on load.
+
 ## Editable fields
 
 | Field | Offset in character record | Edit range |

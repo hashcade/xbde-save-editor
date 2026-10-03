@@ -35,9 +35,9 @@ dotnet run --project cli/Cli.csproj -- inspect /path/to/bfsgame00.sav
 dotnet run --project cli/Cli.csproj -- copy /path/to/bfsgame00.sav /path/to/copy.sav
 ```
 
-Resource inputs currently validate unsigned 32-bit storage bounds, not an
-independently verified in-game currency cap. Existing high amounts are preserved
-on opening; they are not silently normalized.
+Money and Noponstones edits are limited to the native cap of 999,999,999.
+Existing higher amounts are preserved on opening and unrelated edits; they are
+not silently normalized.
 AP edits are restricted to 0–99,999,999, Affinity Coins to 0–999, and Expert Mode
 reserve EXP to 0–199,999,998. Existing higher amounts are preserved unless edited.
 Level editing respects each character's campaign-specific minimum and the level

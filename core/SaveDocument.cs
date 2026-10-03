@@ -8,6 +8,7 @@ public enum Campaign { MainStory, FutureConnected, Unknown }
 public sealed partial class SaveDocument
 {
     public const int FileSize = 0x153860;
+    public const uint MaximumCurrency = 999999999;
     internal const int PartyOffset = 0x152318;
     internal const int CharacterOffset = 0x152368;
     internal const int CharacterSize = 0x138;
@@ -51,10 +52,14 @@ public sealed partial class SaveDocument
     public uint Money => ReadUInt32(0x151b40);
     public uint Noponstones => ReadUInt32(0x10);
 
-    public void SetResources(uint money, uint noponstones)
+    public void SetResources(uint? money = null, uint? noponstones = null)
     {
-        WriteUInt32(0x151b40, money);
-        WriteUInt32(0x10, noponstones);
+        if (money > MaximumCurrency)
+            throw new ArgumentOutOfRangeException(nameof(money), "Money must be between 0 and 999,999,999.");
+        if (noponstones > MaximumCurrency)
+            throw new ArgumentOutOfRangeException(nameof(noponstones), "Noponstones must be between 0 and 999,999,999.");
+        if (money is { } newMoney) WriteUInt32(0x151b40, newMoney);
+        if (noponstones is { } newNoponstones) WriteUInt32(0x10, newNoponstones);
     }
 
     public byte[] Serialize() => (byte[])_data.Clone();

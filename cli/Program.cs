@@ -538,8 +538,8 @@ try
     if (args is ["resources", var resourceSource, var resourceOutput, .. var options])
     {
         var session = SaveSession.Open(resourceSource);
-        uint money = session.Document.Money;
-        uint noponstones = session.Document.Noponstones;
+        uint? money = null;
+        uint? noponstones = null;
         foreach (var (name, value) in ParseOptions(options, "--money", "--noponstones"))
         {
             switch (name)
