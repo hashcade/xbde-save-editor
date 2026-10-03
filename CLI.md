@@ -10,6 +10,7 @@ XbdeEditor.Cli resources bfsgame00.sav edited.sav --money 100000 --noponstones 1
 XbdeEditor.Cli character bfsgame00.sav edited.sav 1 --ap 100000 --coins 999
 XbdeEditor.Cli character bfsgame00.sav edited.sav 1 --reserve-exp 1000000
 XbdeEditor.Cli max-ap bfsgame00.sav edited.sav
+XbdeEditor.Cli party-order bfsgame00.sav edited.sav 1 2 8 5 4 7 6
 XbdeEditor.Cli progression bfsgame00.sav edited.sav 1 --level 50
 XbdeEditor.Cli progression bfsgame00.sav edited.sav 1 --level 1 --exp 101
 XbdeEditor.Cli arts bfsgame00.sav 1
@@ -51,6 +52,12 @@ writing. `copy` requires a different output path. Editing commands may explicitl
 use the source path as their output; saving uses an atomic file replacement.
 
 No command modifies system saves or thumbnail files.
+
+`party-order` supplies every current party ID exactly once in the desired order.
+It rejects additions, removals, duplicates, unknown campaigns and parties with
+unsupported story guests. Only the existing ID array changes; recruitment count,
+inactive slots and every character's equipment/progression records remain intact.
+See [party validation](docs/party.md).
 
 `progression` selects a character's level and/or edits current EXP. A changed
 level defaults to zero current EXP. Supplied EXP is consumed through the game's

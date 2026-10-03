@@ -19,7 +19,7 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Items: normal gem effect/rank/strength editing, decoded labels, validated ranges and CLI support.
 - [x] Items: normal gem creation/deletion and collectable/material/manual quantity, favorite, add/delete and bulk maximum editing, with CLI support.
 - [ ] Items: weapon/armor inventory creation, crystals/cylinders and localized game catalogs.
-- [ ] Party: reorder existing members without altering recruitment.
+- [x] Party: reorder existing supported members without altering recruitment, with matching CLI support.
 
 Affinity, quests, achievements, Colony 6, Time Attack, Ponspectors and system-save
 unlocks need further format validation. They are not promised or exposed as editable fields.
