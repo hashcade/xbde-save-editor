@@ -1,4 +1,5 @@
 {
+  "ApplyChanges": "変更を適用", "HighestLevel": "最高到達レベル", "RecordedExperience": "記録EXP",
   "MaxAP": "APを最大にする", "MaxAllAP": "全員のAPを最大にする", "MaxReserveExperience": "ストックEXPを最大にする",
   "Search": "検索…", "General": "基本情報", "Level": "レベル", "Experience": "経験値",
   "AffinityCoins": "キズナコイン", "ExpertMode": "上級者設定", "ReserveExperience": "ストック経験値",

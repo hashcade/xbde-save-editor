@@ -74,10 +74,13 @@
           <Grid Name="CharacterInputs" ColumnDefinitions="*,*" ColumnSpacing="32" IsEnabled="False" VerticalAlignment="Top">
             <StackPanel Spacing="16">
               <TextBlock Text="{DynamicResource General}" FontWeight="SemiBold" />
-              <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" RowDefinitions="Auto,Auto" RowSpacing="16">
-                <TextBlock Text="{DynamicResource Level}" /><TextBlock Name="LevelValue" Grid.Column="1" />
-                <TextBlock Text="{DynamicResource Experience}" Grid.Row="1" /><TextBlock Name="ExperienceValue" Grid.Row="1" Grid.Column="1" />
-              </Grid>
+              <StackPanel Name="ProgressionInputs" Spacing="8">
+                <TextBlock Text="{DynamicResource Level}" />
+                <ComboBox Name="LevelInput" HorizontalAlignment="Stretch" SelectionChanged="LevelInput_Changed" />
+                <TextBlock Text="{DynamicResource Experience}" Margin="0,8,0,0" />
+                <NumericUpDown Name="ExperienceInput" Minimum="0" Maximum="99999999" Height="42" Margin="0" FormatString="0" />
+                <Button Name="ApplyProgressionButton" Content="{DynamicResource ApplyChanges}" HorizontalAlignment="Stretch" Click="ApplyProgression_Click" />
+              </StackPanel>
               <StackPanel Spacing="8">
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
                   <TextBlock Text="AP" VerticalAlignment="Center" />
@@ -93,8 +96,8 @@
             <StackPanel Grid.Column="1" Spacing="16">
               <TextBlock Text="{DynamicResource ExpertMode}" FontWeight="SemiBold" />
               <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" RowDefinitions="Auto,Auto" RowSpacing="16">
-                <TextBlock Text="{DynamicResource Level}" /><TextBlock Name="ExpertLevelValue" Grid.Column="1" />
-                <TextBlock Text="{DynamicResource Experience}" Grid.Row="1" /><TextBlock Name="ExpertExperienceValue" Grid.Row="1" Grid.Column="1" />
+                <TextBlock Text="{DynamicResource HighestLevel}" /><TextBlock Name="ExpertLevelValue" Grid.Column="1" />
+                <TextBlock Text="{DynamicResource RecordedExperience}" Grid.Row="1" /><TextBlock Name="ExpertExperienceValue" Grid.Row="1" Grid.Column="1" />
               </Grid>
               <StackPanel Spacing="8">
                 <TextBlock Text="{DynamicResource ReserveExperience}" />

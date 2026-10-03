@@ -50,7 +50,29 @@ try
     var reserve = window.FindControl<NumericUpDown>("ReserveExperienceInput")!;
     Check(ap.Maximum == CharacterRecord.MaximumAP && reserve.Maximum == CharacterRecord.MaximumReserveExperience,
         "GUI resource limits differ from the core.");
-    Check(window.FindControl<TextBlock>("LevelValue")!.Text == "20", "Character level mapping differs.");
+    var levelInput = window.FindControl<ComboBox>("LevelInput")!;
+    var experienceInput = window.FindControl<NumericUpDown>("ExperienceInput")!;
+    var applyProgression = window.FindControl<Button>("ApplyProgressionButton")!;
+    Check(levelInput.SelectedItem is 20u, "Character level mapping differs.");
+    levelInput.SelectedItem = 1u;
+    Check(experienceInput.Value == 0, "Level selection did not reset draft EXP.");
+    experienceInput.Value = 101;
+    Check(window.Session.Document.GetCharacter(1).Level == 20, "Typing EXP committed a partial number.");
+    applyProgression.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.GetCharacter(1).Level == 3 && experienceInput.Value == 1 && levelInput.SelectedItem is 3u,
+        "GUI level/EXP linkage differs from the core.");
+    levelInput.SelectedItem = 20u;
+    applyProgression.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    experienceInput.Value = 1.5m;
+    applyProgression.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.GetCharacter(1).Experience == 0, "Fractional EXP was committed.");
+    Check(!window.SaveTo(Path.Combine(temporary, "invalid-exp.sav")), "Invalid EXP was saved.");
+    experienceInput.Value = 0;
+    experienceInput.Value = 4;
+    window.SetLanguage("ja");
+    Check(window.Session.Document.GetCharacter(1).Experience == 4, "Changing language discarded an EXP draft.");
+    experienceInput.Value = 0;
+    applyProgression.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
     Check(window.FindControl<ListBox>("CharacterList")!.ItemsPanel.Build() is VirtualizingStackPanel { CacheLength: 1 }, "Virtual list buffer is missing.");
     ap.Value = 321;
     coins.Value = 999;
@@ -73,6 +95,7 @@ try
             "Bulk AP button translation is stale.");
         Check(window.FindControl<Button>("MaxReserveExperienceButton")!.Content?.ToString() == UiLanguage.Get("MaxReserveExperience"),
             "Reserve EXP button translation is stale.");
+        Check(applyProgression.Content?.ToString() == UiLanguage.Get("ApplyChanges"), "Progression translation is stale.");
     }
     window.SetLanguage("en");
     var search = window.FindControl<TextBox>("CharacterSearch")!;
@@ -92,13 +115,47 @@ try
     Check(window.Session.Document.Characters.All(member => member.AP == CharacterRecord.MaximumAP),
         "Bulk AP only changed the filtered character.");
     search.Text = "";
+    experienceInput.Value = 12;
     string output = Path.Combine(temporary, "edited.sav");
     Check(window.SaveTo(output), "GUI save failed.");
     Check(SaveDocument.Parse(File.ReadAllBytes(output)).Money == 123, "Saved amount differs.");
+    Check(SaveDocument.Parse(File.ReadAllBytes(output)).GetCharacter(1).Experience == 12,
+        "File Save did not apply the EXP draft.");
     Check(File.ReadAllBytes(source).AsSpan().SequenceEqual(original), "GUI test modified its input.");
     Check(!window.LoadSave(Path.Combine(temporary, "missing.sav")), "Missing save was accepted.");
     Check(window.Session.Document.Money == 123, "Failed open replaced the current document.");
     Check(window.SaveTo(source), "Could not save the synthetic source before closing.");
+    byte[] future = new byte[SaveDocument.FileSize];
+    int[] futureIds = [1, 7, 14, 15];
+    future[0x152330] = 4;
+    for (int index = 0; index < futureIds.Length; index++)
+    {
+        BinaryPrimitives.WriteUInt16LittleEndian(future.AsSpan(0x152318 + index * 2), (ushort)futureIds[index]);
+        int record = 0x152368 + (futureIds[index] - 1) * 0x138;
+        BinaryPrimitives.WriteUInt32LittleEndian(future.AsSpan(record), 99);
+        BinaryPrimitives.WriteUInt32LittleEndian(future.AsSpan(record + 0xec), 99);
+    }
+    string futurePath = Path.Combine(temporary, "bfsmeria00.sav");
+    File.WriteAllBytes(futurePath, future);
+    Check(window.LoadSave(futurePath), "Could not open Future Connected.");
+    Check(levelInput.Items.OfType<uint>().First() == 60, "Future Connected Shulk minimum differs.");
+    var characterList = window.FindControl<ListBox>("CharacterList")!;
+    characterList.SelectedIndex = 2;
+    Check(levelInput.Items.OfType<uint>().First() == 58, "Kino minimum differs.");
+    levelInput.SelectedItem = 58u;
+    experienceInput.Value = 60948;
+    applyProgression.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.GetCharacter(14).Level == 59 && experienceInput.Value == 7,
+        "Future Connected EXP threshold differs.");
+    experienceInput.Value = 8;
+    characterList.SelectedIndex = 3;
+    Check(window.Session.Document.GetCharacter(14).Experience == 8, "Character switch discarded an EXP draft.");
+    experienceInput.Value = 1.5m;
+    characterList.SelectedIndex = 0;
+    Check(characterList.SelectedIndex == 3, "Character switch discarded invalid EXP without warning.");
+    experienceInput.Value = 0;
+    Check(window.SaveTo(Path.Combine(temporary, "future-edited.sav")), "Could not save Future Connected edits.");
+    Check(File.ReadAllBytes(futurePath).AsSpan().SequenceEqual(future), "Future Connected input was overwritten.");
     byte[] ambiguous = (byte[])original.Clone();
     ambiguous[0x152330] = 1;
     string ambiguousPath = Path.Combine(temporary, "ambiguous.sav");
@@ -108,6 +165,7 @@ try
         "An ambiguous campaign was shown as the main story.");
     Check(!window.FindControl<StackPanel>("AffinityCoinsField")!.IsVisible,
         "An ambiguous campaign exposes coin editing.");
+    Check(!window.FindControl<StackPanel>("ProgressionInputs")!.IsEnabled, "Ambiguous campaign exposes level editing.");
     Check(!window.Session!.HasChanges, "Opening an ambiguous campaign altered it.");
     byte[] high = (byte[])ambiguous.Clone();
     BinaryPrimitives.WriteUInt32LittleEndian(high.AsSpan(0x152370), uint.MaxValue);

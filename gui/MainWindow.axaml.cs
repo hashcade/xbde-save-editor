@@ -57,7 +57,9 @@ public partial class MainWindow : Window
         }
         try
         {
+            if (!CommitProgressionDraft()) return false;
             Session.Save(path);
+            RefreshCharacters();
             ShowStatus(UiLanguage.Get("Saved") + " " + Path.GetFileName(path));
             return true;
         }
@@ -70,6 +72,7 @@ public partial class MainWindow : Window
 
     public void SetLanguage(string language)
     {
+        if (!CommitProgressionDraft()) return;
         UiLanguage.Apply(language);
         RefreshMain();
         RefreshCharacters();
@@ -149,7 +152,7 @@ public partial class MainWindow : Window
 
     private async Task<bool> ConfirmDiscard()
     {
-        if (Session?.HasChanges != true) return true;
+        if (Session?.HasChanges != true && !HasProgressionDraft) return true;
         var discard = new Button { Content = UiLanguage.Get("Discard") };
         var cancel = new Button { Content = UiLanguage.Get("Cancel") };
         var dialog = new Window
@@ -173,7 +176,7 @@ public partial class MainWindow : Window
 
     private async void Window_Closing(object? sender, WindowClosingEventArgs e)
     {
-        if (_allowClose || Session?.HasChanges != true) return;
+        if (_allowClose || (Session?.HasChanges != true && !HasProgressionDraft)) return;
         e.Cancel = true;
         if (await ConfirmDiscard())
         {
