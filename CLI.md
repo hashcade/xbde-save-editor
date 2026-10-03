@@ -22,6 +22,9 @@ XbdeEditor.Cli skill-tree bfsgame00.sav edited.sav 1 1 --sp 500
 XbdeEditor.Cli max-skill-tree bfsgame00.sav edited.sav 1 1
 XbdeEditor.Cli max-skills bfsgame00.sav edited.sav 1
 XbdeEditor.Cli max-all-skills bfsgame00.sav edited.sav
+XbdeEditor.Cli equipment bfsgame00.sav 1
+XbdeEditor.Cli equipment-gem bfsgame00.sav edited.sav 1 Weapon 1 3
+XbdeEditor.Cli equipment-gem bfsgame00.sav edited.sav 1 Weapon 1 none
 ```
 
 `inspect` prints JSON containing campaign, resources and joined characters,
@@ -70,3 +73,16 @@ and party-wide operations skip locked hidden trees and do not alter task unlocks
 or skill links. Future Connected and unconfirmed campaigns reject skill edits.
 Existing unusual values remain intact unless explicitly normalized. See
 [skill validation](docs/skills.md).
+
+`equipment` lists the current weapon and armor references, socket contents and
+available normal gems as JSON. Equipment slots use `Weapon`, `Head`, `Torso`,
+`Arms`, `Legs` or `Feet`; sockets are one-based. Gem indices are zero-based
+inventory references returned in `AvailableGems`, not effect IDs. Gem index zero
+is valid; use `none` to empty a normal socket. The JSON gem `Value` is the raw
+stored effect value, not a uniformly decoded percentage or strength.
+
+`equipment-gem` changes only one existing socket. It rejects fixed gems,
+cylinders, missing/invalid gems, already-fitted gems, unsupported references and
+out-of-range indices. Ownership checks include unequipped inventory equipment.
+It does not create gems or change equipment, appearance, rank or effect strength.
+See [equipment validation](docs/equipment.md).

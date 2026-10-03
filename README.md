@@ -11,12 +11,13 @@ Edit Xenoblade Chronicles: Definitive Edition saves, including Future Connected.
 - **Characters:** Search joined characters, select a level and edit linked EXP, AP, main-story Affinity Coins and Expert Mode reserve EXP. Maximize AP for one character or everyone already joined, or fill a character's reserve EXP. The highest attained level is available for inspection. Character names switch with the interface language. Future Connected does not expose Affinity Coin editing.
 - **Arts:** In Characters → Arts, inspect learned and missing arts, select a level or maximize one art or all learned arts for the current character. Limits account for the campaign, Master books and Monado story permissions; fixed Talent Arts remain read-only. Melia's discharge levels stay linked to their summon arts. The same operations are available in the CLI.
 - **Skills:** In Characters → Skills, view each passive skill tree, change how many skills are learned and edit remaining SP. Learn every skill in one tree, for the selected character or for all joined characters. Hidden trees retain their task unlock state; skill links remain unchanged. Skill trees are not available in Future Connected. Matching CLI commands are included.
+- **Equipment:** In Characters → Equipment, inspect the current weapon and five armor pieces. Fit or remove owned normal gems in existing sockets; gems already fitted to any other item are excluded, even when that item is not equipped. Built-in gems remain read-only. Weapon, armor and appearance switching are not available yet. Matching CLI commands are included.
 - **CLI:** Inspect saves as JSON, copy them or edit resources without changing unknown data.
 
 English is the default language. The interface also supports Simplified Chinese,
 Traditional Chinese, Japanese, Korean, German, French, Spanish and Italian.
 Help → About shows the version and repository link.
-Art and skill names currently use the verified English catalogs; other game-language names
+Art, skill, equipment and gem names currently use the verified English catalogs; other game-language names
 are not yet available.
 
 ## Get started

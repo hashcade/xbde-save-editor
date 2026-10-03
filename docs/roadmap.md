@@ -13,7 +13,8 @@ Each feature is committed separately with core tests and matching CLI support.
 - [ ] Arts: localized game names and explicit unlock editing.
 - [x] Skills: inspect hidden-tree unlocks, edit learned count/remaining SP and maximize unlocked trees, with CLI support.
 - [ ] Skills: localized game names and skill-link editing.
-- [ ] Equipment: inventory references, gems and appearance.
+- [x] Equipment: resolve equipped inventory items, inspect fixed gems and fit/remove owned normal gems, with CLI support.
+- [ ] Equipment: validated weapon/armor switching, appearance and localized game names.
 - [ ] Items: localized catalogs and validated editing.
 - [ ] Party: reorder existing members without altering recruitment.
 
@@ -35,3 +36,4 @@ See [progression validation](progression.md) for the verified resource limits an
 the verified level/EXP linkage and the remaining Expert Mode operations.
 See [Arts validation](arts.md) for campaign limits, manual flags and linked records.
 See [Skills validation](skills.md) for branch flags, learning costs and write boundaries.
+See [Equipment validation](equipment.md) for inventory references, gem ownership and write boundaries.
