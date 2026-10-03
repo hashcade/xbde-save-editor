@@ -35,10 +35,23 @@ void VerifyPageSpacing()
     var header = window.FindControl<Grid>("Header")!;
     var main = window.FindControl<ScrollViewer>("MainScroll")!;
     var characters = window.FindControl<Grid>("CharactersPanel")!;
-    var page = main.IsVisible ? (Control)main : characters;
+    var items = window.FindControl<Grid>("ItemsPanel")!;
+    Control page = main;
+    if (characters.IsVisible) page = characters;
+    else if (items.IsVisible) page = items;
     double gap = page.Bounds.Top - header.Bounds.Bottom;
     Check(Math.Abs(gap - (main.IsVisible ? 20 : 16)) < 0.1,
         $"Header-to-page spacing changed: {gap}.");
+    if (items.IsVisible)
+    {
+        var card = window.FindControl<Control>("GemEditorCard")!;
+        var apply = window.FindControl<Button>("ApplyGemButton")!;
+        var position = apply.TranslatePoint(new Point(0, 0), card)!.Value;
+        Check(Math.Abs(card.Bounds.Right - items.Bounds.Width) < 0.1,
+            $"Gem card does not fill its column: {card.Bounds} / {items.Bounds}.");
+        Check(position.X >= 20 && position.X + apply.Bounds.Width <= card.Bounds.Width - 19.9,
+            "Gem editor controls are clipped horizontally.");
+    }
     if (!characters.IsVisible) return;
     var tabs = window.FindControl<TabStrip>("CharacterNavigation")!;
     Control body = tabs.SelectedIndex switch
@@ -475,10 +488,92 @@ try
     Check(window.Session.Document.GetCharacter(1).AP == uint.MaxValue && window.Session.Document.GetCharacter(1).ReserveExperience == 123,
         "Reserve EXP edit rejected or normalized unchanged high AP.");
     Check(window.SaveTo(highPath), "Could not save high-value fixture.");
+    Check(window.LoadSave(equipmentPath), "Could not load gem inventory.");
+    window.ShowGems();
+    VerifyPageSpacing();
+    var gemList = window.FindControl<ListBox>("GemList")!;
+    var gemEffect = window.FindControl<ComboBox>("GemEffectInput")!;
+    var gemRank = window.FindControl<ComboBox>("GemRankInput")!;
+    var gemStrength = window.FindControl<NumericUpDown>("GemStrengthInput")!;
+    var gemMax = window.FindControl<Button>("MaxGemButton")!;
+    var gemApply = window.FindControl<Button>("ApplyGemButton")!;
+    Check(gemList.ItemCount == 5 && gemEffect.Items.Count == window.Session!.Document.GetGem(0).AvailableDefinitions.DistinctBy(rule => rule.EffectId).Count() && !window.Session.HasChanges,
+        "Gem inventory omitted effects, included cylinders or changed bytes on load.");
+    Check(gemStrength.Minimum == 75 && gemStrength.Maximum == 100 && gemStrength.Value == 100,
+        "Gem bounds do not match the selected effect and rank.");
+    object EffectChoice(int id) => gemEffect.Items.Cast<object>().Single(choice =>
+        (int)choice.GetType().GetProperty("Id")!.GetValue(choice)! == id);
+    gemEffect.SelectedItem = EffectChoice(26);
+    Check(gemStrength.Value == 150 && gemStrength.Minimum == 150 && gemStrength.Maximum == 200
+        && window.FindControl<TextBlock>("GemChanceValue")!.Text == "25%" && !window.Session.HasChanges,
+        "Changing gem effect failed linked bounds or committed a draft.");
+    gemMax.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.GetGem(0).Value == 6600, "GUI maximum did not encode HP Steal.");
+    gemStrength.Value = 150.5m;
+    gemApply.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.GetGem(0).Value == 6600, "GUI committed a fractional gem value.");
+    string invalidGemPath = Path.Combine(temporary, "invalid-gem.sav");
+    Check(!window.SaveTo(invalidGemPath) && !File.Exists(invalidGemPath), "Invalid gem draft was saved.");
+    string previousLanguage = UiLanguage.Current;
+    window.SetLanguage("ja");
+    Check(UiLanguage.Current == previousLanguage, "Language switching discarded an invalid gem draft.");
+    gemList.SelectedIndex = 1;
+    Check(gemList.SelectedIndex == 0, "Selection discarded an invalid gem draft.");
+    gemStrength.Value = 180;
+    window.SetLanguage("zh-Hans");
+    Check(window.Session.Document.GetGem(0).Strength == 180, "Language switching lost a valid gem draft.");
+    var gemBytes = window.Session.Document.Serialize();
+    foreach (string language in UiLanguage.Languages.Keys)
+    {
+        window.SetLanguage(language);
+        Check(window.FindControl<TabStrip>("MainNavigation")!.Items.OfType<TabStripItem>().ElementAt(2)
+            .Content?.ToString() == UiLanguage.Get("Items") && gemMax.Content?.ToString() == UiLanguage.Get("MaxGem"),
+            "Gem UI translation is stale.");
+        Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(gemBytes), "Gem language switching changed bytes.");
+    }
+    gemRank.SelectedIndex = 0;
+    Check(gemStrength.Minimum == 10 && gemStrength.Maximum == 20 && gemStrength.Value == 20
+        && window.FindControl<TextBlock>("GemChanceValue")!.Text == "5%", "Gem rank linkage differs.");
+    gemApply.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.GetGem(0).Value == 1300 && window.Session.Document.GetGem(0).Rank == 1,
+        "GUI rank edit did not encode both strength and chance.");
+    gemEffect.SelectedItem = EffectChoice(39);
+    Check(!window.FindControl<StackPanel>("GemStrengthField")!.IsVisible && !gemMax.IsVisible,
+        "Chance-only gem has a meaningless value input or maximum button.");
+    gemApply.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.GetGem(0).Strength == 0 && window.Session.Document.GetGem(0).Chance == 5,
+        "Chance-only gem edit is invalid.");
+    string gemOutput = Path.Combine(temporary, "gems-output.sav");
+    Check(window.SaveTo(gemOutput), "Could not save edited gems.");
+    Check(File.ReadAllBytes(equipmentPath).AsSpan().SequenceEqual(equipmentFixture), "GUI gem edit changed its source.");
+    byte[] unusualGem = (byte[])equipmentFixture.Clone();
+    BinaryPrimitives.WriteUInt16LittleEndian(unusualGem.AsSpan(EquipmentTests.Gem + 0x1c), 17);
+    string unusualGemPath = Path.Combine(temporary, "unusual-gem.sav");
+    File.WriteAllBytes(unusualGemPath, unusualGem);
+    Check(window.LoadSave(unusualGemPath) && gemStrength.Value == 100 && gemStrength.Maximum == 100,
+        "An existing over-limit gem value was clamped on load.");
+    window.SetLanguage("en");
+    Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(unusualGem), "Inspection normalized an unusual gem.");
+    gemMax.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.GetGem(0).Strength == 50, "Explicit maximum did not repair over-limit HP Up.");
+    window.Width = 860;
+    window.Height = 600;
+    VerifyPageSpacing();
+    window.Width = 1120;
+    window.Height = 780;
     if (args is ["--screenshot", var realSave, var screenshot, .. var page])
     {
+        // Use a fresh renderer: resizing the headless test window retains stale clipping masks.
+        window.Hide();
+        window = new MainWindow();
+        window.Show();
         Check(window.LoadSave(realSave), "Could not open the screenshot save.");
-        if (page.Length > 0 && page[0] == "arts")
+        if (page.Length > 0 && page[0] == "gems")
+        {
+            window.ShowGems();
+            if (page.Length > 2) window.FindControl<ListBox>("GemList")!.SelectedIndex = int.Parse(page[2]);
+        }
+        else if (page.Length > 0 && page[0] == "arts")
         {
             window.ShowArts();
             window.FindControl<ListBox>("ArtList")!.SelectedIndex = 2;

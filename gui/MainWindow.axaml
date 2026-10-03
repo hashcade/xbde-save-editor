@@ -32,6 +32,7 @@
       <TabStrip Name="MainNavigation" Grid.Column="1" HorizontalAlignment="Right" FontSize="13" SelectedIndex="0" SelectionChanged="Navigation_Changed">
         <TabStripItem Content="{DynamicResource Main}" />
         <TabStripItem Content="{DynamicResource Characters}" />
+        <TabStripItem Content="{DynamicResource Items}" />
       </TabStrip>
     </Grid>
     <ScrollViewer Name="MainScroll" Grid.Row="1" Margin="24,4,24,0" HorizontalScrollBarVisibility="Disabled">
@@ -217,6 +218,51 @@
             </ScrollViewer>
           </Grid>
         </Grid>
+      </suki:GlassCard>
+    </Grid>
+    <Grid Name="ItemsPanel" Grid.Row="1" Margin="24,0" ColumnDefinitions="280,*" ColumnSpacing="24" IsVisible="False">
+      <suki:GlassCard Padding="20">
+        <Grid RowDefinitions="Auto,Auto,*" RowSpacing="16">
+          <TextBlock Text="{DynamicResource Gems}" FontWeight="SemiBold" />
+          <TextBox Name="GemSearch" Grid.Row="1" PlaceholderText="{DynamicResource Search}" TextChanged="GemSearch_Changed" />
+          <ListBox Name="GemList" Grid.Row="2" SelectionChanged="GemList_Changed">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Grid>
+      </suki:GlassCard>
+      <suki:GlassCard Name="GemEditorCard" Grid.Column="1" Padding="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+          <StackPanel Name="GemInputs" Spacing="16" IsEnabled="False">
+            <TextBlock Text="{DynamicResource GemEditor}" FontWeight="SemiBold" />
+            <StackPanel Spacing="8">
+              <TextBlock Text="{DynamicResource GemEffect}" />
+              <ComboBox Name="GemEffectInput" HorizontalAlignment="Stretch" SelectionChanged="GemEffect_Changed">
+                <ComboBox.ItemTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" /></DataTemplate></ComboBox.ItemTemplate>
+              </ComboBox>
+            </StackPanel>
+            <StackPanel Spacing="8">
+              <TextBlock Text="{DynamicResource GemRank}" />
+              <ComboBox Name="GemRankInput" HorizontalAlignment="Stretch" SelectionChanged="GemRank_Changed">
+                <ComboBox.ItemTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" /></DataTemplate></ComboBox.ItemTemplate>
+              </ComboBox>
+            </StackPanel>
+            <StackPanel Name="GemStrengthField" Spacing="8">
+              <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                <TextBlock Text="{DynamicResource GemStrength}" />
+                <TextBlock Name="GemRangeValue" Grid.Column="1" />
+              </Grid>
+              <NumericUpDown Name="GemStrengthInput" Minimum="0" Maximum="255" Height="42" Margin="0" FormatString="0" />
+            </StackPanel>
+            <StackPanel Name="GemChanceField" Spacing="8">
+              <TextBlock Text="{DynamicResource GemChance}" />
+              <TextBlock Name="GemChanceValue" />
+            </StackPanel>
+            <Button Name="MaxGemButton" Content="{DynamicResource MaxGem}" HorizontalAlignment="Stretch" Click="MaxGem_Click" />
+            <Button Name="ApplyGemButton" Content="{DynamicResource ApplyChanges}" HorizontalAlignment="Stretch" Click="ApplyGem_Click" />
+          </StackPanel>
+        </ScrollViewer>
       </suki:GlassCard>
     </Grid>
     <TextBlock Name="StatusMessage" Grid.Row="2" Margin="24,0" TextWrapping="Wrap" IsVisible="False" />

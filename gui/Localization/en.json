@@ -1,4 +1,13 @@
 {
+  "InvalidGemEffect": "This effect cannot be used on the gem’s current equipment.",
+  "Items": "Items",
+  "Gems": "Gems",
+  "GemEditor": "Gem Editor",
+  "GemEffect": "Effect",
+  "GemRank": "Rank",
+  "GemStrength": "Effect Value",
+  "GemChance": "Activation Chance",
+  "MaxGem": "Max Value",
   "InvalidEquipment": "Choose an owned, compatible and unused item.",
   "Equipment": "Equipment", "Weapon": "Weapon", "Head": "Head", "Torso": "Torso", "Arms": "Arms", "Legs": "Legs", "Feet": "Feet", "GemSocket": "Gem Slot", "FixedGem": "Fixed Gem", "NoGemSockets": "No Gem Slots", "None": "None", "InvalidGem": "Choose a valid, unused gem.",
   "Skills": "Skills", "Locked": "Locked", "LearnedSkills": "Skills Learned", "SkillProgress": "Remaining SP", "SkillCost": "{0} SP", "MaxTree": "Max Branch", "MaxCharacterSkills": "Max Character Skills", "MaxAllSkills": "Max All Skills",

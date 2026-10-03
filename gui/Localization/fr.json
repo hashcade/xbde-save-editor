@@ -1,4 +1,13 @@
 {
+  "InvalidGemEffect": "Cet effet est incompatible avec l’équipement actuel de la gemme.",
+  "Items": "Objets",
+  "Gems": "Gemmes",
+  "GemEditor": "Éditeur de gemmes",
+  "GemEffect": "Effet",
+  "GemRank": "Rang",
+  "GemStrength": "Valeur de l’effet",
+  "GemChance": "Chance d’activation",
+  "MaxGem": "Valeur maximale",
   "InvalidEquipment": "Choisissez un objet possédé, compatible et non équipé par un autre personnage.",
   "Equipment": "Équipement", "Weapon": "Arme", "Head": "Tête", "Torso": "Torse", "Arms": "Bras", "Legs": "Jambes", "Feet": "Pieds", "GemSocket": "Emplacement de gemme", "FixedGem": "Gemme fixe", "NoGemSockets": "Aucun emplacement de gemme", "None": "Aucune", "InvalidGem": "Choisissez une gemme valide et inutilisée.",
   "Skills": "Compétences", "Locked": "Verrouillé", "LearnedSkills": "Compétences apprises", "SkillProgress": "PC restants", "SkillCost": "{0} PC", "MaxTree": "Maximiser la branche", "MaxCharacterSkills": "Maximiser les compétences du personnage", "MaxAllSkills": "Maximiser toutes les compétences",

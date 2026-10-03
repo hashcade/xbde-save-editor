@@ -1,4 +1,13 @@
 {
+  "InvalidGemEffect": "이 효과는 젬이 장착된 장비에 사용할 수 없습니다.",
+  "Items": "아이템",
+  "Gems": "젬",
+  "GemEditor": "젬 편집",
+  "GemEffect": "효과",
+  "GemRank": "등급",
+  "GemStrength": "효과 수치",
+  "GemChance": "발동 확률",
+  "MaxGem": "최댓값",
   "InvalidEquipment": "보유한 아이템 중 캐릭터가 착용할 수 있고 다른 캐릭터가 장착하지 않은 것을 선택하세요.",
   "Equipment": "장비", "Weapon": "무기", "Head": "머리", "Torso": "몸통", "Arms": "팔", "Legs": "다리", "Feet": "발", "GemSocket": "젬 슬롯", "FixedGem": "고정 젬", "NoGemSockets": "젬 슬롯 없음", "None": "없음", "InvalidGem": "사용하지 않는 유효한 젬을 선택하세요.",
   "Skills": "스킬", "Locked": "미해금", "LearnedSkills": "습득한 스킬 수", "SkillProgress": "남은 SP", "SkillCost": "{0} SP", "MaxTree": "이 분기 모두 습득", "MaxCharacterSkills": "선택 캐릭터의 스킬 최대", "MaxAllSkills": "전원 스킬 최대",

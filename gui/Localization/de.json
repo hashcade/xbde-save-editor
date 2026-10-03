@@ -1,4 +1,13 @@
 {
+  "InvalidGemEffect": "Dieser Effekt passt nicht zur aktuellen Ausrüstung des Juwels.",
+  "Items": "Gegenstände",
+  "Gems": "Juwelen",
+  "GemEditor": "Juwelen bearbeiten",
+  "GemEffect": "Effekt",
+  "GemRank": "Rang",
+  "GemStrength": "Effektwert",
+  "GemChance": "Aktivierungschance",
+  "MaxGem": "Maximalwert",
   "InvalidEquipment": "Wähle einen vorhandenen, kompatiblen und nicht anderweitig ausgerüsteten Gegenstand.",
   "Equipment": "Ausrüstung", "Weapon": "Waffe", "Head": "Kopf", "Torso": "Rumpf", "Arms": "Arme", "Legs": "Beine", "Feet": "Füße", "GemSocket": "Juwelenslot", "FixedGem": "Festes Juwel", "NoGemSockets": "Keine Juwelenslots", "None": "Keine", "InvalidGem": "Wähle ein gültiges, unbenutztes Juwel.",
   "Skills": "Talente", "Locked": "Gesperrt", "LearnedSkills": "Erlernte Talente", "SkillProgress": "Verbleibende TaP", "SkillCost": "{0} TaP", "MaxTree": "Zweig maximieren", "MaxCharacterSkills": "Talente des Charakters maximieren", "MaxAllSkills": "Alle Talente maximieren",

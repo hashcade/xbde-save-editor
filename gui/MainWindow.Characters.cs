@@ -14,9 +14,10 @@ public partial class MainWindow
 
     private void Navigation_Changed(object? sender, SelectionChangedEventArgs e)
     {
-        if (MainScroll is null || CharactersPanel is null) return;
+        if (MainScroll is null || CharactersPanel is null || ItemsPanel is null) return;
         MainScroll.IsVisible = MainNavigation.SelectedIndex == 0;
         CharactersPanel.IsVisible = MainNavigation.SelectedIndex == 1;
+        ItemsPanel.IsVisible = MainNavigation.SelectedIndex == 2;
     }
 
     public void ShowCharacters() => MainNavigation.SelectedIndex = 1;
