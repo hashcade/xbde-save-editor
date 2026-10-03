@@ -20,6 +20,10 @@ void Check(bool value, string message)
     if (!value) throw new InvalidOperationException(message);
 }
 Check(UiLanguage.Current == "en", "Default language is not English.");
+Check(UiLanguage.Read("en")["MaxTree"] == "Max Branch"
+    && UiLanguage.Read("zh-Hans")["MaxTree"] == "分支学满"
+    && UiLanguage.Read("zh-Hant")["MaxTree"] == "分支學滿",
+    "Single-branch maximum label is ambiguous.");
 Check(UiLanguage.Read("zh-Hans")["ExpertMode"] == "进阶玩家设定", "Simplified Chinese Expert Mode terminology differs.");
 Check(UiLanguage.Read("zh-Hant")["ExpertMode"] == "進階玩家設定", "Traditional Chinese Expert Mode terminology differs.");
 Check(!window.FindControl<StackPanel>("ResourceInputs")!.IsEnabled, "Empty form is editable.");
@@ -339,6 +343,8 @@ try
         Check(maxAllSkills.Content?.ToString() == UiLanguage.Get("MaxAllSkills")
             && window.FindControl<Button>("MaxCharacterSkillsButton")!.Content?.ToString() == UiLanguage.Get("MaxCharacterSkills"),
             "Skill batch button translation is stale.");
+        Check(SkillControl<Button>("MaxTreeButton").Content?.ToString() == UiLanguage.Get("MaxTree"),
+            "Single-branch button translation is stale.");
     }
     window.Width = 860;
     window.Height = 600;

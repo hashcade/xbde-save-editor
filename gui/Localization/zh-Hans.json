@@ -1,5 +1,5 @@
 {
-"Skills": "技能", "Locked": "未解锁", "LearnedSkills": "已学会技能数", "SkillProgress": "剩余 SP", "SkillCost": "{0} SP", "MaxTree": "技能树全满", "MaxCharacterSkills": "当前角色技能全满", "MaxAllSkills": "全员技能全满",
+  "Skills": "技能", "Locked": "未解锁", "LearnedSkills": "已学会技能数", "SkillProgress": "剩余 SP", "SkillCost": "{0} SP", "MaxTree": "分支学满", "MaxCharacterSkills": "当前角色技能全满", "MaxAllSkills": "全员技能全满",
   "Arts": "战技", "ArtStatus": "状态", "NotLearned": "未学会", "FixedTalent": "天赋战技（固定等级）", "Upgradeable": "可升级", "Unavailable": "不可用", "MaximumLevel": "最高等级", "MaxArt": "满级", "MaxCharacterArts": "全部战技满级",
   "ApplyChanges": "应用修改", "HighestLevel": "最高到达等级", "RecordedExperience": "记录经验",
   "MaxAP": "AP 全满", "MaxAllAP": "全员 AP 全满", "MaxReserveExperience": "储备经验全满",

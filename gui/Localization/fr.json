@@ -1,5 +1,5 @@
 {
-"Skills": "Compétences", "Locked": "Verrouillé", "LearnedSkills": "Compétences apprises", "SkillProgress": "PC restants", "SkillCost": "{0} PC", "MaxTree": "Maximiser l’arbre", "MaxCharacterSkills": "Maximiser les compétences du personnage", "MaxAllSkills": "Maximiser toutes les compétences",
+  "Skills": "Compétences", "Locked": "Verrouillé", "LearnedSkills": "Compétences apprises", "SkillProgress": "PC restants", "SkillCost": "{0} PC", "MaxTree": "Maximiser la branche", "MaxCharacterSkills": "Maximiser les compétences du personnage", "MaxAllSkills": "Maximiser toutes les compétences",
   "Arts": "Arts", "ArtStatus": "État", "NotLearned": "Non appris", "FixedTalent": "Art spécial (niveau fixe)", "Upgradeable": "Améliorable", "Unavailable": "Indisponible", "MaximumLevel": "Niveau maximum", "MaxArt": "Niveau maximum", "MaxCharacterArts": "Maximiser tous les arts",
   "ApplyChanges": "Appliquer", "HighestLevel": "Niveau maximal atteint", "RecordedExperience": "EXP enregistrée",
   "MaxAP": "AP au maximum", "MaxAllAP": "Tous les AP au maximum", "MaxReserveExperience": "EXP en réserve au maximum",

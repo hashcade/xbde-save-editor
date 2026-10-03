@@ -1,5 +1,5 @@
 {
-"Skills": "Abilità", "Locked": "Bloccato", "LearnedSkills": "Abilità apprese", "SkillProgress": "PA rimanenti", "SkillCost": "{0} PA", "MaxTree": "Massimizza albero", "MaxCharacterSkills": "Massimizza abilità del personaggio", "MaxAllSkills": "Massimizza tutte le abilità",
+  "Skills": "Abilità", "Locked": "Bloccato", "LearnedSkills": "Abilità apprese", "SkillProgress": "PA rimanenti", "SkillCost": "{0} PA", "MaxTree": "Massimizza ramo", "MaxCharacterSkills": "Massimizza abilità del personaggio", "MaxAllSkills": "Massimizza tutte le abilità",
   "Arts": "Tecniche", "ArtStatus": "Stato", "NotLearned": "Non appresa", "FixedTalent": "Tecnica speciale (livello fisso)", "Upgradeable": "Potenziabile", "Unavailable": "Non disponibile", "MaximumLevel": "Livello massimo", "MaxArt": "Livello massimo", "MaxCharacterArts": "Massimizza tutte le tecniche",
   "ApplyChanges": "Applica modifiche", "HighestLevel": "Livello massimo raggiunto", "RecordedExperience": "ESP registrata",
   "MaxAP": "PA al massimo", "MaxAllAP": "Tutti i PA al massimo", "MaxReserveExperience": "ESP di riserva al massimo",

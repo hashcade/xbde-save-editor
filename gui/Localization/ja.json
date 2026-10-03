@@ -1,5 +1,5 @@
 {
-"Skills": "スキル", "Locked": "未解放", "LearnedSkills": "習得スキル数", "SkillProgress": "残り SP", "SkillCost": "{0} SP", "MaxTree": "ツリーを最大にする", "MaxCharacterSkills": "選択キャラクターのスキルを最大にする", "MaxAllSkills": "全員のスキルを最大にする",
+  "Skills": "スキル", "Locked": "未解放", "LearnedSkills": "習得スキル数", "SkillProgress": "残り SP", "SkillCost": "{0} SP", "MaxTree": "この分岐を全習得", "MaxCharacterSkills": "選択キャラクターのスキルを最大にする", "MaxAllSkills": "全員のスキルを最大にする",
   "Arts": "アーツ", "ArtStatus": "状態", "NotLearned": "未習得", "FixedTalent": "タレントアーツ（レベル固定）", "Upgradeable": "レベル変更可", "Unavailable": "変更不可", "MaximumLevel": "最大レベル", "MaxArt": "最大レベルにする", "MaxCharacterArts": "全アーツを最大レベルにする",
   "ApplyChanges": "変更を適用", "HighestLevel": "最高到達レベル", "RecordedExperience": "記録EXP",
   "MaxAP": "APを最大にする", "MaxAllAP": "全員のAPを最大にする", "MaxReserveExperience": "ストックEXPを最大にする",

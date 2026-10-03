@@ -1,5 +1,5 @@
 {
-"Skills": "스킬", "Locked": "미해금", "LearnedSkills": "습득한 스킬 수", "SkillProgress": "남은 SP", "SkillCost": "{0} SP", "MaxTree": "트리 최대", "MaxCharacterSkills": "선택 캐릭터의 스킬 최대", "MaxAllSkills": "전원 스킬 최대",
+  "Skills": "스킬", "Locked": "미해금", "LearnedSkills": "습득한 스킬 수", "SkillProgress": "남은 SP", "SkillCost": "{0} SP", "MaxTree": "이 분기 모두 습득", "MaxCharacterSkills": "선택 캐릭터의 스킬 최대", "MaxAllSkills": "전원 스킬 최대",
   "Arts": "아츠", "ArtStatus": "상태", "NotLearned": "미습득", "FixedTalent": "탤런트 아츠 (레벨 고정)", "Upgradeable": "레벨 변경 가능", "Unavailable": "변경 불가", "MaximumLevel": "최대 레벨", "MaxArt": "최대 레벨로", "MaxCharacterArts": "모든 아츠 최대 레벨",
   "ApplyChanges": "변경 적용", "HighestLevel": "최고 도달 레벨", "RecordedExperience": "기록 경험치",
   "MaxAP": "AP 최대", "MaxAllAP": "전원 AP 최대", "MaxReserveExperience": "저장 경험치 최대",
