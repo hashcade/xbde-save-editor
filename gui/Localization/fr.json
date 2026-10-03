@@ -1,4 +1,5 @@
 {
+  "MaxAP": "AP au maximum", "MaxAllAP": "Tous les AP au maximum", "MaxReserveExperience": "EXP en réserve au maximum",
   "Search": "Rechercher…", "General": "Général", "Level": "Niveau", "Experience": "Expérience",
   "AffinityCoins": "Pièces d’entente", "ExpertMode": "Mode expert", "ReserveExperience": "Expérience en réserve",
   "File": "Fichier", "OpenSave": "Ouvrir une sauvegarde…", "Save": "Enregistrer", "SaveAs": "Enregistrer sous…", "Exit": "Quitter",

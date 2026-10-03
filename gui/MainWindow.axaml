@@ -58,7 +58,7 @@
     </ScrollViewer>
     <Grid Name="CharactersPanel" Grid.Row="1" Margin="24,0" ColumnDefinitions="280,*" ColumnSpacing="24" IsVisible="False">
       <suki:GlassCard Padding="20">
-        <Grid RowDefinitions="Auto,Auto,*" RowSpacing="16">
+        <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="16">
           <TextBlock Text="{DynamicResource Characters}" FontWeight="SemiBold" />
           <TextBox Name="CharacterSearch" Grid.Row="1" PlaceholderText="{DynamicResource Search}" TextChanged="CharacterSearch_Changed" />
           <ListBox Name="CharacterList" Grid.Row="2" SelectionChanged="CharacterList_Changed">
@@ -66,6 +66,7 @@
               <DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>
+          <Button Name="MaxAllAPButton" Grid.Row="3" Content="{DynamicResource MaxAllAP}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxAllAP_Click" />
         </Grid>
       </suki:GlassCard>
       <suki:GlassCard Grid.Column="1" Padding="20">
@@ -78,8 +79,11 @@
                 <TextBlock Text="{DynamicResource Experience}" Grid.Row="1" /><TextBlock Name="ExperienceValue" Grid.Row="1" Grid.Column="1" />
               </Grid>
               <StackPanel Spacing="8">
-                <TextBlock Text="AP" />
-                <NumericUpDown Name="APInput" Minimum="0" Maximum="4294967295" Height="42" Margin="0" FormatString="0" ValueChanged="CharacterResources_Changed" />
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                  <TextBlock Text="AP" VerticalAlignment="Center" />
+                  <Button Name="MaxAPButton" Grid.Column="1" Content="{DynamicResource MaxAP}" Click="MaxAP_Click" />
+                </Grid>
+                <NumericUpDown Name="APInput" Minimum="0" Maximum="99999999" Height="42" Margin="0" FormatString="0" ValueChanged="CharacterResources_Changed" />
               </StackPanel>
               <StackPanel Name="AffinityCoinsField" Spacing="8">
                 <TextBlock Text="{DynamicResource AffinityCoins}" />
@@ -88,11 +92,15 @@
             </StackPanel>
             <StackPanel Grid.Column="1" Spacing="16">
               <TextBlock Text="{DynamicResource ExpertMode}" FontWeight="SemiBold" />
-              <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" RowDefinitions="Auto,Auto,Auto" RowSpacing="16">
+              <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" RowDefinitions="Auto,Auto" RowSpacing="16">
                 <TextBlock Text="{DynamicResource Level}" /><TextBlock Name="ExpertLevelValue" Grid.Column="1" />
                 <TextBlock Text="{DynamicResource Experience}" Grid.Row="1" /><TextBlock Name="ExpertExperienceValue" Grid.Row="1" Grid.Column="1" />
-                <TextBlock Text="{DynamicResource ReserveExperience}" TextWrapping="Wrap" Grid.Row="2" /><TextBlock Name="ReserveExperienceValue" Grid.Row="2" Grid.Column="1" />
               </Grid>
+              <StackPanel Spacing="8">
+                <TextBlock Text="{DynamicResource ReserveExperience}" />
+                <NumericUpDown Name="ReserveExperienceInput" Minimum="0" Maximum="199999998" Height="42" Margin="0" FormatString="0" ValueChanged="CharacterResources_Changed" />
+                <Button Name="MaxReserveExperienceButton" Content="{DynamicResource MaxReserveExperience}" HorizontalAlignment="Stretch" Click="MaxReserveExperience_Click" />
+              </StackPanel>
             </StackPanel>
           </Grid>
         </ScrollViewer>

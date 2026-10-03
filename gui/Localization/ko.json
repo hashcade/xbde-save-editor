@@ -1,4 +1,5 @@
 {
+  "MaxAP": "AP 최대", "MaxAllAP": "전원 AP 최대", "MaxReserveExperience": "저장 경험치 최대",
   "Search": "검색…", "General": "기본 정보", "Level": "레벨", "Experience": "경험치",
   "AffinityCoins": "인연 코인", "ExpertMode": "고급 설정", "ReserveExperience": "비축 경험치",
   "File": "파일", "OpenSave": "저장 파일 열기…", "Save": "저장", "SaveAs": "다른 이름으로 저장…", "Exit": "종료",

@@ -8,7 +8,7 @@ Edit Xenoblade Chronicles: Definitive Edition saves, including Future Connected.
 
 - **Save files:** Open compatible `bfsgame*.sav` and `bfsmeria*.sav` game saves, inspect the saved party and create byte-identical copies. System saves and thumbnails are not editable.
 - **Main:** Edit money and Noponstones. Save and Save As are available in the File menu; unrecognized layouts are rejected and unknown bytes remain untouched.
-- **Characters:** Search joined characters, edit AP and main-story Affinity Coins, and inspect saved levels, experience and Expert Mode records. Character names switch with the interface language. Future Connected does not expose Affinity Coin editing.
+- **Characters:** Search joined characters, edit AP, main-story Affinity Coins and Expert Mode reserve EXP. Maximize AP for one character or everyone already joined, or fill a character's reserve EXP. Saved levels and other experience records remain available for inspection. Character names switch with the interface language. Future Connected does not expose Affinity Coin editing.
 - **CLI:** Inspect saves as JSON, copy them or edit resources without changing unknown data.
 
 English is the default language. The interface also supports Simplified Chinese,
@@ -28,9 +28,11 @@ dotnet run --project cli/Cli.csproj -- copy /path/to/bfsgame00.sav /path/to/copy
 Resource inputs currently validate unsigned 32-bit storage bounds, not an
 independently verified in-game currency cap. Existing high amounts are preserved
 on opening; they are not silently normalized.
-AP uses the same storage-bound validation. Affinity Coin edits are restricted
-to 0–999. Level and Expert Mode edits remain disabled until their linked
-progression rules have been verified.
+AP edits are restricted to 0–99,999,999, Affinity Coins to 0–999, and Expert Mode
+reserve EXP to 0–199,999,998. Existing higher amounts are preserved unless edited.
+Level and current-EXP edits remain disabled until their linked progression rules
+have been fully verified. Changing reserve EXP does not immediately change a
+character's level; it changes the pool available to spend in-game in Expert Mode.
 Campaign identification currently uses joined characters. When only characters
 shared by both campaigns are present, the campaign is shown as unconfirmed and
 Affinity Coin editing is unavailable.

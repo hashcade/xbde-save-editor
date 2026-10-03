@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Headless;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
 using XbdeEditor.Core;
 using XbdeEditor.Gui;
@@ -46,11 +47,18 @@ try
     Dispatcher.UIThread.RunJobs();
     var ap = window.FindControl<NumericUpDown>("APInput")!;
     var coins = window.FindControl<NumericUpDown>("AffinityCoinsInput")!;
+    var reserve = window.FindControl<NumericUpDown>("ReserveExperienceInput")!;
+    Check(ap.Maximum == CharacterRecord.MaximumAP && reserve.Maximum == CharacterRecord.MaximumReserveExperience,
+        "GUI resource limits differ from the core.");
     Check(window.FindControl<TextBlock>("LevelValue")!.Text == "20", "Character level mapping differs.");
     Check(window.FindControl<ListBox>("CharacterList")!.ItemsPanel.Build() is VirtualizingStackPanel { CacheLength: 1 }, "Virtual list buffer is missing.");
     ap.Value = 321;
     coins.Value = 999;
     Check(window.Session.Document.GetCharacter(1).AP == 321 && window.Session.Document.GetCharacter(1).AffinityCoins == 999, "Character resource edits are disconnected.");
+    reserve.Value = 10000;
+    Check(window.Session.Document.GetCharacter(1).ReserveExperience == 10000, "Reserve EXP input is disconnected.");
+    Check(window.Session.Document.GetCharacter(1).Level == 20 && window.Session.Document.GetCharacter(1).Experience == 0,
+        "Reserve EXP input altered level or accumulated EXP.");
     foreach (string language in UiLanguage.Languages.Keys)
     {
         window.SetLanguage("zh-Hans");
@@ -60,6 +68,11 @@ try
         Check(window.FindControl<TextBlock>("CampaignValue")!.Text == UiLanguage.Get("MainStory"), "Campaign translation is stale.");
         Check(window.Session.Document.Money == 123, "Language switch changed edits.");
         Check(window.Session.Document.GetCharacter(1).AP == 321, "Language switch changed character edits.");
+        Check(window.Session.Document.GetCharacter(1).ReserveExperience == 10000, "Language switch changed reserve EXP.");
+        Check(window.FindControl<Button>("MaxAllAPButton")!.Content?.ToString() == UiLanguage.Get("MaxAllAP"),
+            "Bulk AP button translation is stale.");
+        Check(window.FindControl<Button>("MaxReserveExperienceButton")!.Content?.ToString() == UiLanguage.Get("MaxReserveExperience"),
+            "Reserve EXP button translation is stale.");
     }
     window.SetLanguage("en");
     var search = window.FindControl<TextBox>("CharacterSearch")!;
@@ -68,6 +81,17 @@ try
     Check(window.FindControl<ListBox>("CharacterList")!.ItemCount == 0, "Character search did not filter.");
     search.Text = "";
     Dispatcher.UIThread.RunJobs();
+    window.FindControl<Button>("MaxAPButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.GetCharacter(1).AP == CharacterRecord.MaximumAP
+        && window.Session.Document.GetCharacter(2).AP == 0, "Single-character AP maximum affected another member.");
+    window.FindControl<Button>("MaxReserveExperienceButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.GetCharacter(1).ReserveExperience == CharacterRecord.MaximumReserveExperience,
+        "Reserve EXP maximum button is disconnected.");
+    search.Text = "Shulk";
+    window.FindControl<Button>("MaxAllAPButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.Characters.All(member => member.AP == CharacterRecord.MaximumAP),
+        "Bulk AP only changed the filtered character.");
+    search.Text = "";
     string output = Path.Combine(temporary, "edited.sav");
     Check(window.SaveTo(output), "GUI save failed.");
     Check(SaveDocument.Parse(File.ReadAllBytes(output)).Money == 123, "Saved amount differs.");
@@ -85,6 +109,23 @@ try
     Check(!window.FindControl<StackPanel>("AffinityCoinsField")!.IsVisible,
         "An ambiguous campaign exposes coin editing.");
     Check(!window.Session!.HasChanges, "Opening an ambiguous campaign altered it.");
+    byte[] high = (byte[])ambiguous.Clone();
+    BinaryPrimitives.WriteUInt32LittleEndian(high.AsSpan(0x152370), uint.MaxValue);
+    BinaryPrimitives.WriteUInt32LittleEndian(high.AsSpan(0x15245c), uint.MaxValue);
+    string highPath = Path.Combine(temporary, "high.sav");
+    File.WriteAllBytes(highPath, high);
+    Check(window.LoadSave(highPath), "Could not open existing high resource values.");
+    Check(!window.Session!.HasChanges && ap.Value == uint.MaxValue && reserve.Value == uint.MaxValue,
+        "Loading clamped an existing high amount.");
+    ap.Value = uint.MaxValue - 1;
+    Check(!window.SaveTo(Path.Combine(temporary, "invalid-high.sav")), "A new over-cap AP value was saved.");
+    Check(window.Session.Document.GetCharacter(1).AP == uint.MaxValue,
+        "A rejected over-cap AP draft mutated the document.");
+    ap.Value = uint.MaxValue;
+    reserve.Value = 123;
+    Check(window.Session.Document.GetCharacter(1).AP == uint.MaxValue && window.Session.Document.GetCharacter(1).ReserveExperience == 123,
+        "Reserve EXP edit rejected or normalized unchanged high AP.");
+    Check(window.SaveTo(highPath), "Could not save high-value fixture.");
     if (args is ["--screenshot", var realSave, var screenshot, .. var page])
     {
         Check(window.LoadSave(realSave), "Could not open the screenshot save.");

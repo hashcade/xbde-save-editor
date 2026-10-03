@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using XbdeEditor.Core;
 using XbdeEditor.Gui.Localization;
 
@@ -35,12 +36,15 @@ public partial class MainWindow
             _selectedCharacter = (CharacterList.SelectedItem as CharacterRow)?.Id;
             _character = _selectedCharacter is { } id ? Session?.Document.GetCharacter(id) : null;
             CharacterInputs.IsEnabled = _character is not null;
+            MaxAllAPButton.IsEnabled = Session is not null;
             LevelValue.Text = _character?.Level.ToString();
             ExperienceValue.Text = _character?.Experience.ToString();
             ExpertLevelValue.Text = _character?.ExpertLevel.ToString();
             ExpertExperienceValue.Text = _character?.ExpertExperience.ToString();
-            ReserveExperienceValue.Text = _character?.ReserveExperience.ToString();
+            APInput.Maximum = Math.Max(CharacterRecord.MaximumAP, _character?.AP ?? 0);
             APInput.Value = _character?.AP;
+            ReserveExperienceInput.Maximum = Math.Max(CharacterRecord.MaximumReserveExperience, _character?.ReserveExperience ?? 0);
+            ReserveExperienceInput.Value = _character?.ReserveExperience;
             AffinityCoinsField.IsVisible = _character?.UsesAffinityCoins ?? true;
             AffinityCoinsInput.Maximum = Math.Max(999, _character?.AffinityCoins ?? 0);
             AffinityCoinsInput.Value = _character?.AffinityCoins;
@@ -60,11 +64,17 @@ public partial class MainWindow
     private bool CharacterValuesValid()
     {
         if (_character is null) return true;
-        if (!WholeNumber(APInput.Value, out _)) return false;
+        if (!ValidResource(APInput.Value, CharacterRecord.MaximumAP, _character.AP)) return false;
+        if (!ValidResource(ReserveExperienceInput.Value, CharacterRecord.MaximumReserveExperience, _character.ReserveExperience)) return false;
         if (!_character.UsesAffinityCoins) return true;
-        return WholeNumber(AffinityCoinsInput.Value, out uint coins)
-            && (coins <= 999 || coins == _character.AffinityCoins);
+        return ValidResource(AffinityCoinsInput.Value, 999, _character.AffinityCoins);
     }
+
+    private static bool ValidResource(decimal? value, uint maximum, uint original) =>
+        WholeNumber(value, out uint number) && (number <= maximum || number == original);
+
+    private static uint? ChangedResource(decimal? value, uint original) =>
+        WholeNumber(value, out uint number) && number != original ? number : null;
 
     private void CharacterResources_Changed(object? sender, NumericUpDownValueChangedEventArgs e)
     {
@@ -74,11 +84,39 @@ public partial class MainWindow
             ShowStatus(UiLanguage.Get("InvalidValue"));
             return;
         }
-        _ = WholeNumber(APInput.Value, out uint ap);
-        uint? coins = null;
-        if (_character.UsesAffinityCoins && WholeNumber(AffinityCoinsInput.Value, out uint enteredCoins)
-            && enteredCoins != _character.AffinityCoins) coins = enteredCoins;
-        _character.SetResources(ap, coins);
+        _character.SetResources(
+            ap: ChangedResource(APInput.Value, _character.AP),
+            affinityCoins: _character.UsesAffinityCoins ? ChangedResource(AffinityCoinsInput.Value, _character.AffinityCoins) : null,
+            reserveExperience: ChangedResource(ReserveExperienceInput.Value, _character.ReserveExperience));
+        ShowStatus(null);
+    }
+
+    private void MaxAP_Click(object? sender, RoutedEventArgs e)
+    {
+        if (_character is { } character)
+            ApplyCharacterEdit(() => character.SetResources(ap: CharacterRecord.MaximumAP));
+    }
+
+    private void MaxReserveExperience_Click(object? sender, RoutedEventArgs e)
+    {
+        if (_character is { } character)
+            ApplyCharacterEdit(() => character.SetResources(reserveExperience: CharacterRecord.MaximumReserveExperience));
+    }
+
+    private void MaxAllAP_Click(object? sender, RoutedEventArgs e)
+    {
+        if (Session is not null) ApplyCharacterEdit(Session.Document.MaxAllAP);
+    }
+
+    private void ApplyCharacterEdit(Action edit)
+    {
+        if (!CharacterValuesValid())
+        {
+            ShowStatus(UiLanguage.Get("InvalidValue"));
+            return;
+        }
+        edit();
+        RefreshCharacters();
         ShowStatus(null);
     }
 }
