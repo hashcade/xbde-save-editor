@@ -13,6 +13,14 @@ try
         Console.WriteLine("XBDE Save Editor\n\ninspect <save>\ncopy <save> <output>\nresources <save> <output> [--money N] [--noponstones N]\ncharacter <save> <output> <id> [--ap N] [--coins N] [--reserve-exp N]\nprogression <save> <output> <id> [--level N] [--exp N]\nmax-ap <save> <output>\narts <save> <character-id>\nart <save> <output> <character-id> <art-id> --level N\nmax-art <save> <output> <character-id> <art-id>\nmax-arts <save> <output> <character-id>\nskills <save> <character-id>\nskill-tree <save> <output> <character-id> <tree-index> --learned N\nskill-tree <save> <output> <character-id> <tree-index> --sp N\nmax-skill-tree <save> <output> <character-id> <tree-index>\nmax-skills <save> <output> <character-id>\nmax-all-skills <save> <output>\nequipment <save> <character-id>\nequip <save> <output> <character-id> <Weapon|Head|Torso|Arms|Legs|Feet> <inventory-index>\nequipment-gem <save> <output> <character-id> <Weapon|Head|Torso|Arms|Legs|Feet> <socket> <gem-index|none>\n--version");
         Console.WriteLine("gems <save>\ngem <save> <output> <gem-index> [--effect N] [--rank N] [--value N]\nmax-gem <save> <output> <gem-index>");
         Console.WriteLine("inventory <save> <Collectables|Materials|KeyItems|ArtManuals>\nitem <save> <output> <kind> <index> --quantity N\nadd-item <save> <output> <item-id> --quantity N\ndelete-item <save> <output> <kind> <index>\nmax-items <save> <output> <kind>\nadd-gem <save> <output> --effect N --rank N --value N\ndelete-gem <save> <output> <gem-index>");
+        Console.WriteLine("party-order <save> <output> <character-id> <character-id> ...");
+        return 0;
+    }
+    if (args is ["party-order", var partySource, var partyOutput, .. var orderedIds])
+    {
+        var session = SaveSession.Open(partySource);
+        session.Document.ReorderParty(orderedIds.Select(ParseId).ToArray());
+        session.Save(partyOutput);
         return 0;
     }
     if (args is ["inventory", var inventorySource, var inventoryKind])

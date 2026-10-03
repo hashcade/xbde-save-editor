@@ -47,6 +47,31 @@ public sealed class SaveDocument
     public CharacterRecord GetCharacter(int id) => Characters.FirstOrDefault(character => character.Id == id)
         ?? throw new ArgumentException("Only characters already present in this party can be edited.", nameof(id));
 
+    public bool CanReorderParty
+    {
+        get
+        {
+            var campaign = Campaign;
+            return PartyIds.All(id => campaign switch
+            {
+                Campaign.MainStory => id is >= 1 and <= 8,
+                Campaign.FutureConnected => id is 1 or 7 or 14 or 15,
+                _ => false
+            });
+        }
+    }
+
+    public void ReorderParty(IReadOnlyList<int> ids)
+    {
+        ArgumentNullException.ThrowIfNull(ids);
+        var order = ids.ToArray();
+        var current = PartyIds;
+        if (!CanReorderParty || order.Length != current.Count || order.Distinct().Count() != order.Length
+            || !order.Order().SequenceEqual(current.Order()))
+            throw new ArgumentException("Choose a permutation of the current supported party members.", nameof(ids));
+        for (int index = 0; index < order.Length; index++) WriteUInt16(PartyOffset + index * 2, (ushort)order[index]);
+    }
+
     public string Sha256 => Convert.ToHexString(SHA256.HashData(_data));
     public uint Money => ReadUInt32(0x151b40);
     public uint Noponstones => ReadUInt32(0x10);
