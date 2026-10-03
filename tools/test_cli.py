@@ -36,6 +36,52 @@ def main() -> None:
         source = root / "bfsgame00.sav"
         output = root / "output.sav"
         source.write_bytes(original)
+        assert "region-affinities" in run("--help")
+        regions = json.loads(run("region-affinities", source))
+        assert regions["Supported"] and regions["MaximumPoints"] == 10000 and regions["FiveStarPoints"] == 8000
+        assert [row["Id"] for row in regions["Regions"]] == [1, 2, 3, 4, 5]
+        assert all(row["Points"] == 0 and row["Stars"] == 1 for row in regions["Regions"])
+        run("region-affinity", source, output, "3", "--stars", "5")
+        region_edit = bytearray(original)
+        struct.pack_into("<H", region_edit, 0xDF8, 8000)
+        assert output.read_bytes() == region_edit
+        run("region-affinity", output, output, "3", "--points", "9999")
+        struct.pack_into("<H", region_edit, 0xDF8, 9999)
+        run("region-affinity", output, output, "3", "--stars", "5")
+        assert output.read_bytes() == region_edit
+        for region_id, option, value in [("0", "--points", "1"), ("6", "--points", "1"),
+                                         ("1", "--points", "10001"), ("1", "--points", "-1"),
+                                         ("1", "--stars", "0"), ("1", "--stars", "6"),
+                                         ("1", "--stars", "1.5"), ("1", "--level", "5")]:
+            run("region-affinity", source, output, region_id, option, value, success=False)
+            assert output.read_bytes() == region_edit
+        run("region-affinity", source, output, "1", "--points", "1", "--stars", "5", success=False)
+        assert output.read_bytes() == region_edit
+        run("max-region-affinity", source, output, "5")
+        region_edit = bytearray(original)
+        struct.pack_into("<H", region_edit, 0xDFC, 10000)
+        assert output.read_bytes() == region_edit
+        run("max-all-region-affinity", source, output)
+        for region_id in range(1, 6):
+            struct.pack_into("<H", region_edit, 0xDF2 + 2 * region_id, 10000)
+        assert output.read_bytes() == region_edit
+        run("max-all-region-affinity", output, output)
+        assert output.read_bytes() == region_edit and source.read_bytes() == original
+        for kind in ("version", "future", "unknown"):
+            protected = bytearray(original)
+            if kind == "version":
+                struct.pack_into("<I", protected, 0, 8)
+            elif kind == "future":
+                struct.pack_into("<H", protected, 0x15231A, 14)
+                struct.pack_into("<I", protected, 0x152368 + 13 * 0x138, 20)
+            else:
+                protected[0x152330] = 1
+            protected_path = root / f"region-{kind}.sav"
+            protected_path.write_bytes(protected)
+            assert not json.loads(run("region-affinities", protected_path))["Supported"]
+            run("max-all-region-affinity", protected_path, output, success=False)
+            run("region-affinity", protected_path, output, "1", "--stars", "5", success=False)
+            assert output.read_bytes() == region_edit and protected_path.read_bytes() == protected
         achievements = json.loads(run("achievements", source))
         assert achievements["Supported"] and achievements["Total"] == 200 and achievements["Completed"] == 0
         run("unlock-achievement", source, output, "200")

@@ -109,6 +109,7 @@ AchievementTests.Run(Fixture, Check, Reject);
 SkillsTests.Run(Fixture, Check, Reject);
 SkillLinksTests.Run(Fixture, Check, Reject);
 AffinityTests.Run(Fixture, Check, Reject);
+RegionAffinityTests.Run(Fixture, Check, Reject);
 EquipmentTests.Run(Fixture, Check, Reject);
 EquipmentSwitchTests.Run(Fixture, Check, Reject);
 GemTests.Run(Fixture, Check, Reject);
@@ -232,6 +233,7 @@ try
             SkillsTests.VerifyRealSave(before, Check);
             SkillLinksTests.VerifyRealSave(before, Check);
             AffinityTests.VerifyRealSave(before, Check);
+            RegionAffinityTests.VerifyRealSave(before, Check);
             EquipmentTests.VerifyRealSave(before, Check);
             EquipmentSwitchTests.VerifyRealSave(before, Check);
             GemTests.VerifyRealSave(before, Check);

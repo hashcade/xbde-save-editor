@@ -61,6 +61,19 @@ public sealed class SaveDocument
     public bool CanEditAchievements => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
     public bool CanEditSkillLinks => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
     public bool CanEditAffinity => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
+    public bool CanEditRegionAffinity => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
+    public IReadOnlyList<RegionAffinityRecord> RegionAffinities => Campaign == Campaign.MainStory
+        ? RegionAffinityRecord.Definitions.Select(definition => new RegionAffinityRecord(this, definition)).ToArray() : [];
+
+    public RegionAffinityRecord GetRegionAffinity(int id) => RegionAffinities.FirstOrDefault(region => region.Id == id)
+        ?? throw new ArgumentException("Choose one of the five main-story affinity regions.", nameof(id));
+
+    public void MaxAllRegionAffinity()
+    {
+        if (!CanEditRegionAffinity) throw new ArgumentException("Region affinity requires an identified main-story save with format version 7.");
+        foreach (var region in RegionAffinities) region.SetPoints(RegionAffinityRecord.MaximumPoints);
+    }
+
     public IReadOnlyList<AffinityRecord> Affinities
     {
         get

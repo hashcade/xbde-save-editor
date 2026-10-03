@@ -1,4 +1,8 @@
 {
+  "Regions": "地区",
+  "RegionStars": "星级",
+  "RegionPoints": "牵绊值（0–10,000）",
+  "MaxAllRegions": "全部地区牵绊全满",
   "Affinity": "牵绊",
   "AffinityPoints": "牵绊值（0–5,000）",
   "AffinitySlots": "技能链接槽位（双方）",

@@ -17,6 +17,46 @@ try
         Console.WriteLine("learn-art <save> <output> <character-id> <art-id>\nlearn-max-arts <save> <output> <character-id>\nlearn-max-all-arts <save> <output>");
         Console.WriteLine("skill-links <save> <character-id>\nskill-link <save> <output> <character-id> <source-character-id> <slot> <skill-id|none>");
         Console.WriteLine("affinities <save>\naffinity <save> <output> <first-character-id> <second-character-id> --points N\nmax-affinity <save> <output> <first-character-id> <second-character-id>\nmax-all-affinity <save> <output>");
+        Console.WriteLine("region-affinities <save>\nregion-affinity <save> <output> <region-id> --points N\nregion-affinity <save> <output> <region-id> --stars N\nmax-region-affinity <save> <output> <region-id>\nmax-all-region-affinity <save> <output>");
+        return 0;
+    }
+    if (args is ["region-affinities", var regionSource])
+    {
+        var document = SaveSession.Open(regionSource).Document;
+        Console.WriteLine(JsonSerializer.Serialize(new
+        {
+            Supported = document.CanEditRegionAffinity,
+            MaximumPoints = RegionAffinityRecord.MaximumPoints,
+            FiveStarPoints = RegionAffinityRecord.FiveStarPoints,
+            Regions = document.RegionAffinities.Select(region => new
+            {
+                region.Id, region.Definition.Name, region.Points, region.Stars, region.CanEdit, region.IsMaximum
+            })
+        }, new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["region-affinity", var regionInput, var regionOutput, var regionId, var regionOption, var regionValue]
+        && regionOption is "--points" or "--stars")
+    {
+        var session = SaveSession.Open(regionInput);
+        var region = session.Document.GetRegionAffinity(ParseId(regionId));
+        if (regionOption == "--points") region.SetPoints(ParseId(regionValue));
+        else region.SetStars(ParseId(regionValue));
+        session.Save(regionOutput);
+        return 0;
+    }
+    if (args is ["max-region-affinity", var regionMaxInput, var regionMaxOutput, var regionMaxId])
+    {
+        var session = SaveSession.Open(regionMaxInput);
+        session.Document.GetRegionAffinity(ParseId(regionMaxId)).SetPoints(RegionAffinityRecord.MaximumPoints);
+        session.Save(regionMaxOutput);
+        return 0;
+    }
+    if (args is ["max-all-region-affinity", var regionsMaxInput, var regionsMaxOutput])
+    {
+        var session = SaveSession.Open(regionsMaxInput);
+        session.Document.MaxAllRegionAffinity();
+        session.Save(regionsMaxOutput);
         return 0;
     }
     if (args is ["affinities", var affinitySource])

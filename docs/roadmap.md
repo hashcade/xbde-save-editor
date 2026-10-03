@@ -8,7 +8,6 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Characters: AP/Affinity Coin editing and general/Expert Mode inspection.
 - [x] Characters: verified AP cap, single/bulk AP maximum and reserve EXP editing.
 - [x] Characters: linked current level/EXP editing with verified highest-level bookkeeping.
-- [ ] Expert Mode: simulate spending/refunding reserve EXP and edit its enabled state.
 - [x] Arts: verified levels, single/character-wide maximum and CLI support.
 - [x] Arts: ordinary level-based learning and single/character-wide/global learning and maximum, with protected story/quest arts and matching CLI support.
 - [ ] Arts: localized game names and validated story/quest unlock editing.
@@ -24,12 +23,15 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Achievements: validated main-story completion bits/counters, single/bulk unlock, filters and CLI support.
 - [ ] Achievements: localized game text and in-game verification of newly completed records.
 - [x] Character affinity: single/bulk maximum, direct points editing and monotonic skill-link slot synchronization, with matching CLI support.
+- [x] Region affinity: linked points/stars for all five main-story areas, single/bulk maximum and matching CLI support.
 
 Prioritize grind reduction, bulk edits and actions that are difficult or unavailable
 in-game. Basic party sorting is intentionally excluded; it adds little value to
-a save editor and does not justify another panel.
+a save editor and does not justify another panel. Ordinary menu settings, including
+the Expert Mode enabled switch, are also excluded. Direct level and reserve EXP
+editing remain available for progression changes without grinding.
 
-Region/NPC affinity, quests, Colony 6, Time Attack, Ponspectors and system-save
+NPC affinity, quests, Colony 6, Time Attack, Ponspectors and system-save
 unlocks need further format validation. They are not promised or exposed as editable fields.
 
 ## Verification
@@ -44,7 +46,7 @@ dotnet run --project test/Core.Test.csproj -- --save-directory /path/to/saves
 Round-trip and byte-diff tests do not replace loading an edited copy in-game.
 
 See [progression validation](progression.md) for the verified resource limits and
-the verified level/EXP linkage and the remaining Expert Mode operations.
+the verified level/EXP linkage and reserve pool edits.
 See [Arts validation](arts.md) for campaign limits, manual flags and linked records.
 See [Skills validation](skills.md) for branch flags, learning costs and write boundaries.
 See [Equipment validation](equipment.md) for inventory references, gem ownership and write boundaries.
@@ -52,3 +54,4 @@ See [Gem validation](gems.md) for effect limits, encoding and inventory editing.
 See [Inventory validation](inventory.md) for stack limits, safe allocation and serial counters.
 See [Achievement validation](achievements.md) for condition types, completion flags and write boundaries.
 See [Affinity validation](affinity.md) for canonical pairs, point limits and directed skill-link unlocks.
+See [Region affinity validation](region-affinity.md) for star thresholds, area IDs and isolated point writes.

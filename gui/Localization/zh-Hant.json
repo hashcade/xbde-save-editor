@@ -1,4 +1,8 @@
 {
+  "Regions": "地區",
+  "RegionStars": "星級",
+  "RegionPoints": "牽絆值（0–10,000）",
+  "MaxAllRegions": "全部地區牽絆全滿",
   "Affinity": "牽絆",
   "AffinityPoints": "牽絆值（0–5,000）",
   "AffinitySlots": "技能連結欄位（雙方）",

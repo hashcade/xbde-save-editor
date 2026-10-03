@@ -44,6 +44,7 @@ public partial class MainWindow
             MaxAffinityButton.IsEnabled = _affinity is { CanEdit: true, IsMaximum: false };
         }
         finally { _refreshingAffinity = false; }
+        RefreshRegionAffinity();
     }
 
     private bool CommitAffinityDraft()

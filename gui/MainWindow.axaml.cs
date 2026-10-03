@@ -74,10 +74,12 @@ public partial class MainWindow : Window
             if (!CommitGemDraft()) return false;
             if (!CommitInventoryDraft()) return false;
             if (!CommitAffinityDraft()) return false;
+            if (!CommitRegionAffinityDrafts()) return false;
             Session.Save(path);
             RefreshCharacters();
             RefreshGems();
             RefreshInventory();
+            RefreshRegionAffinity();
             ShowStatus(UiLanguage.Get("Saved") + " " + Path.GetFileName(path));
             return true;
         }
@@ -94,6 +96,7 @@ public partial class MainWindow : Window
         if (!CommitGemDraft()) return;
         if (!CommitInventoryDraft()) return;
         if (!CommitAffinityDraft()) return;
+        if (!CommitRegionAffinityDrafts()) return;
         UiLanguage.Apply(language);
         RefreshMain();
         RefreshCharacters();

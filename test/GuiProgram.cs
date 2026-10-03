@@ -80,6 +80,107 @@ string temporary = Path.Combine(Path.GetTempPath(), $"xbde-gui-{Guid.NewGuid():N
 Directory.CreateDirectory(temporary);
 try
 {
+    byte[] regionFixture = new byte[SaveDocument.FileSize];
+    BinaryPrimitives.WriteUInt32LittleEndian(regionFixture, 7);
+    BinaryPrimitives.WriteUInt16LittleEndian(regionFixture.AsSpan(0x152318), 1);
+    BinaryPrimitives.WriteUInt16LittleEndian(regionFixture.AsSpan(0x15231a), 2);
+    regionFixture[0x152330] = 2;
+    BinaryPrimitives.WriteUInt32LittleEndian(regionFixture.AsSpan(0x152368), 20);
+    BinaryPrimitives.WriteUInt32LittleEndian(regionFixture.AsSpan(0x1524a0), 20);
+    string regionPath = Path.Combine(temporary, "regions.sav");
+    string regionOutput = Path.Combine(temporary, "regions-edited.sav");
+    File.WriteAllBytes(regionPath, regionFixture);
+    Check(window.LoadSave(regionPath), "Cannot open region test save.");
+    window.ShowRegionAffinity();
+    Dispatcher.UIThread.RunJobs();
+    T RegionControl<T>(string name, int index = 0) where T : Control
+    {
+        Dispatcher.UIThread.RunJobs();
+        return window.FindControl<ItemsControl>("RegionAffinityCards")!.GetVisualDescendants().OfType<T>()
+            .Where(control => control.Name == name).ElementAt(index);
+    }
+    Check(!window.FindControl<Grid>("CharacterAffinityPanel")!.IsVisible
+        && window.FindControl<ScrollViewer>("RegionAffinityScroll")!.IsVisible
+        && window.FindControl<ItemsControl>("RegionAffinityCards")!.Items.Count == 5,
+        "Region affinity did not switch the entire panel or expose five areas.");
+    Check(!window.Session!.HasChanges, "Displaying region affinity changed bytes.");
+    RegionControl<ComboBox>("RegionStarsInput", 2).SelectedItem = 5;
+    byte[] regionExpected = (byte[])regionFixture.Clone();
+    BinaryPrimitives.WriteUInt16LittleEndian(regionExpected.AsSpan(0xdf8), 8_000);
+    Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(regionExpected), "GUI stars changed more than their region's points.");
+    RegionControl<NumericUpDown>("RegionPointsInput", 2).Value = 9_999;
+    RegionControl<Button>("ApplyRegionPointsButton", 2).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    BinaryPrimitives.WriteUInt16LittleEndian(regionExpected.AsSpan(0xdf8), 9_999);
+    Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(regionExpected)
+        && (int)RegionControl<ComboBox>("RegionStarsInput", 2).SelectedItem! == 5,
+        "GUI point editing did not refresh stars.");
+    RegionControl<NumericUpDown>("RegionPointsInput", 0).Value = 100;
+    RegionControl<NumericUpDown>("RegionPointsInput", 1).Value = 1.5m;
+    Check(!window.SaveTo(regionOutput) && !File.Exists(regionOutput)
+        && window.Session.Document.Serialize().AsSpan().SequenceEqual(regionExpected),
+        "Invalid region drafts allowed saving or partially committed other regions.");
+    window.FindControl<Button>("MaxAllRegionsButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(regionExpected), "Bulk maximum ignored an invalid region draft.");
+    window.SetLanguage("ja");
+    Check(UiLanguage.Current == "en", "Language switching discarded an invalid region draft.");
+    RegionControl<NumericUpDown>("RegionPointsInput", 0).Value = 0;
+    RegionControl<NumericUpDown>("RegionPointsInput", 1).Value = 0;
+    var invalidRegion = RegionControl<NumericUpDown>("RegionPointsInput");
+    invalidRegion.Text = "not-a-number";
+    RegionControl<Button>("ApplyRegionPointsButton").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(!window.SaveTo(regionOutput) && window.Session.Document.Serialize().AsSpan().SequenceEqual(regionExpected),
+        "Invalid region text fell back to a valid old value.");
+    invalidRegion.Text = "0";
+    RegionControl<NumericUpDown>("RegionPointsInput").Value = 4_000;
+    BinaryPrimitives.WriteUInt16LittleEndian(regionExpected.AsSpan(0xdf4), 4_000);
+    Check(window.SaveTo(regionOutput)
+        && (int)RegionControl<ComboBox>("RegionStarsInput").SelectedItem! == 3
+        && window.Session.Document.Serialize().AsSpan().SequenceEqual(regionExpected),
+        "Saving a region draft did not commit points and refresh stars.");
+    window.FindControl<Button>("MaxAllRegionsButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    for (int id = 1; id <= 5; id++) BinaryPrimitives.WriteUInt16LittleEndian(regionExpected.AsSpan(0xdf2 + id * 2), 10_000);
+    Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(regionExpected), "GUI bulk maximum changed unrelated fields.");
+    Check(window.SaveTo(regionOutput) && File.ReadAllBytes(regionOutput).AsSpan().SequenceEqual(regionExpected)
+        && File.ReadAllBytes(regionPath).AsSpan().SequenceEqual(regionFixture), "GUI region saving changed the source or output bytes.");
+    foreach (string language in UiLanguage.Languages.Keys)
+    {
+        window.SetLanguage(language);
+        window.Width = 860;
+        window.Height = 600;
+        Dispatcher.UIThread.RunJobs();
+        VerifyPageSpacing();
+        Check(window.FindControl<ItemsControl>("RegionAffinityCards")!.Items.Count == 5
+            && !window.FindControl<Button>("MaxAllRegionsButton")!.IsEnabled
+            && window.Session.Document.Serialize().AsSpan().SequenceEqual(regionExpected), "Localized regions altered maximum points.");
+        var starsInput = RegionControl<ComboBox>("RegionStarsInput");
+        var pointsInput = RegionControl<NumericUpDown>("RegionPointsInput");
+        Check(starsInput.Bounds.Width > 80 && pointsInput.Bounds.Width > 80, "Region inputs collapsed at minimum window size.");
+        Check(RegionControl<TextBlock>("RegionPointsTitle").Text == UiLanguage.Get("RegionPoints"),
+            "Region label reused the character-pair point cap.");
+        var regionTabs = window.FindControl<TabStrip>("AffinityNavigation")!;
+        var regionScroll = window.FindControl<ScrollViewer>("RegionAffinityScroll")!;
+        Check(Math.Abs(regionScroll.Bounds.Top - regionTabs.Bounds.Bottom - 16) < 0.1,
+            "Region tabs have duplicated vertical spacing.");
+    }
+    BinaryPrimitives.WriteUInt32LittleEndian(regionFixture, 8);
+    File.WriteAllBytes(regionPath, regionFixture);
+    Check(window.LoadSave(regionPath), "Cannot inspect an unverified region format.");
+    Dispatcher.UIThread.RunJobs();
+    Check(!RegionControl<ComboBox>("RegionStarsInput").IsVisible
+        && !RegionControl<NumericUpDown>("RegionPointsInput").IsVisible
+        && !window.FindControl<Button>("MaxAllRegionsButton")!.IsEnabled, "Unsupported region fields look editable.");
+    RegionControl<ComboBox>("RegionStarsInput").SelectedItem = 5;
+    Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(regionFixture), "A protected region callback wrote data.");
+    BinaryPrimitives.WriteUInt32LittleEndian(regionFixture, 7);
+    BinaryPrimitives.WriteUInt16LittleEndian(regionFixture.AsSpan(0x15231a), 14);
+    BinaryPrimitives.WriteUInt32LittleEndian(regionFixture.AsSpan(0x152368 + 13 * 0x138), 20);
+    File.WriteAllBytes(regionPath, regionFixture);
+    Check(window.LoadSave(regionPath) && window.FindControl<ItemsControl>("RegionAffinityCards")!.Items.Count == 0,
+        "Future Connected exposes five main-story regions.");
+    window.FindControl<TabStrip>("AffinityNavigation")!.SelectedIndex = 0;
+    window.Width = 1120;
+    window.Height = 780;
+    window.SetLanguage("en");
     byte[] original = new byte[SaveDocument.FileSize];
     BinaryPrimitives.WriteUInt16LittleEndian(original.AsSpan(0x152318), 1);
     BinaryPrimitives.WriteUInt16LittleEndian(original.AsSpan(0x15231a), 2);
@@ -874,6 +975,7 @@ try
         // Use a fresh renderer: resizing the headless test window retains stale clipping masks.
         window.Hide();
         window = new MainWindow();
+        if (page.Length > 0 && page[0] == "regions") window.Height = 960;
         window.Show();
         Check(window.LoadSave(realSave), "Could not open the screenshot save.");
         if (page.Length > 0 && page[0] == "inventory")
@@ -897,6 +999,7 @@ try
         }
         else if (page.Length > 0 && page[0] == "skill-links") window.ShowSkillLinks();
         else if (page.Length > 0 && page[0] == "affinity") window.ShowAffinity();
+        else if (page.Length > 0 && page[0] == "regions") window.ShowRegionAffinity();
         else if (page.Length > 0 && page[0] == "equipment")
         {
             window.ShowEquipment();

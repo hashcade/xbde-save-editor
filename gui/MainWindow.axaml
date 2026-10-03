@@ -388,43 +388,82 @@
         </ScrollViewer>
       </suki:GlassCard>
     </Grid>
-    <Grid Name="AffinityPanel" Grid.Row="1" Margin="24,0" ColumnDefinitions="280,*" ColumnSpacing="24" IsVisible="False">
-      <suki:GlassCard Padding="20">
-        <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="16">
-          <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
-            <TextBlock Text="{DynamicResource Affinity}" FontWeight="SemiBold" />
-            <TextBlock Name="AffinityCountValue" Grid.Column="1" />
+    <Grid Name="AffinityPanel" Grid.Row="1" Margin="24,0" RowDefinitions="Auto,*" RowSpacing="16" IsVisible="False">
+      <TabStrip Name="AffinityNavigation" SelectedIndex="0" SelectionChanged="AffinityNavigation_Changed">
+        <TabStripItem Content="{DynamicResource Characters}" />
+        <TabStripItem Content="{DynamicResource Regions}" />
+      </TabStrip>
+      <Grid Name="CharacterAffinityPanel" Grid.Row="1" ColumnDefinitions="280,*" ColumnSpacing="24">
+        <suki:GlassCard Padding="20">
+          <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="16">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+              <TextBlock Text="{DynamicResource Affinity}" FontWeight="SemiBold" />
+              <TextBlock Name="AffinityCountValue" Grid.Column="1" />
+            </Grid>
+            <TextBox Name="AffinitySearch" Grid.Row="1" PlaceholderText="{DynamicResource Search}" TextChanged="AffinitySearch_Changed" />
+            <ListBox Name="AffinityList" Grid.Row="2" SelectionChanged="AffinityList_Changed">
+              <ListBox.ItemTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate></ListBox.ItemTemplate>
+            </ListBox>
+            <Button Name="MaxAllAffinityButton" Grid.Row="3" Content="{DynamicResource MaxAllAffinity}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxAllAffinity_Click">
+              <Button.ContentTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" /></DataTemplate></Button.ContentTemplate>
+            </Button>
           </Grid>
-          <TextBox Name="AffinitySearch" Grid.Row="1" PlaceholderText="{DynamicResource Search}" TextChanged="AffinitySearch_Changed" />
-          <ListBox Name="AffinityList" Grid.Row="2" SelectionChanged="AffinityList_Changed">
-            <ListBox.ItemTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate></ListBox.ItemTemplate>
-          </ListBox>
-          <Button Name="MaxAllAffinityButton" Grid.Row="3" Content="{DynamicResource MaxAllAffinity}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxAllAffinity_Click">
+        </suki:GlassCard>
+        <suki:GlassCard Grid.Column="1" Padding="20">
+          <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Spacing="24">
+              <TextBlock Text="{DynamicResource Affinity}" FontWeight="SemiBold" />
+              <TextBlock Name="AffinityUnavailableValue" Text="{DynamicResource AffinityUnavailable}" TextWrapping="Wrap" IsVisible="False" />
+              <StackPanel Name="AffinityDetails" Spacing="24" IsVisible="False">
+                <StackPanel Spacing="8">
+                  <TextBlock Text="{DynamicResource AffinityPoints}" />
+                  <NumericUpDown Name="AffinityPointsInput" Minimum="0" Maximum="5000" Height="42" Margin="0" FormatString="0.############################" ClipValueToMinMax="False" ValueChanged="AffinityPoints_Changed" />
+                  <TextBlock Name="AffinityPointsValue" IsVisible="False" />
+                </StackPanel>
+                <StackPanel Spacing="8">
+                  <TextBlock Text="{DynamicResource AffinitySlots}" />
+                  <TextBlock Name="AffinitySlotsValue" />
+                </StackPanel>
+                <TextBlock Text="{DynamicResource AffinitySlotHint}" TextWrapping="Wrap" Opacity="0.65" />
+                <Button Name="MaxAffinityButton" Content="{DynamicResource MaxAffinity}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxAffinity_Click" />
+              </StackPanel>
+            </StackPanel>
+          </ScrollViewer>
+        </suki:GlassCard>
+      </Grid>
+      <ScrollViewer Name="RegionAffinityScroll" Grid.Row="1" HorizontalScrollBarVisibility="Disabled" IsVisible="False">
+        <StackPanel Spacing="16">
+          <TextBlock Name="RegionAffinityUnavailable" Text="{DynamicResource AffinityUnavailable}" TextWrapping="Wrap" IsVisible="False" />
+          <ItemsControl Name="RegionAffinityCards" Margin="-12,0,-12,0">
+            <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="2" /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="x:Object" x:CompileBindings="False">
+                <suki:GlassCard Padding="20" Margin="12,0,12,24" VerticalAlignment="Top">
+                  <StackPanel Spacing="16">
+                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="24">
+                      <StackPanel Spacing="8">
+                        <TextBlock Text="{DynamicResource RegionStars}" TextWrapping="Wrap" />
+                        <ComboBox Name="RegionStarsInput" Tag="{Binding}" ItemsSource="{Binding StarChoices}" SelectedItem="{Binding Stars, Mode=OneWay}" IsVisible="{Binding CanEdit}" HorizontalAlignment="Stretch" SelectionChanged="RegionStars_Changed" />
+                        <TextBlock Text="{Binding Stars}" IsVisible="{Binding ReadOnly}" />
+                      </StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="8">
+                        <TextBlock Name="RegionPointsTitle" Text="{DynamicResource RegionPoints}" TextWrapping="Wrap" />
+                        <NumericUpDown Name="RegionPointsInput" Tag="{Binding}" Minimum="0" Maximum="{Binding DisplayMaximum}" Value="{Binding DraftValue, Mode=OneWay}" Height="42" Margin="0" FormatString="0.############################" ClipValueToMinMax="False" IsVisible="{Binding CanEdit}" Loaded="RegionPoints_Loaded" ValueChanged="RegionPoints_Changed" />
+                        <TextBlock Text="{Binding Points}" IsVisible="{Binding ReadOnly}" />
+                      </StackPanel>
+                    </Grid>
+                    <Button Name="ApplyRegionPointsButton" Tag="{Binding}" Content="{DynamicResource ApplyChanges}" HorizontalAlignment="Stretch" IsVisible="{Binding CanEdit}" Click="ApplyRegionPoints_Click" />
+                  </StackPanel>
+                </suki:GlassCard>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <Button Name="MaxAllRegionsButton" Content="{DynamicResource MaxAllRegions}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxAllRegions_Click">
             <Button.ContentTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" /></DataTemplate></Button.ContentTemplate>
           </Button>
-        </Grid>
-      </suki:GlassCard>
-      <suki:GlassCard Grid.Column="1" Padding="20">
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-          <StackPanel Spacing="24">
-            <TextBlock Text="{DynamicResource Affinity}" FontWeight="SemiBold" />
-            <TextBlock Name="AffinityUnavailableValue" Text="{DynamicResource AffinityUnavailable}" TextWrapping="Wrap" IsVisible="False" />
-            <StackPanel Name="AffinityDetails" Spacing="24" IsVisible="False">
-              <StackPanel Spacing="8">
-                <TextBlock Text="{DynamicResource AffinityPoints}" />
-                <NumericUpDown Name="AffinityPointsInput" Minimum="0" Maximum="5000" Height="42" Margin="0" FormatString="0.############################" ClipValueToMinMax="False" ValueChanged="AffinityPoints_Changed" />
-                <TextBlock Name="AffinityPointsValue" IsVisible="False" />
-              </StackPanel>
-              <StackPanel Spacing="8">
-                <TextBlock Text="{DynamicResource AffinitySlots}" />
-                <TextBlock Name="AffinitySlotsValue" />
-              </StackPanel>
-              <TextBlock Text="{DynamicResource AffinitySlotHint}" TextWrapping="Wrap" Opacity="0.65" />
-              <Button Name="MaxAffinityButton" Content="{DynamicResource MaxAffinity}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxAffinity_Click" />
-            </StackPanel>
-          </StackPanel>
-        </ScrollViewer>
-      </suki:GlassCard>
+        </StackPanel>
+      </ScrollViewer>
     </Grid>
     <TextBlock Name="StatusMessage" Grid.Row="2" Margin="24,0" TextWrapping="Wrap" IsVisible="False" />
   </Grid>

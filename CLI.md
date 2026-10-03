@@ -175,3 +175,29 @@ never relocks them. `max-all-affinity` targets all joined pairs, not a subset.
 Future Connected, ambiguous campaigns and unverified formats reject writes.
 No command changes coins, equipped links, world affinity or achievement state.
 See [affinity validation](docs/affinity.md).
+
+## Region affinity
+
+```sh
+XbdeEditor.Cli region-affinities input.sav
+XbdeEditor.Cli region-affinity input.sav output.sav 3 --points 10000
+XbdeEditor.Cli region-affinity input.sav output.sav 3 --stars 5
+XbdeEditor.Cli max-region-affinity input.sav output.sav 3
+XbdeEditor.Cli max-all-region-affinity input.sav output.sav
+```
+
+| Region ID | Area |
+| --- | --- |
+| 1 | Colony 9 Area |
+| 2 | Colony 6 Area |
+| 3 | Central Bionis |
+| 4 | Upper Bionis |
+| 5 | Hidden Village |
+
+Points accept 0–10,000. Stars accept 1–5: changing a rating sets its minimum
+points (0, 2,000, 4,000, 6,000 or 8,000). Selecting the current rating preserves
+points within that tier. Maximum commands set 10,000, not just the five-star
+minimum. The inspection command returns points, stars and editability as JSON.
+Only identified main-story saves with format version 7 permit writes. Region
+edits leave character affinity, NPC relationships, quests and achievements alone.
+See [region validation](docs/region-affinity.md).

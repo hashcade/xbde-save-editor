@@ -8,4 +8,5 @@
   <ItemGroup><Compile Include="InventoryTests.cs" /><Compile Include="AchievementTests.cs" /></ItemGroup>
   <ItemGroup><Compile Include="SkillLinksTests.cs" /></ItemGroup>
   <ItemGroup><Compile Include="AffinityTests.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="RegionAffinityTests.cs" /></ItemGroup>
 </Project>
