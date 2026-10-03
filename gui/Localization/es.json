@@ -1,4 +1,5 @@
 {
+"Skills": "Habilidades", "Locked": "Bloqueado", "LearnedSkills": "Habilidades aprendidas", "SkillProgress": "PH restantes", "SkillCost": "{0} PH", "MaxTree": "Maximizar árbol", "MaxCharacterSkills": "Maximizar habilidades del personaje", "MaxAllSkills": "Maximizar todas las habilidades",
   "Arts": "Artes", "ArtStatus": "Estado", "NotLearned": "Sin aprender", "FixedTalent": "Arte especial (nivel fijo)", "Upgradeable": "Mejorable", "Unavailable": "No disponible", "MaximumLevel": "Nivel máximo", "MaxArt": "Nivel máximo", "MaxCharacterArts": "Maximizar todas las artes",
   "ApplyChanges": "Aplicar cambios", "HighestLevel": "Nivel máximo alcanzado", "RecordedExperience": "EXP registrada",
   "MaxAP": "PA al máximo", "MaxAllAP": "Todos los PA al máximo", "MaxReserveExperience": "EXP de reserva al máximo",

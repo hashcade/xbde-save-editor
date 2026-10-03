@@ -1,4 +1,5 @@
 {
+"Skills": "Skills", "Locked": "Locked", "LearnedSkills": "Skills Learned", "SkillProgress": "Remaining SP", "SkillCost": "{0} SP", "MaxTree": "Max Tree", "MaxCharacterSkills": "Max Character Skills", "MaxAllSkills": "Max All Skills",
   "Arts": "Arts", "ArtStatus": "Status", "NotLearned": "Not learned", "FixedTalent": "Talent art (fixed level)", "Upgradeable": "Upgradeable", "Unavailable": "Unavailable", "MaximumLevel": "Maximum Level", "MaxArt": "Max Level", "MaxCharacterArts": "Max All Arts",
   "ApplyChanges": "Apply Changes", "HighestLevel": "Highest Level", "RecordedExperience": "Recorded EXP",
   "MaxAP": "Max AP", "MaxAllAP": "Max All AP", "MaxReserveExperience": "Max Reserve EXP",

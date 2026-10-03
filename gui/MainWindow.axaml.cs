@@ -57,6 +57,7 @@ public partial class MainWindow : Window
         }
         try
         {
+            if (!CommitSkillDrafts()) return false;
             if (!CommitProgressionDraft()) return false;
             Session.Save(path);
             RefreshCharacters();
@@ -152,7 +153,7 @@ public partial class MainWindow : Window
 
     private async Task<bool> ConfirmDiscard()
     {
-        if (Session?.HasChanges != true && !HasProgressionDraft) return true;
+        if (Session?.HasChanges != true && !HasProgressionDraft && _skillProgressDrafts.Count == 0) return true;
         var discard = new Button { Content = UiLanguage.Get("Discard") };
         var cancel = new Button { Content = UiLanguage.Get("Cancel") };
         var dialog = new Window
@@ -176,7 +177,7 @@ public partial class MainWindow : Window
 
     private async void Window_Closing(object? sender, WindowClosingEventArgs e)
     {
-        if (_allowClose || (Session?.HasChanges != true && !HasProgressionDraft)) return;
+        if (_allowClose || (Session?.HasChanges != true && !HasProgressionDraft && _skillProgressDrafts.Count == 0)) return;
         e.Cancel = true;
         if (await ConfirmDiscard())
         {

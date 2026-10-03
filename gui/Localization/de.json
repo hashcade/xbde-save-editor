@@ -1,4 +1,5 @@
 {
+"Skills": "Talente", "Locked": "Gesperrt", "LearnedSkills": "Erlernte Talente", "SkillProgress": "Verbleibende TaP", "SkillCost": "{0} TaP", "MaxTree": "Talentbaum maximieren", "MaxCharacterSkills": "Talente des Charakters maximieren", "MaxAllSkills": "Alle Talente maximieren",
   "Arts": "Techniken", "ArtStatus": "Status", "NotLearned": "Nicht erlernt", "FixedTalent": "Spezialtechnik (feste Stufe)", "Upgradeable": "Steigerbar", "Unavailable": "Nicht verfügbar", "MaximumLevel": "Maximale Stufe", "MaxArt": "Maximale Stufe", "MaxCharacterArts": "Alle Techniken maximieren",
   "ApplyChanges": "Änderungen anwenden", "HighestLevel": "Höchste Stufe", "RecordedExperience": "Gespeicherte EP",
   "MaxAP": "AP maximieren", "MaxAllAP": "Alle AP maximieren", "MaxReserveExperience": "Reserve-EP maximieren",

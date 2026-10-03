@@ -74,7 +74,10 @@
               <DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>
-          <Button Name="MaxAllAPButton" Grid.Row="3" Content="{DynamicResource MaxAllAP}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxAllAP_Click" />
+          <StackPanel Grid.Row="3" Spacing="16">
+            <Button Name="MaxAllAPButton" Content="{DynamicResource MaxAllAP}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxAllAP_Click" />
+            <Button Name="MaxAllSkillsButton" Content="{DynamicResource MaxAllSkills}" HorizontalAlignment="Stretch" IsEnabled="False" IsVisible="False" Click="MaxAllSkills_Click" />
+          </StackPanel>
         </Grid>
       </suki:GlassCard>
       <suki:GlassCard Grid.Column="1" Padding="20">
@@ -82,6 +85,7 @@
           <TabStrip Name="CharacterNavigation" Classes="page-tabs" FontSize="13" SelectedIndex="0" SelectionChanged="CharacterNavigation_Changed">
             <TabStripItem Content="{DynamicResource General}" />
             <TabStripItem Content="{DynamicResource Arts}" />
+            <TabStripItem Content="{DynamicResource Skills}" />
           </TabStrip>
           <ScrollViewer Name="GeneralCharacterScroll" Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
             <Grid Name="CharacterInputs" ColumnDefinitions="*,*" ColumnSpacing="32" IsEnabled="False" VerticalAlignment="Top">
@@ -144,6 +148,39 @@
               </StackPanel>
               <Button Name="MaxArtButton" Content="{DynamicResource MaxArt}" HorizontalAlignment="Stretch" Click="MaxArt_Click" />
             </StackPanel>
+          </Grid>
+          <Grid Name="SkillsPanel" Grid.Row="1" RowDefinitions="Auto,*" RowSpacing="16" IsVisible="False">
+            <Button Name="MaxCharacterSkillsButton" Content="{DynamicResource MaxCharacterSkills}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxCharacterSkills_Click" />
+            <ScrollViewer Name="SkillsScroll" Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+              <ItemsControl Name="SkillTreeList" Margin="-6,0,-6,0">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate><UniformGrid Columns="2" /></ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="x:Object" x:CompileBindings="False">
+                    <suki:GlassCard Padding="16" Margin="6,0,6,12" VerticalAlignment="Top">
+                      <StackPanel Spacing="10">
+                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding Status}" IsVisible="{Binding IsBlocked}" />
+                        <TextBlock Text="{DynamicResource LearnedSkills}" />
+                        <ComboBox Name="SkillLearnedCountInput" Tag="{Binding}" ItemsSource="{Binding LearnedCounts}" SelectedItem="{Binding LearnedCount, Mode=OneWay}" IsVisible="{Binding CanEdit}" HorizontalAlignment="Stretch" SelectionChanged="SkillLearnedCount_Changed" />
+                        <TextBlock Text="{Binding LearnedCount}" IsVisible="{Binding IsBlocked}" />
+                        <TextBlock Text="{Binding ProgressRange}" />
+                        <NumericUpDown Name="SkillProgressInput" Tag="{Binding}" Minimum="0" Maximum="{Binding DisplayMaximum}" Value="{Binding DraftProgress, Mode=OneWay}" Increment="1" FormatString="0.############################" Height="42" Margin="0" ClipValueToMinMax="False" IsVisible="{Binding CanEditProgress}" ValueChanged="SkillProgress_Changed" Loaded="SkillProgress_Loaded" />
+                        <TextBlock Text="{Binding Progress}" IsVisible="{Binding ShowProgressValue}" />
+                        <Button Name="ApplySkillProgressButton" Tag="{Binding}" Content="{DynamicResource ApplyChanges}" HorizontalAlignment="Stretch" IsVisible="{Binding CanEditProgress}" Click="ApplySkillProgress_Click" />
+                        <ItemsControl ItemsSource="{Binding Nodes}">
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" Margin="0,3" /></DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Button Name="MaxTreeButton" Tag="{Binding}" Content="{DynamicResource MaxTree}" HorizontalAlignment="Stretch" IsEnabled="{Binding CanEdit}" Click="MaxTree_Click" />
+                      </StackPanel>
+                    </suki:GlassCard>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </ScrollViewer>
           </Grid>
         </Grid>
       </suki:GlassCard>

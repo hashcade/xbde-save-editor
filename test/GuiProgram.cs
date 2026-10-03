@@ -5,6 +5,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Headless;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using XbdeEditor.Core;
 using XbdeEditor.Gui;
 using XbdeEditor.Gui.Localization;
@@ -36,10 +37,20 @@ void VerifyPageSpacing()
         $"Header-to-page spacing changed: {gap}.");
     if (!characters.IsVisible) return;
     var tabs = window.FindControl<TabStrip>("CharacterNavigation")!;
-    var arts = window.FindControl<Grid>("ArtsPanel")!;
-    var body = arts.IsVisible ? (Control)arts : window.FindControl<ScrollViewer>("GeneralCharacterScroll")!;
+    Control body = tabs.SelectedIndex switch
+    {
+        1 => window.FindControl<Grid>("ArtsPanel")!,
+        2 => window.FindControl<Grid>("SkillsPanel")!,
+        _ => window.FindControl<ScrollViewer>("GeneralCharacterScroll")!
+    };
     Check(tabs.Margin == new Thickness(0) && Math.Abs(body.Bounds.Top - tabs.Bounds.Bottom - 16) < 0.1,
         "Character tabs have duplicated vertical spacing.");
+}
+T SkillControl<T>(string name, int treeIndex = 1) where T : Control
+{
+    Dispatcher.UIThread.RunJobs();
+    return window.FindControl<ItemsControl>("SkillTreeList")!.GetVisualDescendants().OfType<T>()
+        .Where(control => control.Name == name).ElementAt(treeIndex - 1);
 }
 Check(!MainWindow.WholeNumber(1.5m, out _), "Fractional amount is accepted.");
 Check(!MainWindow.WholeNumber(-1, out _), "Negative amount is accepted.");
@@ -234,6 +245,111 @@ try
     var artsSaved = SaveDocument.Parse(File.ReadAllBytes(Path.Combine(temporary, "arts-edited.sav")));
     Check(artsSaved.GetCharacter(1).GetArt(12).Level == 12, "GUI art edit was not persisted.");
     Check(File.ReadAllBytes(source).AsSpan().SequenceEqual(beforeArtEditing), "GUI art edit overwrote the input save.");
+    byte[] skillsFixture = (byte[])original.Clone();
+    BinaryPrimitives.WriteUInt32LittleEndian(skillsFixture.AsSpan(0x152368 + 0x90), 1);
+    BinaryPrimitives.WriteUInt32LittleEndian(skillsFixture.AsSpan(0x1524a0 + 0x90), 1);
+    BinaryPrimitives.WriteUInt32LittleEndian(skillsFixture.AsSpan(0x152368 + 0x98), 5);
+    BinaryPrimitives.WriteUInt32LittleEndian(skillsFixture.AsSpan(0x152368 + 0x84), uint.MaxValue);
+    string skillsPath = Path.Combine(temporary, "skills.sav");
+    File.WriteAllBytes(skillsPath, skillsFixture);
+    Check(window.LoadSave(skillsPath), "Could not open the skill fixture.");
+    characterList.SelectedIndex = 0;
+    window.ShowSkills();
+    VerifyPageSpacing();
+    var maxAllSkills = window.FindControl<Button>("MaxAllSkillsButton")!;
+    Check(window.FindControl<TabStrip>("CharacterNavigation")!.SelectedIndex == 2
+        && window.FindControl<Grid>("SkillsPanel")!.IsVisible && maxAllSkills.IsVisible,
+        "Skills navigation or bulk button is disconnected.");
+    Check(window.FindControl<ScrollViewer>("SkillsScroll") is not null
+        && window.FindControl<ItemsControl>("SkillTreeList")!.ItemCount == 5,
+        "Skills do not share one panel containing all five trees.");
+    Check(!window.Session!.HasChanges, "Opening Skills changed existing counts or SP.");
+    Check(SkillControl<ComboBox>("SkillLearnedCountInput").Items.OfType<int>().SequenceEqual([1, 2, 3, 4, 5])
+        && SkillControl<ComboBox>("SkillLearnedCountInput", 2).Items.OfType<int>().SequenceEqual([0, 1, 2, 3, 4, 5]),
+        "Skill count choices ignore the innate skill minimum.");
+    Check(!SkillControl<NumericUpDown>("SkillProgressInput", 3).IsVisible
+        && window.Session.Document.GetCharacter(1).GetSkillTree(3).Progress == uint.MaxValue,
+        "Fully learned SP is editable or existing excess SP was lost.");
+    Check(!SkillControl<Button>("MaxTreeButton", 4).IsEnabled
+        && !SkillControl<ComboBox>("SkillLearnedCountInput", 4).IsVisible,
+        "A locked skill tree is editable.");
+    var firstTree = window.Session.Document.GetCharacter(1).GetSkillTree(1);
+    Check(SkillControl<NumericUpDown>("SkillProgressInput").Maximum == firstTree.MaximumProgress,
+        "Skill SP limit differs from the next-node residual cap.");
+    SkillControl<NumericUpDown>("SkillProgressInput").Value = 12;
+    Check(firstTree.Progress == 0, "Typing skill SP committed a partial number.");
+    SkillControl<Button>("ApplySkillProgressButton").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(firstTree.Progress == 12 && firstTree.LearnedCount == 1, "Applying residual SP changed the learned count.");
+    SkillControl<NumericUpDown>("SkillProgressInput").Value = 1.5m;
+    SkillControl<ComboBox>("SkillLearnedCountInput").SelectedItem = 2;
+    Check(firstTree.LearnedCount == 2 && firstTree.Progress == 0
+        && SkillControl<NumericUpDown>("SkillProgressInput").Value == 0,
+        "Selecting a learned count failed to reset SP and clear its draft.");
+    SkillControl<NumericUpDown>("SkillProgressInput").Value = 24;
+    SkillControl<NumericUpDown>("SkillProgressInput", 2).Value = 1.5m;
+    SkillControl<Button>("ApplySkillProgressButton", 2).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.GetCharacter(1).GetSkillTree(2).Progress == 0,
+        "Fractional skill SP was applied.");
+    byte[] beforeSkillSave = window.Session.Document.Serialize();
+    string invalidSkillsPath = Path.Combine(temporary, "invalid-skills.sav");
+    Check(!window.SaveTo(invalidSkillsPath) && !File.Exists(invalidSkillsPath)
+        && window.Session.Document.Serialize().AsSpan().SequenceEqual(beforeSkillSave),
+        "Invalid skill drafts did not block File Save atomically.");
+    window.SetLanguage("ja");
+    characterList.SelectedIndex = 1;
+    SkillControl<NumericUpDown>("SkillProgressInput").Value = 8;
+    characterList.SelectedIndex = 0;
+    Check(SkillControl<NumericUpDown>("SkillProgressInput").Value == 24
+        && SkillControl<NumericUpDown>("SkillProgressInput", 2).Value == 1.5m,
+        "Language or character switching discarded skill drafts.");
+    Check(!window.SaveTo(invalidSkillsPath)
+        && window.Session.Document.GetCharacter(2).GetSkillTree(1).Progress == 0,
+        "An invalid draft allowed another character's valid SP draft to commit.");
+    SkillControl<NumericUpDown>("SkillProgressInput", 2).Value = 9;
+    string skillsOutput = Path.Combine(temporary, "skills-edited.sav");
+    Check(window.SaveTo(skillsOutput), "File Save did not commit valid skill drafts.");
+    var skillsSaved = SaveDocument.Parse(File.ReadAllBytes(skillsOutput));
+    Check(skillsSaved.GetCharacter(1).GetSkillTree(1).Progress == 24
+        && skillsSaved.GetCharacter(1).GetSkillTree(2).Progress == 9
+        && skillsSaved.GetCharacter(2).GetSkillTree(1).Progress == 8,
+        "File Save omitted a skill draft from the current or another character.");
+    SkillControl<NumericUpDown>("SkillProgressInput").Value = 1.5m;
+    SkillControl<Button>("MaxTreeButton").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(firstTree.LearnedCount == 5 && firstTree.Progress == 0
+        && window.SaveTo(skillsOutput), "Max Tree did not clear its invalid SP draft.");
+    SkillControl<NumericUpDown>("SkillProgressInput", 2).Value = 1.5m;
+    window.FindControl<Button>("MaxCharacterSkillsButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.GetCharacter(1).SkillTrees.Where(tree => tree.CanEdit)
+        .All(tree => tree.LearnedCount == 5 && tree.Progress == 0) && window.SaveTo(skillsOutput),
+        "Max Character Skills did not normalize its trees and clear invalid drafts.");
+    characterList.SelectedIndex = 1;
+    SkillControl<NumericUpDown>("SkillProgressInput").Value = 1.5m;
+    search.Text = "Shulk";
+    maxAllSkills.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.Characters.SelectMany(character => character.SkillTrees)
+        .Where(tree => tree.CanEdit).All(tree => tree.LearnedCount == 5 && tree.Progress == 0)
+        && window.SaveTo(skillsOutput), "Max All Skills respected filtering or retained an invalid draft.");
+    Check(window.Session.Document.Characters.All(character => character.GetSkillTree(4).LearnedCount == 0
+        && character.GetSkillTree(5).LearnedCount == 0), "Skill batch actions unlocked blocked trees.");
+    search.Text = "";
+    foreach (string language in UiLanguage.Languages.Keys)
+    {
+        window.SetLanguage(language);
+        VerifyPageSpacing();
+        Check(maxAllSkills.Content?.ToString() == UiLanguage.Get("MaxAllSkills")
+            && window.FindControl<Button>("MaxCharacterSkillsButton")!.Content?.ToString() == UiLanguage.Get("MaxCharacterSkills"),
+            "Skill batch button translation is stale.");
+    }
+    window.Width = 860;
+    window.Height = 600;
+    VerifyPageSpacing();
+    window.Width = 1120;
+    window.Height = 780;
+    window.ShowArts();
+    VerifyPageSpacing();
+    Check(!maxAllSkills.IsVisible, "Max All Skills remains visible outside Skills.");
+    Check(File.ReadAllBytes(skillsPath).AsSpan().SequenceEqual(skillsFixture), "GUI skill editing overwrote its source.");
+    window.SetLanguage("en");
     byte[] ambiguous = (byte[])original.Clone();
     ambiguous[0x152330] = 1;
     string ambiguousPath = Path.Combine(temporary, "ambiguous.sav");
@@ -270,6 +386,13 @@ try
             window.ShowArts();
             window.FindControl<ListBox>("ArtList")!.SelectedIndex = 2;
         }
+        else if (page.Length > 0 && page[0] == "skills")
+        {
+            window.ShowSkills();
+            Check(window.FindControl<Button>("MaxAllSkillsButton")!.IsEnabled
+                && window.FindControl<Button>("MaxCharacterSkillsButton")!.IsEnabled,
+                "Real main-story save cannot maximize skills.");
+        }
         else if (page.Length > 0 && page[0] == "characters")
         {
             window.ShowCharacters();
@@ -277,6 +400,7 @@ try
         }
         else window.FindControl<TabStrip>("MainNavigation")!.SelectedIndex = 0;
         if (page.Length > 1) window.SetLanguage(page[1]);
+        Thread.Sleep(250); // Allow enabled-state color transitions to finish before capture.
         Dispatcher.UIThread.RunJobs();
         VerifyPageSpacing();
         using var frame = window.CaptureRenderedFrame()!;

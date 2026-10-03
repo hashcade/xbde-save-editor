@@ -54,6 +54,7 @@ public partial class MainWindow
             AffinityCoinsInput.Maximum = Math.Max(999, _character?.AffinityCoins ?? 0);
             AffinityCoinsInput.Value = _character?.AffinityCoins;
             RefreshArts();
+            RefreshSkills();
         }
         finally { _refreshingCharacters = false; }
     }
