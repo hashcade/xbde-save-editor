@@ -35,5 +35,18 @@
   "MainStory": "Histoire principale", "FutureConnected": "Un avenir commun", "Unknown": "Non confirmé",
   "OpenFailed": "Impossible d’ouvrir la sauvegarde :", "SaveFailed": "Échec de l’enregistrement :", "Saved": "Enregistré :",
   "InvalidValue": "Saisissez un entier dans la plage autorisée.",
-  "UnsavedChanges": "Modifications non enregistrées", "DiscardQuestion": "Abandonner les modifications non enregistrées ?", "Discard": "Abandonner", "Cancel": "Annuler"
+  "UnsavedChanges": "Modifications non enregistrées", "DiscardQuestion": "Abandonner les modifications non enregistrées ?", "Discard": "Abandonner", "Cancel": "Annuler",
+  "Achievements": "Succès",
+  "AllCategories": "Tous types",
+  "AllStatuses": "Tous états",
+  "Trials": "Défis",
+  "Records": "Records",
+  "AchievementCategory": "Catégorie",
+  "AchievementIncomplete": "Incomplet",
+  "AchievementComplete": "Terminé",
+  "AchievementReward": "EXP de récompense",
+  "AchievementProgress": "Progression",
+  "UnlockAchievement": "Débloquer le succès",
+  "UnlockAllAchievements": "Tout débloquer",
+  "AchievementsUnavailable": "Les succès ne sont pas modifiables pour cette campagne ou ce format de sauvegarde."
 }

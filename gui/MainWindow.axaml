@@ -33,6 +33,7 @@
         <TabStripItem Content="{DynamicResource Main}" />
         <TabStripItem Content="{DynamicResource Characters}" />
         <TabStripItem Content="{DynamicResource Items}" />
+        <TabStripItem Content="{DynamicResource Achievements}" />
       </TabStrip>
     </Grid>
     <ScrollViewer Name="MainScroll" Grid.Row="1" Margin="24,4,24,0" HorizontalScrollBarVisibility="Disabled">
@@ -310,6 +311,43 @@
           </ScrollViewer>
         </suki:GlassCard>
       </Grid>
+    </Grid>
+    <Grid Name="AchievementsPanel" Grid.Row="1" Margin="24,0" ColumnDefinitions="320,*" ColumnSpacing="24" IsVisible="False">
+      <suki:GlassCard Padding="20">
+        <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" RowSpacing="16">
+          <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <TextBlock Text="{DynamicResource Achievements}" FontWeight="SemiBold" />
+            <TextBlock Name="AchievementCountValue" Grid.Column="1" />
+          </Grid>
+          <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="12">
+            <ComboBox Name="AchievementCategoryFilter" HorizontalAlignment="Stretch" Margin="0" Padding="8,6" FontSize="12" SelectionChanged="AchievementFilter_Changed" />
+            <ComboBox Name="AchievementStatusFilter" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0" Padding="8,6" FontSize="12" SelectionChanged="AchievementFilter_Changed" />
+          </Grid>
+          <TextBox Name="AchievementSearch" Grid.Row="2" PlaceholderText="{DynamicResource Search}" TextChanged="AchievementSearch_Changed" />
+          <ListBox Name="AchievementList" Grid.Row="3" SelectionChanged="AchievementList_Changed">
+            <ListBox.ItemTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate></ListBox.ItemTemplate>
+          </ListBox>
+          <Button Name="UnlockAllAchievementsButton" Grid.Row="4" Content="{DynamicResource UnlockAllAchievements}" HorizontalAlignment="Stretch" IsEnabled="False" Click="UnlockAllAchievements_Click" />
+        </Grid>
+      </suki:GlassCard>
+      <suki:GlassCard Grid.Column="1" Padding="20">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+          <StackPanel Spacing="24">
+            <TextBlock Text="{DynamicResource Achievements}" FontWeight="SemiBold" />
+            <TextBlock Name="AchievementsUnavailableValue" Text="{DynamicResource AchievementsUnavailable}" TextWrapping="Wrap" IsVisible="False" />
+            <StackPanel Name="AchievementDetails" Spacing="24" IsVisible="False">
+              <TextBlock Name="AchievementConditionValue" TextWrapping="Wrap" />
+              <Grid ColumnDefinitions="160,*" ColumnSpacing="16" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="20">
+                <TextBlock Text="{DynamicResource AchievementCategory}" /><TextBlock Name="AchievementCategoryValue" Grid.Column="1" />
+                <TextBlock Grid.Row="1" Text="{DynamicResource ArtStatus}" /><TextBlock Name="AchievementStatusValue" Grid.Row="1" Grid.Column="1" />
+                <TextBlock Grid.Row="2" Text="{DynamicResource AchievementReward}" /><TextBlock Name="AchievementRewardValue" Grid.Row="2" Grid.Column="1" />
+                <TextBlock Name="AchievementProgressTitle" Grid.Row="3" Text="{DynamicResource AchievementProgress}" /><TextBlock Name="AchievementProgressValue" Grid.Row="3" Grid.Column="1" />
+              </Grid>
+              <Button Name="UnlockAchievementButton" Content="{DynamicResource UnlockAchievement}" HorizontalAlignment="Stretch" IsEnabled="False" Click="UnlockAchievement_Click" />
+            </StackPanel>
+          </StackPanel>
+        </ScrollViewer>
+      </suki:GlassCard>
     </Grid>
     <TextBlock Name="StatusMessage" Grid.Row="2" Margin="24,0" TextWrapping="Wrap" IsVisible="False" />
   </Grid>

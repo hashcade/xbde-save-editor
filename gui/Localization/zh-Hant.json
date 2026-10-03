@@ -35,5 +35,18 @@
   "MainStory": "本篇", "FutureConnected": "相連的未來", "Unknown": "未確認",
   "OpenFailed": "開啟存檔失敗：", "SaveFailed": "儲存失敗：", "Saved": "已儲存：",
   "InvalidValue": "請輸入範圍內的整數。",
-  "UnsavedChanges": "尚未儲存的修改", "DiscardQuestion": "捨棄尚未儲存的修改？", "Discard": "捨棄", "Cancel": "取消"
+  "UnsavedChanges": "尚未儲存的修改", "DiscardQuestion": "捨棄尚未儲存的修改？", "Discard": "捨棄", "Cancel": "取消",
+  "Achievements": "成就",
+  "AllCategories": "全部分類",
+  "AllStatuses": "全部狀態",
+  "Trials": "挑戰",
+  "Records": "紀錄",
+  "AchievementCategory": "分類",
+  "AchievementIncomplete": "未完成",
+  "AchievementComplete": "已完成",
+  "AchievementReward": "獎勵經驗",
+  "AchievementProgress": "進度",
+  "UnlockAchievement": "解鎖成就",
+  "UnlockAllAchievements": "全部解鎖",
+  "AchievementsUnavailable": "此篇章或存檔格式不支援成就編輯。"
 }

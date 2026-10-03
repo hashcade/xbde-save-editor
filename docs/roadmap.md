@@ -19,12 +19,14 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Items: normal gem effect/rank/strength editing, decoded labels, validated ranges and CLI support.
 - [x] Items: normal gem creation/deletion and collectable/material/manual quantity, favorite, add/delete and bulk maximum editing, with CLI support.
 - [ ] Items: weapon/armor inventory creation, crystals/cylinders and localized game catalogs.
+- [x] Achievements: validated main-story completion bits/counters, single/bulk unlock, filters and CLI support.
+- [ ] Achievements: localized game text and in-game verification of newly completed records.
 
 Prioritize grind reduction, bulk edits and actions that are difficult or unavailable
 in-game. Basic party sorting is intentionally excluded; it adds little value to
 a save editor and does not justify another panel.
 
-Affinity, quests, achievements, Colony 6, Time Attack, Ponspectors and system-save
+Affinity, quests, Colony 6, Time Attack, Ponspectors and system-save
 unlocks need further format validation. They are not promised or exposed as editable fields.
 
 ## Verification
@@ -45,3 +47,4 @@ See [Skills validation](skills.md) for branch flags, learning costs and write bo
 See [Equipment validation](equipment.md) for inventory references, gem ownership and write boundaries.
 See [Gem validation](gems.md) for effect limits, encoding and inventory editing.
 See [Inventory validation](inventory.md) for stack limits, safe allocation and serial counters.
+See [Achievement validation](achievements.md) for condition types, completion flags and write boundaries.

@@ -39,6 +39,7 @@ void VerifyPageSpacing()
     Control page = main;
     if (characters.IsVisible) page = characters;
     else if (items.IsVisible) page = items;
+    else if (window.FindControl<Grid>("AchievementsPanel")!.IsVisible) page = window.FindControl<Grid>("AchievementsPanel")!;
     double gap = page.Bounds.Top - header.Bounds.Bottom;
     Check(Math.Abs(gap - (main.IsVisible ? 20 : 16)) < 0.1,
         $"Header-to-page spacing changed: {gap}.");
@@ -657,6 +658,69 @@ try
     window.Width = 1120;
     window.Height = 780;
     Check(File.ReadAllBytes(inventoryPath).AsSpan().SequenceEqual(inventoryFixture), "Inventory GUI tests changed the source.");
+    byte[] achievementFixture = (byte[])inventoryFixture.Clone();
+    BinaryPrimitives.WriteUInt32LittleEndian(achievementFixture, 7);
+    achievementFixture.AsSpan(0x557, 25).Clear();
+    achievementFixture.AsSpan(0xe30, 400).Clear();
+    string achievementPath = Path.Combine(temporary, "achievements.sav");
+    File.WriteAllBytes(achievementPath, achievementFixture);
+    Check(window.LoadSave(achievementPath), "Achievement fixture did not load.");
+    window.ShowAchievements();
+    VerifyPageSpacing();
+    var achievementList = window.FindControl<ListBox>("AchievementList")!;
+    var categoryFilter = window.FindControl<ComboBox>("AchievementCategoryFilter")!;
+    var statusFilter = window.FindControl<ComboBox>("AchievementStatusFilter")!;
+    var allAchievements = window.FindControl<Button>("UnlockAllAchievementsButton")!;
+    var singleAchievement = window.FindControl<Button>("UnlockAchievementButton")!;
+    Check(achievementList.ItemCount == 200 && allAchievements.IsEnabled && singleAchievement.IsEnabled,
+        "Achievement page did not expose all supported entries.");
+    categoryFilter.SelectedIndex = 2;
+    Check(achievementList.ItemCount == 50, "Record category filter differs.");
+    statusFilter.SelectedIndex = 1;
+    int selectedAchievement = (int)achievementList.SelectedItem!.GetType().GetProperty("Id")!.GetValue(achievementList.SelectedItem)!;
+    singleAchievement.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session!.Document.GetAchievement(selectedAchievement).Completed && achievementList.ItemCount == 49,
+        "Single unlock did not update the incomplete filter.");
+    window.FindControl<TextBox>("AchievementSearch")!.Text = "unlikely-to-match-any-achievement";
+    Dispatcher.UIThread.RunJobs();
+    Check(achievementList.ItemCount == 0 && !window.FindControl<StackPanel>("AchievementDetails")!.IsVisible,
+        "Empty achievement search retained stale details.");
+    allAchievements.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.Achievements.All(item => item.Completed) && !allAchievements.IsEnabled,
+        "Bulk unlock only processed the filtered list.");
+    Check(window.FindControl<TextBlock>("AchievementCountValue")!.Text == "200/200", "Achievement count is not global.");
+    categoryFilter.SelectedIndex = 0;
+    statusFilter.SelectedIndex = 2;
+    window.FindControl<TextBox>("AchievementSearch")!.Text = "";
+    Dispatcher.UIThread.RunJobs();
+    Check(achievementList.ItemCount == 200 && !singleAchievement.IsEnabled, "Completed achievement state differs.");
+    foreach (var language in UiLanguage.Languages)
+    {
+        window.SetLanguage(language.Key);
+        Check(singleAchievement.Content?.ToString() == UiLanguage.Get("UnlockAchievement")
+            && categoryFilter.SelectedIndex == 0 && statusFilter.SelectedIndex == 2,
+            "Achievement language switch changed filters or retained stale UI text.");
+    }
+    window.SetLanguage("en");
+    window.Width = 860;
+    window.Height = 600;
+    VerifyPageSpacing();
+    Check(Math.Abs(statusFilter.Bounds.Top - categoryFilter.Bounds.Top) < 0.1
+        && statusFilter.Bounds.Left - categoryFilter.Bounds.Right >= 11.9, "Achievement filters lack horizontal separation.");
+    window.Width = 1120;
+    window.Height = 780;
+    byte[] achievementEdited = window.Session.Document.Serialize();
+    Check(window.SaveTo(Path.Combine(temporary, "achievements-edited.sav")), "Achievement GUI changes could not save.");
+    Check(File.ReadAllBytes(achievementPath).AsSpan().SequenceEqual(achievementFixture), "Achievement GUI changed the source.");
+    for (int offset = 0; offset < achievementEdited.Length; offset++)
+        if (offset is not (>= 0x557 and < 0x570) and not (>= 0xe30 and < 0xfc0))
+            Check(achievementEdited[offset] == achievementFixture[offset], "Achievement GUI changed unrelated data.");
+    BinaryPrimitives.WriteUInt16LittleEndian(achievementFixture.AsSpan(0x15231a), 14);
+    BinaryPrimitives.WriteUInt32LittleEndian(achievementFixture.AsSpan(0x152368 + 13 * 0x138), 20);
+    File.WriteAllBytes(achievementPath, achievementFixture);
+    Check(window.LoadSave(achievementPath) && achievementList.ItemCount == 0 && !allAchievements.IsEnabled
+        && window.FindControl<TextBlock>("AchievementsUnavailableValue")!.IsVisible,
+        "Future Connected incorrectly exposes missing achievements.");
     if (args is ["--screenshot", var realSave, var screenshot, .. var page])
     {
         // Use a fresh renderer: resizing the headless test window retains stale clipping masks.
@@ -687,6 +751,11 @@ try
         {
             window.ShowEquipment();
             if (page.Length > 2) window.FindControl<ListBox>("CharacterList")!.SelectedIndex = int.Parse(page[2]);
+        }
+        else if (page.Length > 0 && page[0] == "achievements")
+        {
+            window.ShowAchievements();
+            if (page.Length > 2) window.FindControl<ListBox>("AchievementList")!.SelectedIndex = int.Parse(page[2]);
         }
         else if (page.Length > 0 && page[0] == "characters")
         {

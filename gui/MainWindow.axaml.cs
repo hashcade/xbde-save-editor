@@ -22,6 +22,7 @@ public partial class MainWindow : Window
             item.Click += (_, _) => SetLanguage(code);
             LanguageMenu.Items.Add(item);
         }
+        RefreshAchievements();
     }
 
     public bool LoadSave(string path)
@@ -33,10 +34,12 @@ public partial class MainWindow : Window
             _gem = null;
             _inventoryItem = null;
             _inventorySelections.Clear();
+            _selectedAchievement = null;
             RefreshMain();
             RefreshCharacters();
             RefreshGems();
             RefreshInventory();
+            RefreshAchievements();
             ShowStatus(null);
             return true;
         }
@@ -90,6 +93,7 @@ public partial class MainWindow : Window
         RefreshCharacters();
         RefreshGems();
         RefreshInventory();
+        RefreshAchievements();
         ShowStatus(null);
     }
 

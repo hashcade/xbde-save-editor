@@ -35,5 +35,18 @@
   "MainStory": "Historia principal", "FutureConnected": "Futuros conectados", "Unknown": "Sin confirmar",
   "OpenFailed": "No se pudo abrir la partida:", "SaveFailed": "No se pudo guardar:", "Saved": "Guardado:",
   "InvalidValue": "Introduce un número entero dentro del rango permitido.",
-  "UnsavedChanges": "Cambios sin guardar", "DiscardQuestion": "¿Descartar los cambios sin guardar?", "Discard": "Descartar", "Cancel": "Cancelar"
+  "UnsavedChanges": "Cambios sin guardar", "DiscardQuestion": "¿Descartar los cambios sin guardar?", "Discard": "Descartar", "Cancel": "Cancelar",
+  "Achievements": "Logros",
+  "AllCategories": "Todos tipos",
+  "AllStatuses": "Todos estados",
+  "Trials": "Desafíos",
+  "Records": "Récords",
+  "AchievementCategory": "Categoría",
+  "AchievementIncomplete": "Pendiente",
+  "AchievementComplete": "Completado",
+  "AchievementReward": "EXP de recompensa",
+  "AchievementProgress": "Progreso",
+  "UnlockAchievement": "Desbloquear logro",
+  "UnlockAllAchievements": "Desbloquear todos",
+  "AchievementsUnavailable": "No se pueden editar logros en esta campaña o formato de guardado."
 }

@@ -35,5 +35,18 @@
   "MainStory": "Storia principale", "FutureConnected": "Un futuro comune", "Unknown": "Non confermato",
   "OpenFailed": "Impossibile aprire il salvataggio:", "SaveFailed": "Impossibile salvare:", "Saved": "Salvato:",
   "InvalidValue": "Inserisci un intero nell’intervallo consentito.",
-  "UnsavedChanges": "Modifiche non salvate", "DiscardQuestion": "Scartare le modifiche non salvate?", "Discard": "Scarta", "Cancel": "Annulla"
+  "UnsavedChanges": "Modifiche non salvate", "DiscardQuestion": "Scartare le modifiche non salvate?", "Discard": "Scarta", "Cancel": "Annulla",
+  "Achievements": "Obiettivi",
+  "AllCategories": "Tutti i tipi",
+  "AllStatuses": "Tutti stati",
+  "Trials": "Sfide",
+  "Records": "Record",
+  "AchievementCategory": "Categoria",
+  "AchievementIncomplete": "Incompleto",
+  "AchievementComplete": "Completato",
+  "AchievementReward": "ESP ricompensa",
+  "AchievementProgress": "Progressi",
+  "UnlockAchievement": "Sblocca obiettivo",
+  "UnlockAllAchievements": "Sblocca tutti",
+  "AchievementsUnavailable": "Gli obiettivi non sono modificabili per questa campagna o formato di salvataggio."
 }

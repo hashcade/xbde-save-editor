@@ -35,5 +35,18 @@
   "MainStory": "Hauptgeschichte", "FutureConnected": "Die verbundene Zukunft", "Unknown": "Nicht bestätigt",
   "OpenFailed": "Spielstand konnte nicht geöffnet werden:", "SaveFailed": "Speichern fehlgeschlagen:", "Saved": "Gespeichert:",
   "InvalidValue": "Eine ganze Zahl im erlaubten Bereich eingeben.",
-  "UnsavedChanges": "Ungespeicherte Änderungen", "DiscardQuestion": "Ungespeicherte Änderungen verwerfen?", "Discard": "Verwerfen", "Cancel": "Abbrechen"
+  "UnsavedChanges": "Ungespeicherte Änderungen", "DiscardQuestion": "Ungespeicherte Änderungen verwerfen?", "Discard": "Verwerfen", "Cancel": "Abbrechen",
+  "Achievements": "Erfolge",
+  "AllCategories": "Alle Typen",
+  "AllStatuses": "Alle Status",
+  "Trials": "Prüfungen",
+  "Records": "Rekorde",
+  "AchievementCategory": "Kategorie",
+  "AchievementIncomplete": "Offen",
+  "AchievementComplete": "Erreicht",
+  "AchievementReward": "Belohnungs-EP",
+  "AchievementProgress": "Fortschritt",
+  "UnlockAchievement": "Erfolg freischalten",
+  "UnlockAllAchievements": "Alle freischalten",
+  "AchievementsUnavailable": "Für diese Kampagne oder dieses Speicherformat können Erfolge nicht bearbeitet werden."
 }

@@ -14,12 +14,13 @@ Edit Xenoblade Chronicles: Definitive Edition saves, including Future Connected.
 - **Equipment:** In Characters → Equipment, change weapons and armor to compatible items already in inventory. Other characters' equipped items are excluded, and each selected item keeps its gems. Medium/heavy armor checks learned skills and existing skill links; Mechon Fiora uses her own equipment types. Story-flagged weapons remain protected. Fit or remove owned normal gems in existing sockets; gems fitted to any other item are excluded, even when that item is unequipped. Built-in gems and appearance remain unchanged. Matching CLI commands are included.
 - **Items:** Separate tabs for gems, collectables, materials, art manuals and key items. Add ordinary stacks, edit their quantities and favorite flags, delete stacks or maximize all existing quantities in a category. Quantities are limited to 99. Art manuals distinguish Intermediate, Advanced and Master books. Quest items remain read-only.
 - **Gems:** Search owned normal gems and edit their effect, rank and strength. Create gems using the same validated ranges, or delete gems not fitted to any equipment. Inputs follow the game's per-effect/per-rank limits, with a maximum-value button and fixed activation chances. Equipped gems retain their socket references, and incompatible effect changes are rejected. Matching CLI commands are included.
+- **Achievements:** Search the 200 main-story achievements, filter by category or completion, inspect conditions, counters and EXP rewards, and unlock one or all. Completed records remain unchanged. Unlocking does not add party EXP or complete related quests. Future Connected and unverified save formats are protected. Matching CLI commands are included.
 - **CLI:** Inspect saves as JSON, copy them or edit resources without changing unknown data.
 
 English is the default language. The interface also supports Simplified Chinese,
 Traditional Chinese, Japanese, Korean, German, French, Spanish and Italian.
 Help → About shows the version and repository link.
-Art, skill, equipment and gem names currently use the verified English catalogs; other game-language names
+Art, skill, equipment, gem and achievement names currently use the verified English catalogs; other game-language names
 are not yet available.
 
 ## Get started

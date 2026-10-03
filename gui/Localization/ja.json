@@ -35,5 +35,18 @@
   "MainStory": "本編", "FutureConnected": "つながる未来", "Unknown": "未確認",
   "OpenFailed": "セーブを開けません：", "SaveFailed": "保存できません：", "Saved": "保存しました：",
   "InvalidValue": "範囲内の整数を入力してください。",
-  "UnsavedChanges": "未保存の変更", "DiscardQuestion": "未保存の変更を破棄しますか？", "Discard": "破棄", "Cancel": "キャンセル"
+  "UnsavedChanges": "未保存の変更", "DiscardQuestion": "未保存の変更を破棄しますか？", "Discard": "破棄", "Cancel": "キャンセル",
+  "Achievements": "実績",
+  "AllCategories": "全分類",
+  "AllStatuses": "全状態",
+  "Trials": "トライアル",
+  "Records": "レコード",
+  "AchievementCategory": "分類",
+  "AchievementIncomplete": "未達成",
+  "AchievementComplete": "達成済み",
+  "AchievementReward": "報酬EXP",
+  "AchievementProgress": "進捗",
+  "UnlockAchievement": "実績を解除",
+  "UnlockAllAchievements": "すべて解除",
+  "AchievementsUnavailable": "このストーリーまたはセーブ形式では実績を編集できません。"
 }

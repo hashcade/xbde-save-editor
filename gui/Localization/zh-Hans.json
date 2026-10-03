@@ -35,5 +35,18 @@
   "MainStory": "本篇", "FutureConnected": "相连的未来", "Unknown": "未确认",
   "OpenFailed": "打开存档失败：", "SaveFailed": "保存失败：", "Saved": "已保存：",
   "InvalidValue": "请输入范围内的整数。",
-  "UnsavedChanges": "未保存的修改", "DiscardQuestion": "放弃未保存的修改？", "Discard": "放弃", "Cancel": "取消"
+  "UnsavedChanges": "未保存的修改", "DiscardQuestion": "放弃未保存的修改？", "Discard": "放弃", "Cancel": "取消",
+  "Achievements": "成就",
+  "AllCategories": "全部分类",
+  "AllStatuses": "全部状态",
+  "Trials": "挑战",
+  "Records": "纪录",
+  "AchievementCategory": "分类",
+  "AchievementIncomplete": "未完成",
+  "AchievementComplete": "已完成",
+  "AchievementReward": "奖励经验",
+  "AchievementProgress": "进度",
+  "UnlockAchievement": "解锁成就",
+  "UnlockAllAchievements": "全部解锁",
+  "AchievementsUnavailable": "此篇章或存档格式不支持成就编辑。"
 }
