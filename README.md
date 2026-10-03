@@ -32,7 +32,21 @@ AP uses the same storage-bound validation. Affinity Coin edits are restricted
 to 0–999. Level and Expert Mode edits remain disabled until their linked
 progression rules have been verified.
 
-See the [development plan](docs/roadmap.md) for the next panels.
+See the [CLI reference](CLI.md) and [development plan](docs/roadmap.md).
+
+## Development
+
+```sh
+dotnet build XbdeEditor.slnx -c Release
+dotnet run --project test/Core.Test.csproj -c Release --no-build
+dotnet run --project test/Gui.Smoke.csproj -c Release --no-build
+python3 tools/test_cli.py --cli cli/bin/Release/net10.0/XbdeEditor.Cli.dll
+```
+
+Releases use `python3 tools/release.py`. The script tests the current branch,
+creates the version commit and pushes its tag. GitHub Actions packages the
+desktop app and CLI with a shared runtime and generates release notes.
+There is no published release yet.
 
 ## Credits
 
