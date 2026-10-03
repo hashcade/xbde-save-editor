@@ -2,7 +2,14 @@ using System.Globalization;
 
 namespace XbdeEditor.Core;
 
-public sealed record SkillDefinition(int Id, string Name, uint RequiredSP);
+public enum SkillShape { Circle, Square, Diamond, Hexagon, Octagram }
+
+public sealed record SkillDefinition(int Id, string Name, uint RequiredSP, SkillShape Shape, int AffinityCoins)
+{
+    public int CharacterId => (Id - 1) / 25 + 1;
+    public int TreeIndex => (Id - 1) % 25 / 5 + 1;
+    public int NodeIndex => (Id - 1) % 5;
+}
 
 public sealed record SkillTreeDefinition(int CharacterId, int Index, string Name, IReadOnlyList<SkillDefinition> Skills)
 {
@@ -12,11 +19,16 @@ public sealed record SkillTreeDefinition(int CharacterId, int Index, string Name
 public static class SkillCatalog
 {
     public static IReadOnlyList<SkillTreeDefinition> All { get; } = Load();
+    public static SkillDefinition? Find(int id) => All.SelectMany(tree => tree.Skills).FirstOrDefault(skill => skill.Id == id);
 
     private static IReadOnlyList<SkillTreeDefinition> Load()
     {
-        var skills = ReadRows("skills.tsv").Select(fields => new SkillDefinition(
-            Number(fields[0]), fields[1], uint.Parse(fields[2], CultureInfo.InvariantCulture))).ToArray();
+        var skills = ReadRows("skills.tsv").Select(fields =>
+        {
+            if (fields.Length != 5) throw new InvalidDataException("Invalid skill definition row.");
+            return new SkillDefinition(Number(fields[0]), fields[1], uint.Parse(fields[2], CultureInfo.InvariantCulture),
+                Enum.Parse<SkillShape>(fields[3]), Number(fields[4]));
+        }).ToArray();
         var trees = ReadRows("skill-trees.tsv").Select(fields =>
         {
             int character = Number(fields[0]);
@@ -26,6 +38,7 @@ public static class SkillCatalog
             return new SkillTreeDefinition(character, index, fields[2], Array.AsReadOnly(nodes));
         }).ToArray();
         if (!skills.Select(skill => skill.Id).SequenceEqual(Enumerable.Range(1, 200))
+            || skills.Any(skill => skill.AffinityCoins is < 0 or > 999 || !Enum.IsDefined(skill.Shape))
             || trees.Length != 40 || trees.Any(tree => tree.Skills.Count != 5)
             || trees.Select(tree => (tree.CharacterId, tree.Index)).Distinct().Count() != 40)
             throw new InvalidDataException("Invalid skill tree catalog.");

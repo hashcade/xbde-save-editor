@@ -172,6 +172,38 @@ def main() -> None:
         run("learn-max-all-arts", output, output)
         assert output.read_bytes() == all_learned and source.read_bytes() == original
 
+        links_original = bytearray(original)
+        struct.pack_into("<H", links_original, 0xDF0, 390)
+        for record in (0x152368, 0x1524A0):
+            struct.pack_into("<I", links_original, record + 0xC, 999)
+            struct.pack_into("<5I", links_original, record + 0x90, 5, 5, 5, 5, 5)
+            struct.pack_into("<8I", links_original, record + 0xA4, *([4] * 8))
+        links_source = root / "links.sav"
+        links_source.write_bytes(links_original)
+        links = json.loads(run("skill-links", links_source, "1"))
+        assert links["Supported"] and links["AffinityCoins"] == 999 and links["LinkedSkillCoinCost"] == 0
+        assert len(links["Slots"]) == 5 and all(slot["SourceCharacterId"] == 2 for slot in links["Slots"])
+        first = links["Slots"][0]
+        assert first["Shape"] == "Square" and first["HighestUnlockedSlot"] == 4
+        chosen = first["Choices"][0]
+        assert chosen["Shape"] == 1 and chosen["CharacterId"] == 2
+        run("skill-link", links_source, output, "1", "2", "1", str(chosen["Id"]))
+        expected_links = bytearray(links_original)
+        expected_links[0x152368 + 0xC4 + 5] = chosen["Id"]
+        assert output.read_bytes() == expected_links
+        for source_id, slot, skill_id in (("1", "1", "1"), ("2", "0", "none"), ("2", "6", "none"),
+                                          ("3", "1", "51"), ("2", "1", "201"), ("2", "1", "1")):
+            run("skill-link", links_source, output, "1", source_id, slot, skill_id, success=False)
+            assert output.read_bytes() == expected_links
+        run("skill-link", output, output, "1", "2", "1", "none")
+        assert output.read_bytes() == links_original and links_source.read_bytes() == links_original
+        zero_coins = bytearray(links_original)
+        struct.pack_into("<I", zero_coins, 0x152368 + 0xC, 0)
+        poor_links = root / "poor-links.sav"
+        poor_links.write_bytes(zero_coins)
+        run("skill-link", poor_links, output, "1", "2", "1", str(chosen["Id"]), success=False)
+        assert output.read_bytes() == links_original
+
         skills_original = bytearray(original)
         for character_id in (1, 2):
             record = 0x152368 + (character_id - 1) * 0x138

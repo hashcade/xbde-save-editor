@@ -34,6 +34,9 @@ XbdeEditor.Cli skill-tree bfsgame00.sav edited.sav 1 1 --sp 500
 XbdeEditor.Cli max-skill-tree bfsgame00.sav edited.sav 1 1
 XbdeEditor.Cli max-skills bfsgame00.sav edited.sav 1
 XbdeEditor.Cli max-all-skills bfsgame00.sav edited.sav
+XbdeEditor.Cli skill-links bfsgame00.sav 1
+XbdeEditor.Cli skill-link bfsgame00.sav edited.sav 1 2 1 37
+XbdeEditor.Cli skill-link bfsgame00.sav edited.sav 1 2 1 none
 XbdeEditor.Cli equipment bfsgame00.sav 1
 XbdeEditor.Cli equip bfsgame00.sav edited.sav 2 Weapon 7
 XbdeEditor.Cli equipment-gem bfsgame00.sav edited.sav 1 Weapon 1 3
@@ -96,6 +99,18 @@ and party-wide operations skip locked hidden trees and do not alter task unlocks
 or skill links. Future Connected and unconfirmed campaigns reject skill edits.
 Existing unusual values remain intact unless explicitly normalized. See
 [skill validation](docs/skills.md).
+
+`skill-links` lists the selected character's available source groups, slot shapes,
+saved unlock indices, assignments, eligible skills and used/owned Affinity Coins.
+`skill-link` assigns a global skill ID to a one-based slot, or removes its link
+with `none`. The source must be joined and available at the saved story stage;
+the slot must already be unlocked. Skills must be learned, match the slot shape,
+and not duplicate another link from that source. Replacements reuse the previous
+link's coin budget; coins are reserved, not spent. Existing overspent links can be
+replaced without increasing their total cost. Unknown assignments remain unchanged
+on inspection and can be explicitly removed. These commands do not raise affinity,
+unlock slots, learn skills, or modify unrelated link bytes. Future Connected,
+unconfirmed campaigns and unverified save versions are protected.
 
 `equipment` lists the current weapon and armor references, socket contents and
 available items and normal gems as JSON. Equipment slots use `Weapon`, `Head`, `Torso`,

@@ -92,6 +92,7 @@
             <TabStripItem Content="{DynamicResource Arts}" />
             <TabStripItem Content="{DynamicResource Skills}" />
             <TabStripItem Content="{DynamicResource Equipment}" />
+            <TabStripItem Content="{DynamicResource SkillLinks}" />
           </TabStrip>
           <ScrollViewer Name="GeneralCharacterScroll" Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
             <Grid Name="CharacterInputs" ColumnDefinitions="*,*" ColumnSpacing="32" IsEnabled="False" VerticalAlignment="Top">
@@ -191,6 +192,37 @@
               </ItemsControl.ItemTemplate>
             </ItemsControl>
           </ScrollViewer>
+          <Grid Name="SkillLinksPanel" Grid.Row="1" RowDefinitions="Auto,Auto,*" RowSpacing="16" IsVisible="False">
+            <TextBlock Name="SkillLinkCoinValue" TextWrapping="Wrap" />
+            <TextBlock Name="SkillLinksUnavailableValue" Grid.Row="1" Text="{DynamicResource SkillLinksUnavailable}" TextWrapping="Wrap" IsVisible="False" />
+            <ScrollViewer Name="SkillLinksScroll" Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
+              <ItemsControl Name="SkillLinkList" Margin="-6,0,-6,0">
+                <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="2" /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="x:Object" x:CompileBindings="False">
+                    <suki:GlassCard Padding="16" Margin="6,0,6,12" VerticalAlignment="Top">
+                      <StackPanel Spacing="12">
+                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <ItemsControl ItemsSource="{Binding Slots}">
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="x:Object" x:CompileBindings="False">
+                              <StackPanel Spacing="6" Margin="0,0,0,12">
+                                <TextBlock Text="{Binding Label}" />
+                                <ComboBox Name="SkillLinkInput" Tag="{Binding}" Margin="0" HorizontalAlignment="Stretch" ItemsSource="{Binding Choices}" SelectedItem="{Binding Selected, Mode=OneWay}" IsVisible="{Binding CanEdit}" SelectionChanged="SkillLink_Changed">
+                                  <ComboBox.ItemTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate></ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <TextBlock Text="{Binding Value}" IsVisible="{Binding ReadOnly}" TextWrapping="Wrap" />
+                              </StackPanel>
+                            </DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                      </StackPanel>
+                    </suki:GlassCard>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </ScrollViewer>
+          </Grid>
           <Grid Name="SkillsPanel" Grid.Row="1" RowDefinitions="Auto,*" RowSpacing="16" IsVisible="False">
             <Button Name="MaxCharacterSkillsButton" Content="{DynamicResource MaxCharacterSkills}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxCharacterSkills_Click" />
             <ScrollViewer Name="SkillsScroll" Grid.Row="1" HorizontalScrollBarVisibility="Disabled">

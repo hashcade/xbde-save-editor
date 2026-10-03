@@ -13,7 +13,8 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Arts: ordinary level-based learning and single/character-wide/global learning and maximum, with protected story/quest arts and matching CLI support.
 - [ ] Arts: localized game names and validated story/quest unlock editing.
 - [x] Skills: inspect hidden-tree unlocks, edit learned count/remaining SP and maximize unlocked trees, with CLI support.
-- [ ] Skills: localized game names and skill-link editing.
+- [x] Skills: source-group skill-link editing with verified shapes, saved unlock indices, learned-skill, story-availability and coin-budget validation, plus matching CLI support.
+- [ ] Skills: localized game names.
 - [x] Equipment: resolve equipped inventory items, inspect fixed gems and fit/remove owned normal gems, with CLI support.
 - [x] Equipment: validated owned weapon/armor switching with character and armor-skill restrictions, preserving gems and protecting story weapons.
 - [ ] Equipment: story-weapon switching, appearance and localized game names.

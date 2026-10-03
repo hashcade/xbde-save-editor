@@ -57,6 +57,7 @@ public partial class MainWindow
             AffinityCoinsInput.Value = _character?.AffinityCoins;
             RefreshArts();
             RefreshSkills();
+            RefreshSkillLinks();
             RefreshEquipment();
         }
         finally { _refreshingCharacters = false; }

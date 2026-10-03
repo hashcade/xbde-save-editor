@@ -1,201 +1,201 @@
-Id	Name	RequiredSP
-1	Medium Equipment	0
-2	Secret of Life	700
-3	Rewarding Work	1000
-4	Resilient Warrior	2000
-5	Ultimate Teamwork	3500
-6	Healing Wisdom	300
-7	Kind Encouragement	700
-8	Friendship Heals	1000
-9	Cheer of a Friend	2000
-10	Chain of Friendship	3500
-11	Battle Cry	300
-12	Underdog	700
-13	Equipment Master	1000
-14	Fever Pitch	2000
-15	Element of Surprise	3500
-16	Fate Evasion	200
-17	Hero's Privilege	500
-18	Lone Warrior	800
-19	Ultimate Defence	1000
-20	Glorious Future	1500
-21	Fight the Future	200
-22	Stealth Warrior	500
-23	Epic Evasion	800
-24	Forced Mercy	1000
-25	Immunisation	1500
-26	Medium Equipment	0
-27	Mental Fortitude	700
-28	Unrelenting Spirit	1000
-29	Feel the Heat	2000
-30	Sheer Determination	3500
-31	Heavy Equipment	300
-32	Courageous Taunt	700
-33	Healing Inspiration	1000
-34	Reckless Courage	2000
-35	Heroic Taunt	3500
-36	Bodybuilder	300
-37	Against the Odds	700
-38	Battle Character	1000
-39	Spoils of War	2000
-40	Wall of Muscle	3500
-41	Ties of Friendship	200
-42	Shoulder to Shoulder	500
-43	Flying Start	800
-44	Solitary Fight	1000
-45	Friends Forever	1500
-46	Ultimate Taunt	200
-47	Melee Champion	500
-48	Rampage	800
-49	Speed Strike	1000
-50	Channelled Pain	1500
-51	Medium Equipment	0
-52	Desperate Daggers	700
-53	Second Wind	1000
-54	Ultimate Strike	2000
-55	Unwavering Courage	3500
-56	Battle Stance	300
-57	Opening Blow	700
-58	Nimble Feet	1000
-59	Physical Resilience	2000
-60	Showdown Stance	3500
-61	Desperate Defence	300
-62	Swift Strike	700
-63	Acceleration	1000
-64	Strength of Will	2000
-65	Strong Links	3500
-66	Maiden's Power	200
-67	Maiden's Courage	500
-68	Maiden's Blessing	800
-69	Maiden's Zeal	1000
-70	Maiden's Miracle	1500
-71	Vision Mode	200
-72	Ultimate Counter	500
-73	Vital Force	800
-74	Critical Combo	1000
-75	Explosion of Energy	1500
-76	Medium Equipment	0
-77	Invincible Hero	700
-78	Warrior's Ambition	1000
-79	Overwhelming	2000
-80	Hero's Valour	3500
-81	Spiritual Awakening	300
-82	Reckless Abandon	700
-83	Twin Swords	1000
-84	Natural Born Warrior	2000
-85	Inner Peace	3500
-86	Sustained Spirit	300
-87	Steel Protection	700
-88	Mind of the Warrior	1000
-89	Lightweight Expert	2000
-90	Critical Drain	3500
-91	Charge Acceleration	200
-92	Counter Rage	500
-93	Ardent Strike	800
-94	Deadly Determination	1000
-95	Blazing Aura	1500
-96	Equipment Expert	200
-97	Gentleman's Valour	500
-98	Heavy Equipment	800
-99	Body of Steel	1000
-100	Solid Foundation	1500
-101	Medium Equipment	0
-102	Medical Knowledge	700
-103	Long-Range	1000
-104	Always Ready	2000
-105	Rapid Healing	3500
-106	Firm Defence	300
-107	Ether Expansion	700
-108	Solid Defence	1000
-109	Ether Unleashed	2000
-110	Ultimate Sniper	3500
-111	Ether Assault	300
-112	Initial Endurance	700
-113	Middleweight Expert	1000
-114	Adrenaline	2000
-115	Heavy Equipment	3500
-116	Vote of Confidence	200
-117	Bedside Manner	500
-118	Hearty Cry	800
-119	Shield of Kindness	1000
-120	Miracle of Love	1500
-121	Memory of Gadolt	200
-122	Vendetta	500
-123	Decisive Follow-Up	800
-124	Revenge	1000
-125	Ether Explosion	1500
-126	Like Sun!	0
-127	Friends Now!	700
-128	Love Sun!	1000
-129	Lucky Me!	2000
-130	Adore Sun!	3500
-131	Adventure Time!	300
-132	Learning all the Time!	700
-133	Explore Time!	1000
-134	Make it all Better!	2000
-135	Dream of Money!	3500
-136	Buy Stuff!	300
-137	Riki See, Riki Do	700
-138	AP for All!	1000
-139	Riki Strong!	2000
-140	EXP for All!	3500
-141	Heavy Equipment	200
-142	Nutritious!	500
-143	Kissy Kissy!	800
-144	Ouchies!	1000
-145	Cuddly Hero!	1500
-146	Pretty Stars!	200
-147	Watch Out!	500
-148	Amazing Stars!	800
-149	Bullseye!	1000
-150	Bestest Stars!	1500
-151	Amplified Healing	0
-152	Serenity of Water	700
-153	Mining Master	1000
-154	Glistening Ice	2000
-155	Ultimate Ether	3500
-156	High Speed	300
-157	Whisper of the Wind	700
-158	Amplified Ether	1000
-159	Electric Shock	2000
-160	Enlightenment	3500
-161	Ether Awareness	300
-162	Playing with Poison	700
-163	Power of the Moon	1000
-164	Unyielding Heart	2000
-165	Ether Guard	3500
-166	Nonchalant Heart	200
-167	Awakening Strike	500
-168	Telethia Killer	800
-169	Passion of Flame	1000
-170	Rejection of Evil	1500
-171	Palace Guard	200
-172	Heavyweight Expert	500
-173	Unadorned Beauty	800
-174	Mental Barrier	1000
-175	Arcane Aura	1500
-176	Mechonis Equipment	0
-177	Desperate Daggers	700
-178	Second Wind	1000
-179	Ultimate Strike	2000
-180	Unwavering Courage	3500
-181	Battle Stance	300
-182	Opening Blow	700
-183	Nimble Feet	1000
-184	Physical Resilience	2000
-185	Showdown Stance	3500
-186	Desperate Defence	300
-187	Swift Strike	700
-188	Acceleration	1000
-189	Strength of Will	2000
-190	Strong Links	3500
-191	Maiden's Power	200
-192	Maiden's Courage	500
-193	Maiden's Blessing	800
-194	Maiden's Zeal	1000
-195	Maiden's Miracle	1500
-196	Vision Mode	200
-197	Ultimate Counter	500
-198	Vital Force	800
-199	Critical Combo	1000
-200	Explosion of Energy	1500
+Id	Name	RequiredSP	Shape	AffinityCoins
+1	Medium Equipment	0	Octagram	10
+2	Secret of Life	700	Circle	20
+3	Rewarding Work	1000	Octagram	3
+4	Resilient Warrior	2000	Circle	11
+5	Ultimate Teamwork	3500	Octagram	18
+6	Healing Wisdom	300	Hexagon	8
+7	Kind Encouragement	700	Octagram	7
+8	Friendship Heals	1000	Circle	20
+9	Cheer of a Friend	2000	Hexagon	45
+10	Chain of Friendship	3500	Octagram	45
+11	Battle Cry	300	Square	13
+12	Underdog	700	Circle	2
+13	Equipment Master	1000	Square	5
+14	Fever Pitch	2000	Octagram	18
+15	Element of Surprise	3500	Square	20
+16	Fate Evasion	200	Diamond	0
+17	Hero's Privilege	500	Diamond	0
+18	Lone Warrior	800	Square	4
+19	Ultimate Defence	1000	Hexagon	65
+20	Glorious Future	1500	Octagram	28
+21	Fight the Future	200	Diamond	0
+22	Stealth Warrior	500	Octagram	30
+23	Epic Evasion	800	Circle	45
+24	Forced Mercy	1000	Octagram	30
+25	Immunisation	1500	Octagram	45
+26	Medium Equipment	0	Octagram	10
+27	Mental Fortitude	700	Square	2
+28	Unrelenting Spirit	1000	Octagram	28
+29	Feel the Heat	2000	Octagram	40
+30	Sheer Determination	3500	Square	7
+31	Heavy Equipment	300	Octagram	30
+32	Courageous Taunt	700	Diamond	0
+33	Healing Inspiration	1000	Circle	12
+34	Reckless Courage	2000	Square	2
+35	Heroic Taunt	3500	Diamond	0
+36	Bodybuilder	300	Circle	6
+37	Against the Odds	700	Square	2
+38	Battle Character	1000	Octagram	17
+39	Spoils of War	2000	Square	18
+40	Wall of Muscle	3500	Circle	14
+41	Ties of Friendship	200	Circle	14
+42	Shoulder to Shoulder	500	Circle	25
+43	Flying Start	800	Hexagon	10
+44	Solitary Fight	1000	Square	3
+45	Friends Forever	1500	Octagram	30
+46	Ultimate Taunt	200	Diamond	0
+47	Melee Champion	500	Hexagon	12
+48	Rampage	800	Octagram	20
+49	Speed Strike	1000	Square	43
+50	Channelled Pain	1500	Octagram	45
+51	Medium Equipment	0	Diamond	10
+52	Desperate Daggers	700	Square	2
+53	Second Wind	1000	Diamond	0
+54	Ultimate Strike	2000	Circle	13
+55	Unwavering Courage	3500	Octagram	28
+56	Battle Stance	300	Square	2
+57	Opening Blow	700	Circle	6
+58	Nimble Feet	1000	Octagram	5
+59	Physical Resilience	2000	Circle	30
+60	Showdown Stance	3500	Square	19
+61	Desperate Defence	300	Square	2
+62	Swift Strike	700	Square	4
+63	Acceleration	1000	Octagram	29
+64	Strength of Will	2000	Circle	30
+65	Strong Links	3500	Hexagon	20
+66	Maiden's Power	200	Diamond	0
+67	Maiden's Courage	500	Diamond	0
+68	Maiden's Blessing	800	Diamond	0
+69	Maiden's Zeal	1000	Diamond	0
+70	Maiden's Miracle	1500	Diamond	0
+71	Vision Mode	200	Octagram	18
+72	Ultimate Counter	500	Octagram	60
+73	Vital Force	800	Circle	75
+74	Critical Combo	1000	Octagram	70
+75	Explosion of Energy	1500	Octagram	80
+76	Medium Equipment	0	Octagram	10
+77	Invincible Hero	700	Octagram	6
+78	Warrior's Ambition	1000	Square	8
+79	Overwhelming	2000	Circle	2
+80	Hero's Valour	3500	Hexagon	3
+81	Spiritual Awakening	300	Circle	2
+82	Reckless Abandon	700	Square	8
+83	Twin Swords	1000	Octagram	18
+84	Natural Born Warrior	2000	Square	5
+85	Inner Peace	3500	Circle	18
+86	Sustained Spirit	300	Octagram	28
+87	Steel Protection	700	Circle	30
+88	Mind of the Warrior	1000	Octagram	2
+89	Lightweight Expert	2000	Octagram	28
+90	Critical Drain	3500	Circle	50
+91	Charge Acceleration	200	Square	8
+92	Counter Rage	500	Circle	6
+93	Ardent Strike	800	Circle	7
+94	Deadly Determination	1000	Octagram	48
+95	Blazing Aura	1500	Hexagon	43
+96	Equipment Expert	200	Circle	10
+97	Gentleman's Valour	500	Hexagon	12
+98	Heavy Equipment	800	Octagram	15
+99	Body of Steel	1000	Circle	49
+100	Solid Foundation	1500	Octagram	45
+101	Medium Equipment	0	Octagram	10
+102	Medical Knowledge	700	Octagram	12
+103	Long-Range	1000	Diamond	0
+104	Always Ready	2000	Circle	14
+105	Rapid Healing	3500	Diamond	0
+106	Firm Defence	300	Octagram	18
+107	Ether Expansion	700	Circle	8
+108	Solid Defence	1000	Square	6
+109	Ether Unleashed	2000	Square	2
+110	Ultimate Sniper	3500	Diamond	0
+111	Ether Assault	300	Octagram	20
+112	Initial Endurance	700	Hexagon	7
+113	Middleweight Expert	1000	Octagram	47
+114	Adrenaline	2000	Square	48
+115	Heavy Equipment	3500	Octagram	30
+116	Vote of Confidence	200	Diamond	0
+117	Bedside Manner	500	Octagram	5
+118	Hearty Cry	800	Hexagon	44
+119	Shield of Kindness	1000	Hexagon	10
+120	Miracle of Love	1500	Circle	25
+121	Memory of Gadolt	200	Diamond	0
+122	Vendetta	500	Circle	11
+123	Decisive Follow-Up	800	Square	10
+124	Revenge	1000	Square	11
+125	Ether Explosion	1500	Octagram	25
+126	Like Sun!	0	Circle	7
+127	Friends Now!	700	Diamond	0
+128	Love Sun!	1000	Circle	18
+129	Lucky Me!	2000	Hexagon	30
+130	Adore Sun!	3500	Circle	18
+131	Adventure Time!	300	Circle	5
+132	Learning all the Time!	700	Octagram	4
+133	Explore Time!	1000	Octagram	8
+134	Make it all Better!	2000	Circle	12
+135	Dream of Money!	3500	Hexagon	45
+136	Buy Stuff!	300	Diamond	0
+137	Riki See, Riki Do	700	Octagram	4
+138	AP for All!	1000	Diamond	0
+139	Riki Strong!	2000	Octagram	20
+140	EXP for All!	3500	Diamond	0
+141	Heavy Equipment	200	Octagram	15
+142	Nutritious!	500	Circle	29
+143	Kissy Kissy!	800	Diamond	0
+144	Ouchies!	1000	Hexagon	15
+145	Cuddly Hero!	1500	Octagram	43
+146	Pretty Stars!	200	Circle	7
+147	Watch Out!	500	Hexagon	8
+148	Amazing Stars!	800	Circle	13
+149	Bullseye!	1000	Hexagon	45
+150	Bestest Stars!	1500	Circle	13
+151	Amplified Healing	0	Circle	3
+152	Serenity of Water	700	Diamond	0
+153	Mining Master	1000	Octagram	18
+154	Glistening Ice	2000	Diamond	0
+155	Ultimate Ether	3500	Octagram	18
+156	High Speed	300	Circle	20
+157	Whisper of the Wind	700	Diamond	0
+158	Amplified Ether	1000	Square	5
+159	Electric Shock	2000	Diamond	0
+160	Enlightenment	3500	Octagram	25
+161	Ether Awareness	300	Circle	6
+162	Playing with Poison	700	Diamond	0
+163	Power of the Moon	1000	Octagram	12
+164	Unyielding Heart	2000	Circle	18
+165	Ether Guard	3500	Square	20
+166	Nonchalant Heart	200	Circle	7
+167	Awakening Strike	500	Octagram	10
+168	Telethia Killer	800	Circle	48
+169	Passion of Flame	1000	Diamond	0
+170	Rejection of Evil	1500	Square	50
+171	Palace Guard	200	Circle	7
+172	Heavyweight Expert	500	Octagram	45
+173	Unadorned Beauty	800	Octagram	12
+174	Mental Barrier	1000	Square	75
+175	Arcane Aura	1500	Octagram	18
+176	Mechonis Equipment	0	Diamond	0
+177	Desperate Daggers	700	Square	2
+178	Second Wind	1000	Diamond	0
+179	Ultimate Strike	2000	Circle	13
+180	Unwavering Courage	3500	Octagram	28
+181	Battle Stance	300	Square	2
+182	Opening Blow	700	Circle	6
+183	Nimble Feet	1000	Octagram	5
+184	Physical Resilience	2000	Circle	30
+185	Showdown Stance	3500	Square	19
+186	Desperate Defence	300	Square	2
+187	Swift Strike	700	Square	4
+188	Acceleration	1000	Octagram	29
+189	Strength of Will	2000	Circle	30
+190	Strong Links	3500	Hexagon	20
+191	Maiden's Power	200	Diamond	0
+192	Maiden's Courage	500	Diamond	0
+193	Maiden's Blessing	800	Diamond	0
+194	Maiden's Zeal	1000	Diamond	0
+195	Maiden's Miracle	1500	Diamond	0
+196	Vision Mode	200	Octagram	18
+197	Ultimate Counter	500	Octagram	60
+198	Vital Force	800	Circle	75
+199	Critical Combo	1000	Octagram	70
+200	Explosion of Energy	1500	Octagram	80

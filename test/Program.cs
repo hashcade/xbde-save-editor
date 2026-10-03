@@ -107,6 +107,7 @@ foreach (bool future in new[] { false, true })
 ArtsTests.Run(Fixture, Check, Reject);
 AchievementTests.Run(Fixture, Check, Reject);
 SkillsTests.Run(Fixture, Check, Reject);
+SkillLinksTests.Run(Fixture, Check, Reject);
 EquipmentTests.Run(Fixture, Check, Reject);
 EquipmentSwitchTests.Run(Fixture, Check, Reject);
 GemTests.Run(Fixture, Check, Reject);
@@ -228,6 +229,7 @@ try
                 Check(achievementCopy.Serialize().AsSpan().SequenceEqual(before), "Protected real achievements changed.");
             }
             SkillsTests.VerifyRealSave(before, Check);
+            SkillLinksTests.VerifyRealSave(before, Check);
             EquipmentTests.VerifyRealSave(before, Check);
             EquipmentSwitchTests.VerifyRealSave(before, Check);
             GemTests.VerifyRealSave(before, Check);

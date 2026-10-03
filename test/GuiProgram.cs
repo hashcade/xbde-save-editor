@@ -60,6 +60,7 @@ void VerifyPageSpacing()
         1 => window.FindControl<Grid>("ArtsPanel")!,
         2 => window.FindControl<Grid>("SkillsPanel")!,
         3 => window.FindControl<ScrollViewer>("EquipmentPanel")!,
+        4 => window.FindControl<Grid>("SkillLinksPanel")!,
         _ => window.FindControl<ScrollViewer>("GeneralCharacterScroll")!
     };
     Check(tabs.Margin == new Thickness(0) && Math.Abs(body.Bounds.Top - tabs.Bounds.Bottom - 16) < 0.1,
@@ -291,6 +292,41 @@ try
     var artsSaved = SaveDocument.Parse(File.ReadAllBytes(Path.Combine(temporary, "arts-edited.sav")));
     Check(artsSaved.GetCharacter(1).GetArt(12).Level == 12, "GUI art edit was not persisted.");
     Check(File.ReadAllBytes(source).AsSpan().SequenceEqual(beforeArtEditing), "GUI art edit overwrote the input save.");
+    byte[] linksFixture = SkillLinksTests.Fixture((byte[])original.Clone());
+    string linksPath = Path.Combine(temporary, "links.sav");
+    File.WriteAllBytes(linksPath, linksFixture);
+    Check(window.LoadSave(linksPath), "Could not open the skill-link fixture.");
+    characterList.SelectedIndex = 0;
+    window.ShowSkillLinks();
+    VerifyPageSpacing();
+    Check(window.FindControl<ItemsControl>("SkillLinkList")!.ItemCount == 6
+        && window.FindControl<Grid>("SkillLinksPanel")!.IsVisible,
+        "Skill links are not grouped by all available source characters.");
+    Dispatcher.UIThread.RunJobs();
+    var linkInput = window.GetVisualDescendants().OfType<ComboBox>().First(control => control.Name == "SkillLinkInput");
+    linkInput.SelectedIndex = 1;
+    int firstLinkId = window.Session!.Document.GetCharacter(1).GetSkillLink(2, 1).SkillId;
+    Check(firstLinkId > 0 && window.Session.HasChanges, "Selecting a skill did not update its link.");
+    byte[] linkedBytes = window.Session.Document.Serialize();
+    foreach (var language in UiLanguage.Languages)
+    {
+        window.SetLanguage(language.Key);
+        Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(linkedBytes), "Language switching changed skill links.");
+        Check(window.FindControl<Grid>("SkillLinksPanel")!.IsVisible
+            && window.FindControl<ItemsControl>("SkillLinkList")!.ItemCount == 6, "Language switching lost link groups.");
+        VerifyPageSpacing();
+    }
+    window.SetLanguage("en");
+    string linksOutput = Path.Combine(temporary, "links-edited.sav");
+    Check(window.SaveTo(linksOutput), "Could not save GUI skill links.");
+    Check(File.ReadAllBytes(linksOutput).AsSpan().SequenceEqual(linkedBytes), "GUI skill links were not persisted.");
+    Dispatcher.UIThread.RunJobs();
+    linkInput = window.GetVisualDescendants().OfType<ComboBox>().First(control => control.Name == "SkillLinkInput");
+    linkInput.SelectedIndex = 0;
+    Check(window.Session.Document.GetCharacter(1).GetSkillLink(2, 1).SkillId == 0
+        && window.Session.Document.Serialize().AsSpan().SequenceEqual(linksFixture), "GUI link removal changed unrelated data.");
+    Check(File.ReadAllBytes(linksPath).AsSpan().SequenceEqual(linksFixture), "GUI link editing overwrote its source.");
+
     byte[] skillsFixture = (byte[])original.Clone();
     BinaryPrimitives.WriteUInt32LittleEndian(skillsFixture.AsSpan(0x152368 + 0x90), 1);
     BinaryPrimitives.WriteUInt32LittleEndian(skillsFixture.AsSpan(0x1524a0 + 0x90), 1);
@@ -794,6 +830,7 @@ try
                 && window.FindControl<Button>("MaxCharacterSkillsButton")!.IsEnabled,
                 "Real main-story save cannot maximize skills.");
         }
+        else if (page.Length > 0 && page[0] == "skill-links") window.ShowSkillLinks();
         else if (page.Length > 0 && page[0] == "equipment")
         {
             window.ShowEquipment();

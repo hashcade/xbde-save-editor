@@ -59,6 +59,24 @@ public sealed class SaveDocument
 
     public byte[] Serialize() => (byte[])_data.Clone();
     public bool CanEditAchievements => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
+    public bool CanEditSkillLinks => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
+    internal bool IsSkillLinkSourceAvailable(int id)
+    {
+        if (id is < 1 or > 8) return false;
+        if ((ReadByte(0x5eb) & 0x10) != 0) return id != 3;
+        int story = ReadUInt16(0xdf0);
+        return id switch
+        {
+            1 or 2 => true,
+            3 => story is >= 11 and < 42,
+            4 => story >= 100,
+            5 => story >= 69,
+            6 => story >= 137,
+            7 => story >= 128,
+            8 => story >= 273,
+            _ => false
+        };
+    }
     public IReadOnlyList<AchievementRecord> Achievements => AchievementCatalog.All
         .Select(definition => new AchievementRecord(this, definition)).ToArray();
     public AchievementRecord GetAchievement(int id) => new(this, AchievementCatalog.Get(id));

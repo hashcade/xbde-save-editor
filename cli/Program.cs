@@ -15,6 +15,32 @@ try
         Console.WriteLine("inventory <save> <Collectables|Materials|KeyItems|ArtManuals>\nitem <save> <output> <kind> <index> --quantity N\nadd-item <save> <output> <item-id> --quantity N\ndelete-item <save> <output> <kind> <index>\nmax-items <save> <output> <kind>\nadd-gem <save> <output> --effect N --rank N --value N\ndelete-gem <save> <output> <gem-index>");
         Console.WriteLine("achievements <save>\nunlock-achievement <save> <output> <id>\nunlock-all-achievements <save> <output>");
         Console.WriteLine("learn-art <save> <output> <character-id> <art-id>\nlearn-max-arts <save> <output> <character-id>\nlearn-max-all-arts <save> <output>");
+        Console.WriteLine("skill-links <save> <character-id>\nskill-link <save> <output> <character-id> <source-character-id> <slot> <skill-id|none>");
+        return 0;
+    }
+    if (args is ["skill-links", var linksSource, var linkCharacterId])
+    {
+        var document = SaveSession.Open(linksSource).Document;
+        var character = document.GetCharacter(ParseId(linkCharacterId));
+        Console.WriteLine(JsonSerializer.Serialize(new
+        {
+            Supported = document.CanEditSkillLinks,
+            character.AffinityCoins, character.LinkedSkillCoinCost,
+            Slots = character.SkillLinks.Select(link => new
+            {
+                link.SourceCharacterId, link.Index, Shape = link.Shape.ToString(),
+                link.HighestUnlockedSlot, link.IsUnlocked, link.SkillId, link.Skill, link.CanEdit,
+                Choices = link.Choices
+            })
+        }, new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["skill-link", var linkSource, var linkOutput, var targetCharacterId, var sourceCharacterId, var linkSlot, var linkedSkillId])
+    {
+        var session = SaveSession.Open(linkSource);
+        session.Document.GetCharacter(ParseId(targetCharacterId)).GetSkillLink(ParseId(sourceCharacterId), ParseId(linkSlot))
+            .SetSkill(linkedSkillId == "none" ? 0 : ParseId(linkedSkillId));
+        session.Save(linkOutput);
         return 0;
     }
     if (args is ["achievements", var achievementSource])

@@ -47,6 +47,35 @@ public sealed class CharacterRecord
     public SkillTreeRecord GetSkillTree(int index) => SkillTrees.FirstOrDefault(tree => tree.Index == index)
         ?? throw new ArgumentException("This skill tree does not belong to the selected character.", nameof(index));
 
+    public IReadOnlyList<SkillLinkRecord> SkillLinks => _document.Campaign != Campaign.MainStory || Id is < 1 or > 8 ? []
+        : _document.PartyIds.Where(source => _document.IsSkillLinkSourceAvailable(source) && source != Id
+            && !(Id is 3 or 8 && source is 3 or 8))
+            .Order().SelectMany(source => Enumerable.Range(1, 5)
+                .Select(index => new SkillLinkRecord(_document, Id, source, index))).ToArray();
+
+    public SkillLinkRecord GetSkillLink(int sourceCharacterId, int index) => SkillLinks
+        .FirstOrDefault(link => link.SourceCharacterId == sourceCharacterId && link.Index == index)
+        ?? throw new ArgumentException("This source character or skill-link slot is not available.");
+
+    public int? LinkedSkillCoinCost => TryGetLinkedSkillCost(out int cost) ? cost : null;
+
+    internal bool TryGetLinkedSkillCost(out int cost)
+    {
+        cost = 0;
+        if (_document.Campaign != Campaign.MainStory || Id is < 1 or > 8) return false;
+        var activeLinks = Enumerable.Range(1, 8).Where(source => _document.IsSkillLinkSourceAvailable(source) && source != Id
+            && !(Id is 3 or 8 && source is 3 or 8)).SelectMany(source => Enumerable.Range(1, 5)
+                .Select(index => new SkillLinkRecord(_document, Id, source, index)));
+        foreach (var link in activeLinks)
+        {
+            if (link.HighestUnlockedSlot > 4) return false;
+            if (!link.IsUnlocked || link.SkillId == 0) continue;
+            if (link.Skill is not { } skill) return false;
+            cost += skill.AffinityCoins;
+        }
+        return true;
+    }
+
     public void MaxSkills()
     {
         if (_document.Campaign != Campaign.MainStory || Id is < 1 or > 8)
