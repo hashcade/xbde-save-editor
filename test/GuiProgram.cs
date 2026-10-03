@@ -574,6 +574,16 @@ try
     Check(itemTabs.SelectedIndex == 1 && itemList.ItemCount == 0 && !window.Session!.HasChanges,
         "Inventory inspection changes bytes or displays the wrong category.");
     addItem.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Dispatcher.UIThread.RunJobs();
+    var itemDialog = window.OwnedWindows.Single();
+    T ItemDialogControl<T>(string name) where T : Control => itemDialog.GetVisualDescendants().OfType<T>().Single(control => control.Name == name);
+    ItemDialogControl<NumericUpDown>("NewItemQuantity").Value = 1.5m;
+    ItemDialogControl<Button>("CreateItem").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(itemList.ItemCount == 0 && window.OwnedWindows.Count == 1 && !window.Session!.HasChanges,
+        "Creation committed a fractional quantity.");
+    ItemDialogControl<NumericUpDown>("NewItemQuantity").Value = 1;
+    ItemDialogControl<Button>("CreateItem").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Dispatcher.UIThread.RunJobs();
     Check(itemList.ItemCount == 1 && quantity.Value == 1, "GUI failed to create a stack.");
     quantity.Value = 2;
     favorite.IsChecked = true;
@@ -601,11 +611,23 @@ try
     window.FindControl<Button>("DeleteInventoryButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
     Check(itemList.ItemCount == 0 && !stack.Exists, "GUI deletion failed.");
     window.ShowInventory(InventoryKind.KeyItems);
-    Check(!window.FindControl<StackPanel>("AddInventoryInputs")!.IsVisible
-        && !window.FindControl<Button>("MaxInventoryButton")!.IsVisible, "Quest items expose mutation controls.");
+    Check(!window.FindControl<StackPanel>("InventoryActions")!.IsVisible, "Quest items expose mutation controls.");
     window.ShowInventory(InventoryKind.ArtManuals);
-    window.FindControl<TextBox>("InventoryCatalogSearch")!.Text = "(Master)";
-    Check(window.FindControl<ComboBox>("InventoryDefinitionInput")!.ItemCount > 0, "Manual tier search found no books.");
+    addItem.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Dispatcher.UIThread.RunJobs();
+    itemDialog = window.OwnedWindows.Single();
+    var itemSearch = ItemDialogControl<TextBox>("NewItemSearch");
+    var catalogItems = ItemDialogControl<ComboBox>("NewItemDefinition");
+    itemSearch.Text = "(Master)";
+    Dispatcher.UIThread.RunJobs();
+    Check(catalogItems.ItemCount > 0, "Manual tier search found no books.");
+    itemSearch.Text = "no matching manual";
+    Dispatcher.UIThread.RunJobs();
+    Check(catalogItems.ItemCount == 0 && !ItemDialogControl<Button>("CreateItem").IsEnabled,
+        "Empty creation search retains a hidden selection.");
+    ItemDialogControl<Button>("CancelCreateItem").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Dispatcher.UIThread.RunJobs();
+    Check(window.Session.Document.Inventory(InventoryKind.ArtManuals).Count == 0, "Cancelling creation added an item.");
     window.ShowGems();
     Check(itemTabs.SelectedIndex == 0 && !window.FindControl<Button>("DeleteGemButton")!.IsEnabled,
         "Gems navigation or equipped-gem deletion guard failed.");
@@ -624,6 +646,14 @@ try
     window.Width = 860;
     window.Height = 600;
     VerifyPageSpacing();
+    var inventoryActions = window.FindControl<StackPanel>("InventoryActions")!;
+    Check(inventoryActions.GetVisualDescendants().Contains(addItem)
+        && inventoryActions.GetVisualDescendants().Contains(window.FindControl<Button>("DeleteInventoryButton")!),
+        "List-wide inventory actions are not in the left card footer.");
+    var stackPanel = window.FindControl<Grid>("StackItemsPanel")!;
+    var footerPoint = inventoryActions.TranslatePoint(new Point(0, 0), stackPanel)!.Value;
+    Check(footerPoint.X >= 20 && footerPoint.X + inventoryActions.Bounds.Width <= 260.1,
+        "Inventory actions escaped the left card or are clipped.");
     window.Width = 1120;
     window.Height = 780;
     Check(File.ReadAllBytes(inventoryPath).AsSpan().SequenceEqual(inventoryFixture), "Inventory GUI tests changed the source.");

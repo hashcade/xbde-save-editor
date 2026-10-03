@@ -4,7 +4,9 @@ Items uses whole-page tabs for Gems, Collectables, Materials, Art Manuals and
 Key Items. Ordinary stacks support quantity/favorite editing, creation, deletion
 and a category-wide maximum of existing quantities. Adding an existing item
 increases its stack rather than creating a duplicate. Key items are view-only
-because their quest-state dependencies have not been validated.
+because their quest-state dependencies have not been validated. List-wide actions
+live in the left card footer. Add opens a separate creation dialog; the right
+card only edits the selected existing item.
 
 ![Material inventory](inventory-zh.png)
 

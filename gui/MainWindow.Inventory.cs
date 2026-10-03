@@ -77,26 +77,22 @@ public partial class MainWindow
             InventoryFavoriteInput.IsChecked = _inventoryItem?.Favorite ?? false;
             InventoryQuantityValue.Text = _inventoryItem?.Quantity.ToString();
             bool writable = Session is not null && Session.Document.Campaign != Campaign.Unknown && _inventoryKind != InventoryKind.KeyItems;
-            MaxInventoryButton.IsVisible = AddInventoryInputs.IsVisible = _inventoryKind != InventoryKind.KeyItems;
+            InventoryActions.IsVisible = _inventoryKind != InventoryKind.KeyItems;
             MaxInventoryButton.IsEnabled = writable && items.Count > 0 && items.All(item => item.CanEdit);
-            AddInventoryInputs.IsEnabled = writable;
-            RefreshInventoryCatalog();
+            AddInventoryButton.IsEnabled = writable;
+            DeleteInventoryButton.IsEnabled = editable;
         }
         finally { _refreshingInventory = false; }
     }
 
-    private void RefreshInventoryCatalog()
+    private static InventoryChoice[] InventoryChoices(InventoryKind kind, string query)
     {
-        int? selected = (InventoryDefinitionInput.SelectedItem as InventoryChoice)?.Id;
-        string query = InventoryCatalogSearch.Text?.Trim() ?? "";
-        var definitions = InventoryCatalog.Definitions.Where(item => item.Kind == _inventoryKind
+        var definitions = InventoryCatalog.Definitions.Where(item => item.Kind == kind
             && item.Name.Contains(query, StringComparison.OrdinalIgnoreCase)).ToArray();
         var repeatedNames = definitions.GroupBy(item => item.Name).Where(group => group.Count() > 1)
             .Select(group => group.Key).ToHashSet();
-        var choices = definitions.Select(item => new InventoryChoice(item.Id,
+        return definitions.Select(item => new InventoryChoice(item.Id,
             repeatedNames.Contains(item.Name) ? $"{item.Name} ({item.Id})" : item.Name)).ToArray();
-        InventoryDefinitionInput.ItemsSource = choices;
-        InventoryDefinitionInput.SelectedItem = choices.FirstOrDefault(choice => choice.Id == selected) ?? choices.FirstOrDefault();
     }
 
     private bool CommitInventoryDraft()
@@ -131,8 +127,6 @@ public partial class MainWindow
 
     private void InventorySearch_Changed(object? sender, TextChangedEventArgs e)
     { if (!_refreshingInventory && CommitInventoryDraft()) RefreshInventory(); }
-    private void InventoryCatalogSearch_Changed(object? sender, TextChangedEventArgs e)
-    { if (InventoryDefinitionInput is not null) RefreshInventoryCatalog(); }
     private void ApplyInventory_Click(object? sender, RoutedEventArgs e)
     { if (CommitInventoryDraft()) RefreshInventory(); }
 
@@ -148,19 +142,56 @@ public partial class MainWindow
         ApplyInventoryEdit(() => _inventoryItem.Delete());
     }
 
-    private void AddInventory_Click(object? sender, RoutedEventArgs e)
+    private async void AddInventory_Click(object? sender, RoutedEventArgs e)
     {
-        if (Session is null || InventoryDefinitionInput.SelectedItem is not InventoryChoice choice || !CommitInventoryDraft()) return;
-        if (!WholeNumber(AddInventoryQuantityInput.Value, out uint quantity) || quantity is < 1 or > 99)
-        { ShowStatus(UiLanguage.Get("InvalidValue")); return; }
-        ApplyInventoryEdit(() =>
+        if (Session is null || _inventoryKind == InventoryKind.KeyItems || !CommitInventoryDraft()) return;
+        var session = Session;
+        var kind = _inventoryKind;
+        var search = new TextBox { Name = "NewItemSearch", PlaceholderText = UiLanguage.Get("Search") };
+        var item = new ComboBox { Name = "NewItemDefinition", HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+            DisplayMemberBinding = new Avalonia.Data.Binding("Label") };
+        var quantity = new NumericUpDown { Name = "NewItemQuantity", Minimum = 1, Maximum = 99, Value = 1, FormatString = "0" };
+        var error = new TextBlock { TextWrapping = Avalonia.Media.TextWrapping.Wrap };
+        var add = new Button { Name = "CreateItem", Content = UiLanguage.Get("Add"), HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
+        var cancel = new Button { Name = "CancelCreateItem", Content = UiLanguage.Get("Cancel"), HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
+        var dialog = new Window
         {
-            var added = Session.Document.AddInventoryItem(choice.Id, (int)quantity);
-            _inventorySelections[_inventoryKind] = added.Index;
-            _refreshingInventory = true;
-            InventorySearch.Text = "";
-            _refreshingInventory = false;
-        });
+            Title = UiLanguage.Get("AddItem"), Width = 440, SizeToContent = SizeToContent.Height,
+            CanResize = false, WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            Content = new StackPanel { Margin = new Avalonia.Thickness(24), Spacing = 12, Children =
+            {
+                search, item, new TextBlock { Text = UiLanguage.Get("Quantity") }, quantity, error, add, cancel
+            } }
+        };
+        void RefreshChoices()
+        {
+            int? selected = (item.SelectedItem as InventoryChoice)?.Id;
+            var choices = InventoryChoices(kind, search.Text?.Trim() ?? "");
+            item.ItemsSource = choices;
+            item.SelectedItem = choices.FirstOrDefault(choice => choice.Id == selected) ?? choices.FirstOrDefault();
+            add.IsEnabled = choices.Length > 0;
+        }
+        search.TextChanged += (_, _) => RefreshChoices();
+        RefreshChoices();
+        add.Click += (_, _) =>
+        {
+            if (Session != session || item.SelectedItem is not InventoryChoice choice
+                || !WholeNumber(quantity.Value, out uint count) || count is < 1 or > 99)
+            { error.Text = UiLanguage.Get("InvalidValue"); return; }
+            try
+            {
+                _inventorySelections[kind] = session.Document.AddInventoryItem(choice.Id, (int)count).Index;
+                _refreshingInventory = true;
+                InventorySearch.Text = "";
+                _refreshingInventory = false;
+                dialog.Close();
+                RefreshInventory();
+                ShowStatus(null);
+            }
+            catch (ArgumentException) { error.Text = UiLanguage.Get("InvalidInventory"); }
+        };
+        cancel.Click += (_, _) => dialog.Close();
+        await dialog.ShowDialog(this);
     }
 
     private void ApplyInventoryEdit(Action edit)
