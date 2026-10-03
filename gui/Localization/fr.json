@@ -1,4 +1,6 @@
 {
+  "Search": "Rechercher…", "General": "Général", "Level": "Niveau", "Experience": "Expérience",
+  "AffinityCoins": "Pièces d’entente", "ExpertMode": "Mode expert", "ReserveExperience": "Expérience en réserve",
   "File": "Fichier", "OpenSave": "Ouvrir une sauvegarde…", "Save": "Enregistrer", "SaveAs": "Enregistrer sous…", "Exit": "Quitter",
   "Language": "Langue", "Help": "Aide", "About": "À propos", "Version": "Version :",
   "Main": "Accueil", "Resources": "Ressources", "Money": "Argent", "Noponstones": "Cristaux nopons",

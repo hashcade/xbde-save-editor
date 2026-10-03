@@ -1,4 +1,6 @@
 {
+  "Search": "搜索…", "General": "基本信息", "Level": "等级", "Experience": "经验",
+  "AffinityCoins": "羁绊硬币", "ExpertMode": "高手模式", "ReserveExperience": "储备经验",
   "File": "文件", "OpenSave": "打开存档…", "Save": "保存", "SaveAs": "另存为…", "Exit": "退出",
   "Language": "语言", "Help": "帮助", "About": "关于", "Version": "版本：",
   "Main": "首页", "Resources": "资源", "Money": "金钱", "Noponstones": "诺彭水晶",

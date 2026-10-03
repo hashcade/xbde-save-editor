@@ -41,6 +41,33 @@ foreach (bool future in new[] { false, true })
             && original[offset] != edited[offset])
             throw new InvalidOperationException($"Resource editing altered byte {offset:X}.");
     Check(save.Campaign == (future ? Campaign.FutureConnected : Campaign.MainStory), "Campaign mismatch.");
+    var character = save.GetCharacter(future ? 14 : 1);
+    Check(character.Level == 99, "Character ID resolves to the wrong record.");
+    byte[] beforeCharacterEdit = save.Serialize();
+    character.SetResources(ap: 765);
+    int characterOffset = 0x152368 + (character.Id - 1) * 0x138;
+    byte[] afterCharacterEdit = save.Serialize();
+    Check(character.AP == 765, "Character AP edit differs.");
+    for (int offset = 0; offset < afterCharacterEdit.Length; offset++)
+        if (!(offset >= characterOffset + 8 && offset < characterOffset + 12)
+            && beforeCharacterEdit[offset] != afterCharacterEdit[offset])
+            throw new InvalidOperationException($"Character edit altered byte {offset:X}.");
+    byte[] beforeRejected = save.Serialize();
+    Reject(() => character.SetResources(123, 1000), "Out-of-range Affinity Coins were accepted.");
+    Check(save.Serialize().AsSpan().SequenceEqual(beforeRejected), "Invalid character update partially mutated AP.");
+    Reject(() => save.GetCharacter(16), "Unsupported character ID was accepted.");
+    Reject(() => save.GetCharacter(future ? 2 : 14), "Absent character was editable.");
+    if (future)
+    {
+        Reject(() => character.SetResources(affinityCoins: 0), "Future Connected accepted Affinity Coins.");
+    }
+    else
+    {
+        character.SetResources(affinityCoins: 999);
+        Check(character.AffinityCoins == 999, "Affinity Coin maximum failed.");
+        character.SetResources(affinityCoins: 0);
+        Check(character.AffinityCoins == 0, "Affinity Coin minimum failed.");
+    }
     original[0] ^= 0xff;
     Check(save.Serialize()[0] != original[0], "The parser retains its caller's buffer.");
     byte[] copy = save.Serialize();
@@ -90,6 +117,18 @@ try
             byte[] before = File.ReadAllBytes(realPath);
             var realSession = SaveSession.Open(realPath);
             Check(realSession.Document.Serialize().AsSpan().SequenceEqual(before), "Real save round-trip differs.");
+            foreach (var actualCharacter in realSession.Document.Characters)
+            {
+                Check(actualCharacter.Level is >= 1 and <= 99, "Real character mapping produced an invalid level.");
+                var editedReal = SaveDocument.Parse(before);
+                uint changedAP = actualCharacter.AP == 12345 ? 12346u : 12345u;
+                editedReal.GetCharacter(actualCharacter.Id).SetResources(ap: changedAP);
+                int recordOffset = 0x152368 + (actualCharacter.Id - 1) * 0x138;
+                byte[] editedBytes = editedReal.Serialize();
+                Check(editedBytes.AsSpan(0, recordOffset + 8).SequenceEqual(before.AsSpan(0, recordOffset + 8))
+                    && editedBytes.AsSpan(recordOffset + 12).SequenceEqual(before.AsSpan(recordOffset + 12)),
+                    "Real character edit changed a neighboring record.");
+            }
             string realCopy = Path.Combine(temporary, Path.GetFileName(realPath));
             realSession.Save(realCopy);
             Check(File.ReadAllBytes(realCopy).AsSpan().SequenceEqual(before), "Real save copy differs.");

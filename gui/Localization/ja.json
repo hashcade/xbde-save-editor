@@ -1,4 +1,6 @@
 {
+  "Search": "検索…", "General": "基本情報", "Level": "レベル", "Experience": "経験値",
+  "AffinityCoins": "キズナコイン", "ExpertMode": "上級者設定", "ReserveExperience": "ストック経験値",
   "File": "ファイル", "OpenSave": "セーブを開く…", "Save": "保存", "SaveAs": "名前を付けて保存…", "Exit": "終了",
   "Language": "言語", "Help": "ヘルプ", "About": "このアプリについて", "Version": "バージョン：",
   "Main": "メイン", "Resources": "所持品", "Money": "所持金", "Noponstones": "ノポンクリスタル",

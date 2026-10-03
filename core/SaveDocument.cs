@@ -32,6 +32,12 @@ public sealed class SaveDocument
     public Campaign Campaign => PartyIds.Any(id => id is 14 or 15)
         ? Campaign.FutureConnected : Campaign.MainStory;
 
+    public IReadOnlyList<CharacterRecord> Characters => PartyIds.Where(id => id <= 15)
+        .Select(id => new CharacterRecord(this, id)).ToArray();
+
+    public CharacterRecord GetCharacter(int id) => Characters.FirstOrDefault(character => character.Id == id)
+        ?? throw new ArgumentException("Only characters already present in this party can be edited.", nameof(id));
+
     public string Sha256 => Convert.ToHexString(SHA256.HashData(_data));
     public uint Money => ReadUInt32(0x151b40);
     public uint Noponstones => ReadUInt32(0x10);

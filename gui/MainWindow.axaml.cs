@@ -31,6 +31,7 @@ public partial class MainWindow : Window
             var session = SaveSession.Open(path);
             Session = session;
             RefreshMain();
+            RefreshCharacters();
             ShowStatus(null);
             return true;
         }
@@ -45,6 +46,11 @@ public partial class MainWindow : Window
     {
         if (Session is null) return false;
         if (!WholeNumber(MoneyInput.Value, out _) || !WholeNumber(NoponstonesInput.Value, out _))
+        {
+            ShowStatus(UiLanguage.Get("InvalidValue"));
+            return false;
+        }
+        if (!CharacterValuesValid())
         {
             ShowStatus(UiLanguage.Get("InvalidValue"));
             return false;
@@ -66,6 +72,7 @@ public partial class MainWindow : Window
     {
         UiLanguage.Apply(language);
         RefreshMain();
+        RefreshCharacters();
         ShowStatus(null);
     }
 
@@ -80,7 +87,7 @@ public partial class MainWindow : Window
             NoponstonesInput.Value = Session.Document.Noponstones;
             FileNameValue.Text = Path.GetFileName(Session.SourcePath);
             CampaignValue.Text = UiLanguage.Get(Session.Document.Campaign == Campaign.FutureConnected ? "FutureConnected" : "MainStory");
-            CharacterCountValue.Text = Session.Document.PartyIds.Count.ToString();
+            CharacterCountValue.Text = Session.Document.Characters.Count.ToString();
         }
         finally { _refreshing = false; }
     }

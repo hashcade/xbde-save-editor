@@ -5,7 +5,8 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Independent lossless parser and atomic file saving.
 - [x] Inspect/copy CLI and cross-platform CI.
 - [x] Main panel: money and Noponstones, nine UI languages and shared save actions.
-- [ ] Characters: general records and Expert Mode values.
+- [x] Characters: AP/Affinity Coin editing and general/Expert Mode inspection.
+- [ ] Characters: validated level/experience and Expert Mode editing.
 - [ ] Arts and skills: limits, unlock state and learned progress.
 - [ ] Equipment: inventory references, gems and appearance.
 - [ ] Items: localized catalogs and validated editing.

@@ -40,6 +40,16 @@ def main() -> None:
         assert struct.unpack_from("<I", changed, 0x10)[0] == 456
         for index, (before, after) in enumerate(zip(original, changed)):
             assert before == after or 0x10 <= index < 0x14 or 0x151B40 <= index < 0x151B44
+        run("character", source, output, "1", "--ap", "321", "--coins", "999")
+        character_bytes = output.read_bytes()
+        assert struct.unpack_from("<II", character_bytes, 0x152370) == (321, 999)
+        assert character_bytes[:0x152370] == original[:0x152370]
+        assert character_bytes[0x152378:] == original[0x152378:]
+        run("character", source, output, "1", "--ap", "1", "--coins", "1000", success=False)
+        assert output.read_bytes() == character_bytes
+        run("character", source, output, "2", "--ap", "1", success=False)
+        run("character", source, output, "1", "--ap", "-1", success=False)
+        output.write_bytes(changed)
         for invalid in ("-1", "1.5", "4294967296", "wrong"):
             run("resources", source, output, "--money", invalid, success=False)
             assert output.read_bytes() == changed
