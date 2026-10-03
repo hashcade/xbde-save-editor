@@ -60,6 +60,10 @@ toggle Expert Mode. Those game-menu operations remain outside this feature.
 
 References:
 
+- [Chinese Expert Mode menu screenshot](https://img1.gamersky.com/image2020/06/20200607_syj_380_2/image003.jpg),
+  reproduced in this [guide](https://www.gamersky.com/handbook/202006/1294512.shtml).
+  The Traditional Chinese heading matches the game menu; the Simplified Chinese
+  heading uses the corresponding simplified characters.
 - [Expert Mode tutorial](https://xenobladedata.github.io/xb1de/bdat/bdat_menu_ttrl/MNU_ttrl_page.html), entry 12.
 - [Level growth data](https://xenoblade.github.io/xb1de/bdat/bdat_common/BTL_growlist.html).
 - [Character introduction levels](https://xenoblade.github.io/xb1de/bdat/bdat_common/BTL_pclist.html), `lv` / `melia_lv`.

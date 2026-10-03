@@ -19,6 +19,8 @@ void Check(bool value, string message)
     if (!value) throw new InvalidOperationException(message);
 }
 Check(UiLanguage.Current == "en", "Default language is not English.");
+Check(UiLanguage.Read("zh-Hans")["ExpertMode"] == "进阶玩家设定", "Simplified Chinese Expert Mode terminology differs.");
+Check(UiLanguage.Read("zh-Hant")["ExpertMode"] == "進階玩家設定", "Traditional Chinese Expert Mode terminology differs.");
 Check(!window.FindControl<StackPanel>("ResourceInputs")!.IsEnabled, "Empty form is editable.");
 Check(window.FindControl<ScrollViewer>("MainScroll") is not null, "Main page has no shared scroll container.");
 Check(!MainWindow.WholeNumber(1.5m, out _), "Fractional amount is accepted.");
@@ -96,6 +98,8 @@ try
         Check(window.FindControl<Button>("MaxReserveExperienceButton")!.Content?.ToString() == UiLanguage.Get("MaxReserveExperience"),
             "Reserve EXP button translation is stale.");
         Check(applyProgression.Content?.ToString() == UiLanguage.Get("ApplyChanges"), "Progression translation is stale.");
+        Check(window.FindControl<TextBlock>("ExpertModeTitle")!.Text == UiLanguage.Get("ExpertMode"),
+            "Expert Mode title translation is stale.");
     }
     window.SetLanguage("en");
     var search = window.FindControl<TextBox>("CharacterSearch")!;

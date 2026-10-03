@@ -94,7 +94,7 @@
               </StackPanel>
             </StackPanel>
             <StackPanel Grid.Column="1" Spacing="16">
-              <TextBlock Text="{DynamicResource ExpertMode}" FontWeight="SemiBold" />
+              <TextBlock Name="ExpertModeTitle" Text="{DynamicResource ExpertMode}" FontWeight="SemiBold" />
               <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" RowDefinitions="Auto,Auto" RowSpacing="16">
                 <TextBlock Text="{DynamicResource HighestLevel}" /><TextBlock Name="ExpertLevelValue" Grid.Column="1" />
                 <TextBlock Text="{DynamicResource RecordedExperience}" Grid.Row="1" /><TextBlock Name="ExpertExperienceValue" Grid.Row="1" Grid.Column="1" />
