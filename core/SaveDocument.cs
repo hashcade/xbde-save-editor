@@ -206,6 +206,16 @@ public sealed class SaveDocument
             character.SetResources(ap: CharacterRecord.MaximumAP);
     }
 
+    public bool CanLearnAndMaxAllArts => Campaign != Campaign.Unknown
+        && Characters.Count == PartyIds.Count && Characters.All(character => character.CanEditProgression);
+
+    public void LearnAndMaxAllArts()
+    {
+        if (!CanLearnAndMaxAllArts)
+            throw new ArgumentException("Arts require an identified campaign and supported characters.");
+        foreach (var character in Characters) character.LearnAndMaxArts();
+    }
+
     public void MaxAllSkills()
     {
         if (Campaign != Campaign.MainStory || Characters.Any(character => character.Id is < 1 or > 8))

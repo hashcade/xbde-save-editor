@@ -257,6 +257,19 @@ try
                 Check(artsCopy.GetCharacter(actualCharacter.Id).Arts.Where(art => art.CanEdit)
                     .All(art => art.Level == art.MaximumLevel), "Real art maximum missed an upgradeable art.");
             }
+            var learnedArtsCopy = SaveDocument.Parse(before);
+            learnedArtsCopy.LearnAndMaxAllArts();
+            byte[] learnedArtsBytes = learnedArtsCopy.Serialize();
+            Check(learnedArtsBytes.AsSpan(0, 0x1536e8).SequenceEqual(before.AsSpan(0, 0x1536e8)),
+                "Real art learning changed resources, equipment, palettes or other save sections.");
+            Check(learnedArtsCopy.Characters.SelectMany(character => character.Arts).Where(art => art.IsLevelLearned)
+                .All(art => art.Level == art.MaximumLevel), "Real art learning missed an ordinary art.");
+            foreach (var member in realSession.Document.Characters)
+                foreach (var art in member.Arts.Where(art => !art.Learned && !art.CanLearn))
+                    Check(!learnedArtsCopy.GetCharacter(member.Id).GetArt(art.Id).Learned,
+                        "Real art learning unlocked a protected event art.");
+            learnedArtsCopy.LearnAndMaxAllArts();
+            Check(learnedArtsCopy.Serialize().AsSpan().SequenceEqual(learnedArtsBytes), "Real art learning is not idempotent.");
             string realCopy = Path.Combine(temporary, Path.GetFileName(realPath));
             realSession.Save(realCopy);
             Check(File.ReadAllBytes(realCopy).AsSpan().SequenceEqual(before), "Real save copy differs.");

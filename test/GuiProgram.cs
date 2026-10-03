@@ -221,6 +221,8 @@ try
     var artLevel = window.FindControl<ComboBox>("ArtLevelInput")!;
     var maxArt = window.FindControl<Button>("MaxArtButton")!;
     var maxArts = window.FindControl<Button>("MaxCharacterArtsButton")!;
+    var learnArt = window.FindControl<Button>("LearnArtButton")!;
+    var learnAllArts = window.FindControl<Button>("LearnMaxAllArtsButton")!;
     Check(window.FindControl<Grid>("ArtsPanel")!.IsVisible, "Arts tab is disconnected.");
     Check(artList.ItemsPanel.Build() is VirtualizingStackPanel { CacheLength: 1 }, "Art list has no render buffer.");
     Check(artLevel.SelectedItem is 3, "Art selection does not prefer an upgradeable art.");
@@ -233,13 +235,27 @@ try
     maxArt.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
     Check(window.Session.Document.GetCharacter(1).GetArt(12).Level == 12, "Single art maximum is disconnected.");
     var artSearch = window.FindControl<TextBox>("ArtSearch")!;
+    artSearch.Text = "Battle Soul";
+    Dispatcher.UIThread.RunJobs();
+    Check(learnArt.IsVisible && learnArt.IsEnabled && !maxArt.IsVisible && !artLevel.IsVisible,
+        "Missing ordinary art exposes the wrong action.");
+    learnArt.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.GetCharacter(1).GetArt(17).Level == 1 && !learnArt.IsVisible
+        && maxArt.IsVisible && artLevel.IsVisible, "Single art learning is disconnected.");
+    artSearch.Text = "Shield";
+    Dispatcher.UIThread.RunJobs();
+    Check(!learnArt.IsVisible && !maxArt.IsVisible
+        && window.FindControl<TextBlock>("ArtStatusValue")!.Text == UiLanguage.Get("ArtEventLocked"),
+        "Missing Monado art can bypass a story event.");
     artSearch.Text = "no matching art";
     Dispatcher.UIThread.RunJobs();
     maxArts.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
     Check(window.Session.Document.GetCharacter(1).GetArt(11).Level == 12, "Bulk art maximum is disconnected.");
     artSearch.Text = "";
     Dispatcher.UIThread.RunJobs();
-    Check(!window.Session.Document.GetCharacter(1).GetArt(17).Learned, "GUI bulk maximum unlocked an unlearned art.");
+    Check(window.Session.Document.GetCharacter(1).GetArt(17).Level == 12
+        && window.Session.Document.GetCharacter(1).GetArt(14).Level == 12, "GUI character learning missed ordinary arts.");
+    Check(!window.Session.Document.GetCharacter(1).GetArt(5).Learned, "GUI character learning bypassed a story event.");
     artList.SelectedIndex = 0;
     Check(!artLevel.IsEnabled && !maxArt.IsEnabled, "Fixed talent art is editable.");
     Check(!artLevel.IsVisible && window.FindControl<TextBlock>("ArtLevelValue")!.IsVisible,
@@ -249,7 +265,9 @@ try
         window.SetLanguage("zh-Hans");
         window.SetLanguage(language);
         Dispatcher.UIThread.RunJobs();
-        Check(maxArts.Content?.ToString() == UiLanguage.Get("MaxCharacterArts"), "Art button translation is stale.");
+        Check(maxArts.Content?.ToString() == UiLanguage.Get("LearnMaxCharacterArts")
+            && learnAllArts.Content?.ToString() == UiLanguage.Get("LearnMaxAllArts")
+            && learnArt.Content?.ToString() == UiLanguage.Get("LearnArt"), "Art button translation is stale.");
         Check(window.FindControl<TextBlock>("ArtStatusValue")!.Text == UiLanguage.Get("FixedTalent"), "Art status translation is stale.");
         VerifyPageSpacing();
     }
@@ -260,6 +278,15 @@ try
     window.Height = 780;
     VerifyPageSpacing();
     window.SetLanguage("en");
+    artSearch.Text = "no matching art";
+    byte[] beforeGlobalArts = window.Session.Document.Serialize();
+    learnAllArts.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(learnAllArts.IsVisible && window.Session.Document.Characters.SelectMany(character => character.Arts)
+        .Where(art => art.IsLevelLearned).All(art => art.Level == art.MaximumLevel),
+        "Global art learning was limited by search or selection.");
+    Check(window.Session.Document.Serialize().AsSpan(0, 0x1536e8).SequenceEqual(beforeGlobalArts.AsSpan(0, 0x1536e8)),
+        "Global GUI art learning altered unrelated fields.");
+    artSearch.Text = "";
     Check(window.SaveTo(Path.Combine(temporary, "arts-edited.sav")), "Could not save GUI art edits.");
     var artsSaved = SaveDocument.Parse(File.ReadAllBytes(Path.Combine(temporary, "arts-edited.sav")));
     Check(artsSaved.GetCharacter(1).GetArt(12).Level == 12, "GUI art edit was not persisted.");
@@ -784,9 +811,12 @@ try
         }
         else window.FindControl<TabStrip>("MainNavigation")!.SelectedIndex = 0;
         if (page.Length > 1) window.SetLanguage(page[1]);
-        Thread.Sleep(250); // Allow enabled-state color transitions to finish before capture.
         Dispatcher.UIThread.RunJobs();
         VerifyPageSpacing();
+        AvaloniaHeadlessPlatform.ForceRenderTimerTick(3);
+        Thread.Sleep(500); // Let card entrance and enabled-state transitions finish after the initial frame.
+        Dispatcher.UIThread.RunJobs();
+        AvaloniaHeadlessPlatform.ForceRenderTimerTick(3);
         using var frame = window.CaptureRenderedFrame()!;
         frame.Save(screenshot, Avalonia.Media.Imaging.PngBitmapEncoderOptions.Default);
         Console.WriteLine($"Screenshot: {screenshot}");

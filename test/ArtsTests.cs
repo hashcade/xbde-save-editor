@@ -101,5 +101,79 @@ internal static class ArtsTests
         check(unknown.GetCharacter(1).GetArt(12).Level == 255, "Existing high art level was clamped.");
         reject(() => unknown.GetCharacter(1).MaxArts(), "Ambiguous campaign exposed art editing.");
         check(unknown.Serialize().AsSpan().SequenceEqual(ambiguous), "Ambiguous campaign edit changed bytes.");
+        reject(() => unknown.GetCharacter(1).GetArt(17).Learn(), "Ambiguous campaign allowed art learning.");
+        reject(unknown.LearnAndMaxAllArts, "Ambiguous campaign allowed global art learning.");
+        check(unknown.Serialize().AsSpan().SequenceEqual(ambiguous), "Rejected art learning changed bytes.");
+        byte[] guestBytes = fixture(false);
+        guestBytes[0x152318] = 9;
+        guestBytes.AsSpan(0x152368 + 8 * 0x138, 4).Clear();
+        guestBytes[0x152368 + 8 * 0x138] = 1;
+        var withGuest = SaveDocument.Parse(guestBytes);
+        reject(withGuest.LearnAndMaxAllArts, "Unsupported guest was included in global art learning.");
+        check(withGuest.Serialize().AsSpan().SequenceEqual(guestBytes), "Guest rejection partially edited other characters.");
+        byte[] futureGuestBytes = fixture(true);
+        futureGuestBytes[0x152318] = 27;
+        var withFutureGuest = SaveDocument.Parse(futureGuestBytes);
+        check(!withFutureGuest.CanLearnAndMaxAllArts, "An unmapped Future Connected guest passed the bulk preflight.");
+        reject(withFutureGuest.LearnAndMaxAllArts, "An unmapped guest was silently excluded from global art learning.");
+        check(withFutureGuest.Serialize().AsSpan().SequenceEqual(futureGuestBytes), "Unmapped guest rejection partially edited the party.");
+        TestLearning(fixture, check, reject);
+    }
+
+    private static void TestLearning(Func<bool, byte[]> fixture, Action<bool, string> check, Action<Action, string> reject)
+    {
+        const int table = 0x1536e8;
+        foreach (bool future in new[] { false, true })
+        {
+            byte[] original = fixture(future);
+            original.AsSpan(table, 188 * 2).Clear();
+            foreach (var definition in ArtCatalog.All)
+            {
+                original[table + (definition.Id - 1) * 2 + 1] = 0x80;
+                if (definition.IsTalent) original[table + (definition.Id - 1) * 2] = 1;
+            }
+            var save = SaveDocument.Parse(original);
+            var art = save.GetCharacter(1).GetArt(17);
+            check(art.CanLearn && art.IsLevelLearned && art.LearnLevel > 0 && !art.RequiresEvent,
+                "Ordinary learning metadata is missing.");
+            reject(() => art.Learn(0), "Art learning accepted level zero.");
+            reject(() => art.Learn(art.MaximumLevel + 1), "Art learning exceeded the campaign cap.");
+            reject(() => save.GetCharacter(1).GetArt(5).Learn(), "Learning bypassed a Monado event.");
+            reject(() => save.GetCharacter(1).GetArt(1).Learn(), "Learning changed a talent art.");
+            reject(() => save.GetCharacter(7).GetArt(118).Learn(), "Learning bypassed Mind Blast's quest.");
+            if (!future) reject(() => save.GetCharacter(8).GetArt(143).Learn(), "Learning bypassed Final Cross's event.");
+            check(save.Serialize().AsSpan().SequenceEqual(original), "Rejected learning changed the save.");
+            art.Learn();
+            var single = save.Serialize();
+            int offset = table + (art.Id - 1) * 2;
+            check(art.Level == 1 && art.ManualFlags == 0x80 && art.CanEdit && !art.CanLearn,
+                "Single learning failed to preserve unknown flags or enable editing.");
+            check(Enumerable.Range(0, single.Length).All(index => original[index] == single[index] || index == offset),
+                "Single learning changed unrelated fields.");
+            reject(() => art.Learn(), "Already learned art was learned twice.");
+            save.GetCharacter(1).LearnAndMaxArts();
+            check(art.Level == (future ? 10 : 12) && art.ManualFlags == (future ? 0x83 : 0x87),
+                "Character learning/maximum differs from the campaign cap.");
+            check(!save.GetCharacter(7).GetArt(103).Learned, "Character learning affected another character.");
+            save.LearnAndMaxAllArts();
+            byte[] all = save.Serialize();
+            var editable = save.Characters.SelectMany(character => character.Arts).Where(item => item.CanEdit).ToArray();
+            check(editable.All(item => item.Level == item.MaximumLevel)
+                && save.Characters.SelectMany(character => character.Arts).All(item => !item.CanLearn),
+                "Global learning/maximum missed an ordinary art.");
+            check(!save.GetCharacter(1).GetArt(5).Learned && !save.GetCharacter(7).GetArt(118).Learned
+                && save.GetCharacter(1).GetArt(1).Level == 1, "Global learning changed protected event or talent arts.");
+            if (!future) check(!save.GetCharacter(8).GetArt(143).Learned, "Global learning unlocked Final Cross.");
+            var allowed = editable.SelectMany(item => new[] { table + (item.Id - 1) * 2, table + (item.Id - 1) * 2 + 1 })
+                .Concat(ArtCatalog.All.Where(item => item.LinkedArtId is { } id && editable.Any(source => source.Id == id))
+                    .Select(item => table + (item.Id - 1) * 2)).ToHashSet();
+            check(Enumerable.Range(0, all.Length).All(index => original[index] == all[index] || allowed.Contains(index)),
+                "Global learning changed palettes, AP, story flags, absent characters or unrelated art records.");
+            foreach (var discharge in ArtCatalog.All.Where(item => item.LinkedArtId is not null))
+                check(all[table + (discharge.Id - 1) * 2] == save.GetCharacter(7).GetArt(discharge.LinkedArtId!.Value).Level
+                    && all[table + (discharge.Id - 1) * 2 + 1] == 0x80, "Learning broke discharge linkage or its flags.");
+            save.LearnAndMaxAllArts();
+            check(save.Serialize().AsSpan().SequenceEqual(all), "Global art learning is not idempotent.");
+        }
     }
 }

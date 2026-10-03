@@ -143,6 +143,35 @@ def main() -> None:
         assert bulk_arts[0x1536E8 + 24:] == original[0x1536E8 + 24:]
         assert source.read_bytes() == original
 
+        battle_soul = next(art for art in arts if art["Id"] == 17)
+        assert battle_soul["CanLearn"] and battle_soul["IsLevelLearned"] and battle_soul["LearnLevel"] > 0
+        assert not next(art for art in arts if art["Id"] == 5)["CanLearn"]
+        assert next(art for art in arts if art["Id"] == 5)["RequiresEvent"]
+        assert "learn-max-all-arts" in run("--help")
+        run("learn-art", source, output, "1", "17")
+        learned = output.read_bytes()
+        expected = bytearray(original)
+        expected[0x1536E8 + 32] = 1
+        assert learned == expected
+        for art_id in ("1", "5", "20", "189"):
+            run("learn-art", source, output, "1", art_id, success=False)
+            assert output.read_bytes() == learned
+        run("learn-art", output, output, "1", "17", success=False)
+        assert output.read_bytes() == learned
+        run("learn-max-arts", source, output, "1")
+        learned_max = json.loads(run("arts", output, "1"))
+        assert all(art["Level"] == art["MaximumLevel"] for art in learned_max if art["IsLevelLearned"])
+        assert all(not art["Learned"] for art in learned_max if art["RequiresEvent"])
+        assert output.read_bytes()[:0x1536E8] == original[:0x1536E8]
+        assert json.loads(run("arts", output, "2")) == json.loads(run("arts", source, "2"))
+        run("learn-max-all-arts", source, output)
+        all_learned = output.read_bytes()
+        for character_id in ("1", "2"):
+            assert all(art["Level"] == art["MaximumLevel"] for art in json.loads(run("arts", output, character_id))
+                       if art["IsLevelLearned"])
+        run("learn-max-all-arts", output, output)
+        assert output.read_bytes() == all_learned and source.read_bytes() == original
+
         skills_original = bytearray(original)
         for character_id in (1, 2):
             record = 0x152368 + (character_id - 1) * 0x138

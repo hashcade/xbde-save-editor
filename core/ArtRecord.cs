@@ -18,6 +18,10 @@ public sealed class ArtRecord
     public byte ManualFlags => _document.ReadByte(Offset + 1);
     public bool Learned => Level != 0;
     public bool IsTalent => _definition.IsTalent;
+    public bool IsLevelLearned => _definition.IsLevelLearned;
+    public bool RequiresEvent => _definition.LearnType == 2;
+    public int LearnLevel => _definition.LearnLevel;
+    public bool CanLearn => !Learned && IsLevelLearned && _document.GetCharacter(_definition.CharacterId).CanEditProgression;
     public bool CanEdit => Learned && !IsTalent && _document.GetCharacter(_definition.CharacterId).CanEditProgression
         && !(_document.Campaign == Campaign.FutureConnected && Id == 4);
     private int ManualLevelLimit => (ManualFlags & 7) switch
@@ -38,8 +42,25 @@ public sealed class ArtRecord
     public void SetLevel(int level)
     {
         if (!CanEdit) throw new ArgumentException("Only learned, upgradeable arts in an identified campaign can be edited.");
+        ValidateLevel(level);
+        WriteLevel(level);
+    }
+
+    public void Learn(int level = 1)
+    {
+        if (!CanLearn) throw new ArgumentException("Only unlearned ordinary level-based arts can be learned directly.");
+        ValidateLevel(level);
+        WriteLevel(level);
+    }
+
+    private void ValidateLevel(int level)
+    {
         if (level < 1 || level > MaximumLevel)
             throw new ArgumentOutOfRangeException(nameof(level), $"Art level must be between 1 and {MaximumLevel}.");
+    }
+
+    private void WriteLevel(int level)
+    {
         _document.WriteByte(Offset, (byte)level);
         if (!_definition.IsMonado)
         {

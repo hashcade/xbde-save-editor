@@ -79,6 +79,9 @@
           <StackPanel Grid.Row="3" Spacing="16">
             <Button Name="MaxAllAPButton" Content="{DynamicResource MaxAllAP}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxAllAP_Click" />
             <Button Name="MaxAllSkillsButton" Content="{DynamicResource MaxAllSkills}" HorizontalAlignment="Stretch" IsEnabled="False" IsVisible="False" Click="MaxAllSkills_Click" />
+            <Button Name="LearnMaxAllArtsButton" Content="{DynamicResource LearnMaxAllArts}" HorizontalAlignment="Stretch" IsEnabled="False" IsVisible="False" Click="LearnMaxAllArts_Click">
+              <Button.ContentTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" /></DataTemplate></Button.ContentTemplate>
+            </Button>
           </StackPanel>
         </Grid>
       </suki:GlassCard>
@@ -135,7 +138,9 @@
                   <DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate>
                 </ListBox.ItemTemplate>
               </ListBox>
-              <Button Name="MaxCharacterArtsButton" Grid.Row="2" Content="{DynamicResource MaxCharacterArts}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxCharacterArts_Click" />
+              <Button Name="MaxCharacterArtsButton" Grid.Row="2" Content="{DynamicResource LearnMaxCharacterArts}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxCharacterArts_Click">
+                <Button.ContentTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" /></DataTemplate></Button.ContentTemplate>
+              </Button>
             </Grid>
             <StackPanel Name="ArtInputs" Grid.Column="1" Spacing="16" IsEnabled="False">
               <TextBlock Text="{DynamicResource ArtStatus}" FontWeight="SemiBold" />
@@ -150,6 +155,7 @@
                 <TextBlock Name="ArtLevelValue" />
               </StackPanel>
               <Button Name="MaxArtButton" Content="{DynamicResource MaxArt}" HorizontalAlignment="Stretch" Click="MaxArt_Click" />
+              <Button Name="LearnArtButton" Content="{DynamicResource LearnArt}" HorizontalAlignment="Stretch" IsVisible="False" Click="LearnArt_Click" />
             </StackPanel>
           </Grid>
           <ScrollViewer Name="EquipmentPanel" Grid.Row="1" HorizontalScrollBarVisibility="Disabled" IsVisible="False">

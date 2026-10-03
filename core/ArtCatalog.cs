@@ -2,8 +2,10 @@ using System.Globalization;
 
 namespace XbdeEditor.Core;
 
-public sealed record ArtDefinition(int Id, int CharacterId, string Name, bool IsTalent, int Order)
+public sealed record ArtDefinition(int Id, int CharacterId, string Name, bool IsTalent, int Order,
+    int LearnType, int LearnLevel)
 {
+    public bool IsLevelLearned => LearnType == 1 && !IsTalent && !IsMonado;
     public int? LinkedArtId => Id switch
     {
         97 => 103, 98 => 104, 99 => 105, 100 => 111, 101 => 112, 102 => 113, _ => null
@@ -27,9 +29,11 @@ public static class ArtCatalog
         {
             string[] fields = line.Split('\t');
             int Number(int index) => int.Parse(fields[index], CultureInfo.InvariantCulture);
-            arts.Add(new ArtDefinition(Number(0), Number(1), fields[2], Number(3) == 1, Number(4)));
+            if (fields.Length != 7) throw new InvalidDataException("Invalid art catalog row.");
+            arts.Add(new ArtDefinition(Number(0), Number(1), fields[2], Number(3) == 1, Number(4), Number(5), Number(6)));
         }
-        if (arts.Select(art => art.Id).Distinct().Count() != arts.Count || arts.Any(art => art.Id is < 1 or > 188))
+        if (arts.Select(art => art.Id).Distinct().Count() != arts.Count
+            || arts.Any(art => art.Id is < 1 or > 188 || art.LearnType is not (1 or 2) || art.LearnLevel is < 0 or > 99))
             throw new InvalidDataException("Invalid art catalog IDs.");
         return arts.AsReadOnly();
     }

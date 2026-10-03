@@ -14,6 +14,7 @@ try
         Console.WriteLine("gems <save>\ngem <save> <output> <gem-index> [--effect N] [--rank N] [--value N]\nmax-gem <save> <output> <gem-index>");
         Console.WriteLine("inventory <save> <Collectables|Materials|KeyItems|ArtManuals>\nitem <save> <output> <kind> <index> --quantity N\nadd-item <save> <output> <item-id> --quantity N\ndelete-item <save> <output> <kind> <index>\nmax-items <save> <output> <kind>\nadd-gem <save> <output> --effect N --rank N --value N\ndelete-gem <save> <output> <gem-index>");
         Console.WriteLine("achievements <save>\nunlock-achievement <save> <output> <id>\nunlock-all-achievements <save> <output>");
+        Console.WriteLine("learn-art <save> <output> <character-id> <art-id>\nlearn-max-arts <save> <output> <character-id>\nlearn-max-all-arts <save> <output>");
         return 0;
     }
     if (args is ["achievements", var achievementSource])
@@ -241,12 +242,34 @@ try
         session.Save(skillOutput);
         return 0;
     }
+    if (args is ["learn-art", var learnArtSource, var learnArtOutput, var learnArtCharacter, var learnArtId])
+    {
+        var session = SaveSession.Open(learnArtSource);
+        session.Document.GetCharacter(ParseId(learnArtCharacter)).GetArt(ParseId(learnArtId)).Learn();
+        session.Save(learnArtOutput);
+        return 0;
+    }
+    if (args is ["learn-max-arts", var learnArtsSource, var learnArtsOutput, var learnArtsCharacter])
+    {
+        var session = SaveSession.Open(learnArtsSource);
+        session.Document.GetCharacter(ParseId(learnArtsCharacter)).LearnAndMaxArts();
+        session.Save(learnArtsOutput);
+        return 0;
+    }
+    if (args is ["learn-max-all-arts", var learnAllArtsSource, var learnAllArtsOutput])
+    {
+        var session = SaveSession.Open(learnAllArtsSource);
+        session.Document.LearnAndMaxAllArts();
+        session.Save(learnAllArtsOutput);
+        return 0;
+    }
     if (args is ["arts", var artsSource, var artsCharacter])
     {
         var character = SaveSession.Open(artsSource).Document.GetCharacter(ParseId(artsCharacter));
         Console.WriteLine(JsonSerializer.Serialize(character.Arts.Select(art => new
         {
-            art.Id, art.Name, art.Level, art.Learned, art.IsTalent, art.CanEdit, art.MaximumLevel, art.UnlockedMaximum
+            art.Id, art.Name, art.Level, art.Learned, art.IsTalent, art.CanEdit, art.CanLearn,
+            art.IsLevelLearned, art.RequiresEvent, art.LearnLevel, art.MaximumLevel, art.UnlockedMaximum
         }), new JsonSerializerOptions { WriteIndented = true }));
         return 0;
     }

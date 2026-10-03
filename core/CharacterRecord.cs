@@ -60,6 +60,13 @@ public sealed class CharacterRecord
         foreach (var art in Arts.Where(art => art.CanEdit)) art.SetLevel(art.MaximumLevel);
     }
 
+    public void LearnAndMaxArts()
+    {
+        if (!CanEditProgression) throw new ArgumentException("Arts require an identified campaign and supported character.");
+        foreach (var art in Arts.Where(art => art.CanLearn)) art.Learn(art.MaximumLevel);
+        MaxArts();
+    }
+
     public void SetProgression(uint? level = null, uint? experience = null)
     {
         uint targetLevel = level ?? Level;

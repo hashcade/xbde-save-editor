@@ -10,7 +10,8 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Characters: linked current level/EXP editing with verified highest-level bookkeeping.
 - [ ] Expert Mode: simulate spending/refunding reserve EXP and edit its enabled state.
 - [x] Arts: verified levels, single/character-wide maximum and CLI support.
-- [ ] Arts: localized game names and explicit unlock editing.
+- [x] Arts: ordinary level-based learning and single/character-wide/global learning and maximum, with protected story/quest arts and matching CLI support.
+- [ ] Arts: localized game names and validated story/quest unlock editing.
 - [x] Skills: inspect hidden-tree unlocks, edit learned count/remaining SP and maximize unlocked trees, with CLI support.
 - [ ] Skills: localized game names and skill-link editing.
 - [x] Equipment: resolve equipped inventory items, inspect fixed gems and fit/remove owned normal gems, with CLI support.

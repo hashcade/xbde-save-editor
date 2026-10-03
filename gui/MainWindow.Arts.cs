@@ -22,9 +22,10 @@ public partial class MainWindow
 
     private void CharacterNavigation_Changed(object? sender, SelectionChangedEventArgs e)
     {
-        if (GeneralCharacterScroll is null || ArtsPanel is null || SkillsPanel is null || MaxAllSkillsButton is null || EquipmentPanel is null) return;
+        if (GeneralCharacterScroll is null || ArtsPanel is null || SkillsPanel is null || MaxAllSkillsButton is null
+            || LearnMaxAllArtsButton is null || EquipmentPanel is null) return;
         GeneralCharacterScroll.IsVisible = CharacterNavigation.SelectedIndex == 0;
-        ArtsPanel.IsVisible = CharacterNavigation.SelectedIndex == 1;
+        ArtsPanel.IsVisible = LearnMaxAllArtsButton.IsVisible = CharacterNavigation.SelectedIndex == 1;
         SkillsPanel.IsVisible = MaxAllSkillsButton.IsVisible = CharacterNavigation.SelectedIndex == 2;
         EquipmentPanel.IsVisible = CharacterNavigation.SelectedIndex == 3;
     }
@@ -47,10 +48,15 @@ public partial class MainWindow
             _art = (ArtList.SelectedItem as ArtRow)?.Art;
             ArtInputs.IsEnabled = _art is not null;
             ArtLevelInput.IsEnabled = MaxArtButton.IsEnabled = _art?.CanEdit ?? false;
+            MaxArtButton.IsVisible = _art?.CanEdit ?? false;
+            LearnArtButton.IsVisible = LearnArtButton.IsEnabled = _art?.CanLearn ?? false;
             ArtLevelInput.IsVisible = _art?.CanEdit ?? false;
             ArtLevelValue.IsVisible = !ArtLevelInput.IsVisible;
             ArtLevelValue.Text = _art is { Learned: true } ? _art.Level.ToString() : "—";
-            MaxCharacterArtsButton.IsEnabled = arts.Any(art => art.CanEdit);
+            MaxCharacterArtsButton.IsEnabled = arts.Any(art => art.CanEdit || art.CanLearn);
+            var characters = Session?.Document.Characters ?? [];
+            LearnMaxAllArtsButton.IsEnabled = Session?.Document.CanLearnAndMaxAllArts == true
+                && characters.Any(character => character.Arts.Any(art => art.CanEdit || art.CanLearn));
             ArtStatusValue.Text = _art is null ? null : UiLanguage.Get(ArtState(_art));
             ArtMaximumValue.Text = _art?.MaximumLevel.ToString();
             ArtLevelInput.ItemsSource = Enumerable.Range(1, _art?.MaximumLevel ?? 1).ToArray();
@@ -64,7 +70,7 @@ public partial class MainWindow
 
     private static string ArtState(ArtRecord art)
     {
-        if (!art.Learned) return "NotLearned";
+        if (!art.Learned) return art.RequiresEvent ? "ArtEventLocked" : "NotLearned";
         if (art.IsTalent) return "FixedTalent";
         return art.CanEdit ? "Upgradeable" : "Unavailable";
     }
@@ -90,7 +96,17 @@ public partial class MainWindow
 
     private void MaxCharacterArts_Click(object? sender, RoutedEventArgs e)
     {
-        if (_character is not null) EditArts(_character.MaxArts);
+        if (_character is not null) EditArts(_character.LearnAndMaxArts);
+    }
+
+    private void LearnArt_Click(object? sender, RoutedEventArgs e)
+    {
+        if (_art is not null) EditArts(() => _art.Learn());
+    }
+
+    private void LearnMaxAllArts_Click(object? sender, RoutedEventArgs e)
+    {
+        if (Session is { } session) EditArts(session.Document.LearnAndMaxAllArts);
     }
 
     private void EditArts(Action edit)

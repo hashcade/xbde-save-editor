@@ -16,13 +16,34 @@ The second byte contains cumulative manual flags: `1`, `3`, `7` permit levels
 - Melia's six discharge records derive their levels from the corresponding
   summon arts. Editing a summon synchronizes its discharge level, preserving
   the discharge's flags. Discharge records are not separate editing options.
-- Only joined, supported characters and learned, upgradeable arts can be edited.
-  Bulk maximum does not unlock missing arts, add party members, spend AP, change
-  equipment/palettes or alter story progress. Raising an ordinary art grants only
+- Only joined, supported characters and learned, upgradeable arts can have their
+  levels edited. Explicit learning also supports missing ordinary level-based arts.
+  Operations do not add party members, spend AP, change equipment/palettes or alter
+  story progress. Raising an ordinary art grants only
   the manual permission required for its selected level; lowering it retains manuals.
 - Existing invalid/high levels are preserved on loading or unrelated edits.
   Explicit maximum operations replace them with the applicable maximum.
 - Unconfirmed campaigns do not permit art editing.
+
+## Explicit learning
+
+The extracted `pc_arts.get_type` distinguishes level-based learning (`1`) from
+event-based learning (`2`); `get_lv` records the normal acquisition level. The
+editor can learn ordinary level-based arts before that level, without raising the
+character's level. Talent and Monado arts are excluded from direct learning.
+Missing event arts, including Mind Blast and Final Cross, remain protected.
+
+The GUI provides a Learn Art action for an eligible missing art, a selected-character
+Learn & Max Arts action below its art list, and a global Learn & Max All Arts action
+below the character list. Batch actions operate independently of search filters.
+They learn eligible missing arts and maximize already-learned upgradeable arts;
+already-learned event arts may be leveled within their existing permissions.
+
+CLI commands are `learn-art <save> <output> <character-id> <art-id>`,
+`learn-max-arts <save> <output> <character-id>` and
+`learn-max-all-arts <save> <output>`. The existing `max-arts` command still only
+maximizes learned arts. Global learning validates all joined characters before
+writing, so unsupported guests cannot cause partial batch edits.
 
 The catalog covers both Fiora records, Shulk, Reyn, Dunban, Sharla, Riki, Melia,
 Kino and Nene. Temporary guests and Ponspector actions are not editable. UI labels
@@ -42,6 +63,11 @@ build ID `7E1DF8E08D60544BBDCA1E333C153C97`:
   to 4/7/10/12. The debug override at `0x1BCE20` returns false in this build.
 - `0x47D6A0–0x47D7C0`: Melia's summon-to-discharge level copies:
   103→97, 104→98, 105→99, 111→100, 112→101, 113→102.
+- `0xBA5C0–0xBA738`: level-up art scanner excludes talent arts, checks owner,
+  existing learned state, `get_type=1` and `get_lv`, then calls `0xB9880`.
+- `0xB9880–0xB9B7C`: ordinary art acquisition sets level 1 through `0x75EA0`.
+  The editor uses this saved-state representation, without running notifications
+  or the game's optional empty-palette assignment. Existing palettes stay intact.
 
 Catalog IDs, ownership, talent flags and menu order come from the extracted
 [pc_arts table](https://xenoblade.github.io/xb1de/bdat/bdat_common/pc_arts.html).
@@ -51,7 +77,8 @@ Only compact factual catalog fields are included; no executable, save file,
 upstream source code or art descriptions are distributed.
 
 Core, GUI and CLI tests cover both campaigns, manual thresholds, fixed and
-unlearned arts, Monado limits, both Fiora records, Kino/Nene, all six discharge
-links, field isolation and rejected edits. Real-save checks edit copies in memory
+unlearned arts, explicit learning, search-independent batch actions, Monado/event
+protection, both Fiora records, Kino/Nene, all six discharge links, field isolation,
+idempotence and rejected edits. Real-save checks edit copies in memory
 and verify that all bytes outside the art table remain unchanged. They do not
 substitute for loading an edited copy in-game.
