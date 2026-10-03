@@ -105,6 +105,7 @@ foreach (bool future in new[] { false, true })
     Check(copy[0] != save.Serialize()[0], "Serialization exposes mutable storage.");
 }
 ArtsTests.Run(Fixture, Check, Reject);
+AchievementTests.Run(Fixture, Check, Reject);
 SkillsTests.Run(Fixture, Check, Reject);
 EquipmentTests.Run(Fixture, Check, Reject);
 EquipmentSwitchTests.Run(Fixture, Check, Reject);
@@ -211,6 +212,21 @@ try
             byte[] before = File.ReadAllBytes(realPath);
             var realSession = SaveSession.Open(realPath);
             Check(realSession.Document.Serialize().AsSpan().SequenceEqual(before), "Real save round-trip differs.");
+            var achievementCopy = SaveDocument.Parse(before);
+            if (achievementCopy.CanEditAchievements)
+            {
+                int completedCount = achievementCopy.Achievements.Count(item => item.Completed);
+                achievementCopy.UnlockAllAchievements();
+                Check(achievementCopy.Achievements.All(item => item.Completed), "Real achievement bulk edit missed a record.");
+                if (completedCount == 200)
+                    Check(achievementCopy.Serialize().AsSpan().SequenceEqual(before), "Completed real achievements were normalized.");
+                Console.WriteLine($"{Path.GetFileName(realPath)}: achievements {completedCount}/200.");
+            }
+            else
+            {
+                Reject(achievementCopy.UnlockAllAchievements, "Unsupported real save accepted achievement editing.");
+                Check(achievementCopy.Serialize().AsSpan().SequenceEqual(before), "Protected real achievements changed.");
+            }
             SkillsTests.VerifyRealSave(before, Check);
             EquipmentTests.VerifyRealSave(before, Check);
             EquipmentSwitchTests.VerifyRealSave(before, Check);

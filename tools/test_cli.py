@@ -24,6 +24,7 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="xbde-cli-") as directory:
         root = Path(directory)
         original = bytearray(0x153860)
+        struct.pack_into("<I", original, 0, 7)
         struct.pack_into("<H", original, 0x152318, 1)
         struct.pack_into("<H", original, 0x15231A, 2)
         original[0x152330] = 2
@@ -35,6 +36,22 @@ def main() -> None:
         source = root / "bfsgame00.sav"
         output = root / "output.sav"
         source.write_bytes(original)
+        achievements = json.loads(run("achievements", source))
+        assert achievements["Supported"] and achievements["Total"] == 200 and achievements["Completed"] == 0
+        run("unlock-achievement", source, output, "200")
+        single = output.read_bytes()
+        assert single[0x557] == 1
+        assert struct.unpack_from("<H", single, 0xE30)[0] == 100
+        run("unlock-achievement", source, output, "201", success=False)
+        assert output.read_bytes() == single
+        run("unlock-all-achievements", source, output)
+        full = output.read_bytes()
+        assert json.loads(run("achievements", output))["Completed"] == 200
+        assert full[0x557:0x570] == bytes([255]) * 25
+        assert all(before == after or 0x557 <= index < 0x570 or 0xE30 <= index < 0xFC0
+                   for index, (before, after) in enumerate(zip(original, full)))
+        run("unlock-all-achievements", output, output)
+        assert output.read_bytes() == full and source.read_bytes() == original
         assert run("--version").strip()
         assert json.loads(run("inspect", source))["PartyIds"] == [1, 2]
         run("copy", source, output)

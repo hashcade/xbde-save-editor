@@ -13,6 +13,38 @@ try
         Console.WriteLine("XBDE Save Editor\n\ninspect <save>\ncopy <save> <output>\nresources <save> <output> [--money N] [--noponstones N]\ncharacter <save> <output> <id> [--ap N] [--coins N] [--reserve-exp N]\nprogression <save> <output> <id> [--level N] [--exp N]\nmax-ap <save> <output>\narts <save> <character-id>\nart <save> <output> <character-id> <art-id> --level N\nmax-art <save> <output> <character-id> <art-id>\nmax-arts <save> <output> <character-id>\nskills <save> <character-id>\nskill-tree <save> <output> <character-id> <tree-index> --learned N\nskill-tree <save> <output> <character-id> <tree-index> --sp N\nmax-skill-tree <save> <output> <character-id> <tree-index>\nmax-skills <save> <output> <character-id>\nmax-all-skills <save> <output>\nequipment <save> <character-id>\nequip <save> <output> <character-id> <Weapon|Head|Torso|Arms|Legs|Feet> <inventory-index>\nequipment-gem <save> <output> <character-id> <Weapon|Head|Torso|Arms|Legs|Feet> <socket> <gem-index|none>\n--version");
         Console.WriteLine("gems <save>\ngem <save> <output> <gem-index> [--effect N] [--rank N] [--value N]\nmax-gem <save> <output> <gem-index>");
         Console.WriteLine("inventory <save> <Collectables|Materials|KeyItems|ArtManuals>\nitem <save> <output> <kind> <index> --quantity N\nadd-item <save> <output> <item-id> --quantity N\ndelete-item <save> <output> <kind> <index>\nmax-items <save> <output> <kind>\nadd-gem <save> <output> --effect N --rank N --value N\ndelete-gem <save> <output> <gem-index>");
+        Console.WriteLine("achievements <save>\nunlock-achievement <save> <output> <id>\nunlock-all-achievements <save> <output>");
+        return 0;
+    }
+    if (args is ["achievements", var achievementSource])
+    {
+        var document = SaveSession.Open(achievementSource).Document;
+        Console.WriteLine(JsonSerializer.Serialize(new
+        {
+            Supported = document.CanEditAchievements,
+            Completed = document.Achievements.Count(item => item.Completed),
+            Total = AchievementCatalog.All.Count,
+            Items = document.Achievements.Select(item => new
+            {
+                item.Id, item.Definition.Name, Category = item.Definition.Category.ToString(),
+                item.Definition.Condition, item.Definition.RewardExperience,
+                item.Definition.Required, item.Progress, item.Completed, item.CanUnlock
+            })
+        }, new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["unlock-achievement", var unlockSource, var unlockOutput, var achievementId])
+    {
+        var session = SaveSession.Open(unlockSource);
+        session.Document.GetAchievement(ParseId(achievementId)).Unlock();
+        session.Save(unlockOutput);
+        return 0;
+    }
+    if (args is ["unlock-all-achievements", var unlockAllSource, var unlockAllOutput])
+    {
+        var session = SaveSession.Open(unlockAllSource);
+        session.Document.UnlockAllAchievements();
+        session.Save(unlockAllOutput);
         return 0;
     }
     if (args is ["inventory", var inventorySource, var inventoryKind])

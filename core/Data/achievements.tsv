@@ -1,0 +1,201 @@
+id	name	category	order	condition	reward_exp	required	condition_type
+1	Bone Breaker	1	1	Dealt 3000 damage or more in a single attack.	100	3000	2
+2	Rock Smasher	1	2	Dealt 25,000 damage or more in a single attack.	500	25000	2
+3	World Shaker	1	3	Dealt 50,000 damage or more in a single attack.	1000	50000	2
+4	Beginner's Luck	1	4	Defeated 50 enemies.	50	50	4
+5	Tough Guy, Eh?	1	5	Defeated 200 enemies.	200	200	4
+6	No Stopping You	1	6	Defeated 1000 enemies.	500	1000	4
+7	Please! No More!	1	7	Defeated 5000 enemies.	1000	5000	4
+8	Hunter-in-Training	2	1	Defeated your first unique monster.	50	1	4
+9	Pro Hunter	2	2	Defeated 10 unique monsters.	500	10	4
+10	Master Hunter	2	3	Defeated 100 unique monsters.	1500	100	4
+11	Time for New Glasses	1	8	Attempted 100 attacks that missed.	100	100	4
+12	Some Help You Are!	1	9	Won a battle without actually doing anything.	20	0	0
+13	Machine Mishaps	1	10	Defeated 30 Mechon.	100	30	4
+14	Machine Mayhem	1	11	Defeated 100 Mechon.	500	100	4
+15	Machine Meltdown	1	12	Defeated 250 Mechon.	1500	250	4
+16	Ground Down	1	13	Defeated 30 ground monsters.	100	30	4
+17	Ground Up	1	14	Defeated 100 ground monsters.	500	100	4
+18	Ground to a Pulp	1	15	Defeated 250 ground monsters.	1500	250	4
+19	Airing Grievances	1	16	Defeated 30 aerial monsters.	100	30	4
+20	Clearing the Air	1	17	Defeated 100 aerial monsters.	500	100	4
+21	Anti-Air Battering	1	18	Defeated 250 aerial monsters.	1500	250	4
+22	Bug Off	1	19	Defeated 30 insects.	100	30	4
+23	Walking Insecticide	1	20	Defeated 100 insects.	500	100	4
+24	Elementary!	1	21	Defeated 30 ether-based monsters.	100	30	4
+25	Braving the Elements	1	22	Defeated 100 ether-based monsters.	500	100	4
+26	Telethia Tracker	1	23	Defeated 30 Telethia.	5000	30	4
+27	Telethia Triumph	1	24	Defeated 100 Telethia.	10000	100	4
+28	Fish for Compliments	1	25	Defeated 30 monsters that live in water.	200	30	4
+29	Smashing!	1	26	Smashed a vision tag for the first time.	20	1	4
+30	Simply Smashing!	1	27	Smashed 100 vision tags.	200	100	4
+31	Smashing...to Pieces!	1	28	Smashed 1000 vision tags.	500	1000	4
+32	Not Gonna Happen!	1	29	Stopped the future in its tracks for the first time.	20	1	4
+33	I'll Change the Future!	1	30	Stopped the future in its tracks 20 times.	200	20	4
+34	The Future is Ours!	1	31	Stopped the future in its tracks 50 times.	500	50	4
+35	Second Wind	1	32	Revived Incapacitated party members 10 times.	20	10	4
+36	Can't Keep 'Em Down	1	33	Revived Incapacitated party members 100 times.	200	100	4
+37	Down But Never Out	1	34	Revived Incapacitated party members 500 times.	500	500	4
+38	Critical Thinking	1	35	Delivered 50 critical hits.	50	50	4
+39	Critical Condition	1	36	Delivered 1500 critical hits.	200	1500	4
+40	Critical Mass	1	37	Delivered 5000 critical hits.	500	5000	4
+41	Let's Fight!	1	38	Achieved Battle Start Affinity for the first time.	10	1	4
+42	Let's Go, Everyone!	1	39	Achieved Battle Start Affinity 100 times.	200	100	4
+43	Yeah! We Can Do It!	1	40	Achieved Battle Start Affinity 1000 times.	500	1000	4
+44	Turn It Up	1	41	Entered a state of High Tension for the first time.	20	1	4
+45	Fire It Up	1	42	Entered a state of High Tension 50 times.	200	50	4
+46	Burn It Up	1	43	Entered a state of High Tension 200 times.	500	200	4
+47	Go Team!	1	44	Used a chain attack for the first time.	20	1	4
+48	Tip Top Team-Up	1	45	Used a chain attack 50 times.	200	50	4
+49	A Team Like No Other	1	46	Used a chain attack 200 times.	500	200	4
+50	Team With a Capital T	1	47	Used a chain attack 1000 times.	1000	1000	4
+51	Killer Combo	1	48	Used a chain attack to deal a total of 3000 damage.	100	3000	2
+52	Cosmic Killer Combo	1	49	Used a chain attack to deal a total of 30,000 damage.	500	30000	2
+53	Quantum Killer Combo	1	50	Used a chain attack to deal a total of 100,000 damage.	1000	100000	2
+54	Chain Gang	1	51	Performed a chain attack with 4 links or more.	50	4	2
+55	Off the Chain	1	52	Performed a chain attack with 5 links or more.	200	5	2
+56	Back-Stabber	1	53	Performed a back attack for the first time.	10	1	4
+57	Rear Admiral	1	54	Performed a back attack 50 times.	200	50	4
+58	Ninja Skillz	1	55	Attacked an enemy from behind and beat it in one strike.	50	0	0
+59	Jaws of Defeat	1	56	Won a battle while on the verge of death.	20	0	0
+60	Come On, Cheer Up!	1	57	Felt the pain of being Incapacitated for the first time.	20	1	4
+61	Art Practice	1	59	Used Arts 1000 times between the entire party.	200	1000	4
+62	The Art of War	1	60	Used Arts 10,000 times between the entire party.	1000	10000	4
+63	Right, Let's Do This!	1	61	Used Shulk's Arts 100 times.	50	100	4
+64	Reyn Time, Baby!	1	62	Used Reyn's Arts 100 times.	50	100	4
+65	I Can Beat Anyone!	1	63	Used Fiora's Arts 100 times.	200	100	4
+66	Attack Me if You Dare!	1	64	Used Dunban's Arts 100 times.	500	100	4
+67	Things Are Heating Up!	1	65	Used Sharla's Arts 100 times.	500	100	4
+68	Riki Use Arts!	1	66	Used Riki's Arts 100 times.	500	100	4
+69	Who Dares Defy Me?	1	67	Used Melia's Arts 100 times.	500	100	4
+70	One Step Further	1	68	Unlocked the ability to level up your Arts even further.	100	0	0
+71	The Final Step	1	69	Unlocked the ability to level up your Arts completely.	500	0	0
+72	Art School	1	70	Levelled up an Art for the first time.	20	2	4
+73	A Work of Art	1	71	Raised an Art to level 5.	200	5	4
+74	Perfecting the Art	1	72	Raised an Art to the maximum level.	1000	10	4
+75	Down to a Fine Art	1	73	Raised 5 of one character's Arts to the maximum level.	1500	5	4
+76	Art-to-Art	1	74	Raised 10 of one character's Arts to the maximum level.	1500	10	4
+77	State of the Art	1	75	Raised all of one character's Arts to the maximum level.	1500	0	0
+78	Sharing the Knowledge	1	76	Received shared skills from every character.	200	0	0
+79	Specialist	1	77	Fully developed one Skill Branch.	500	1	0
+80	Honest Insight	1	78	Fully developed three of Shulk's Skill Branches.	500	3	0
+81	Raging Stalwart	1	79	Fully developed three of Reyn's Skill Branches.	500	3	0
+82	Spirited Adventurer	1	80	Fully developed three of Fiora's Skill Branches.	500	3	0
+83	Gallant Hero	1	81	Fully developed three of Dunban's Skill Branches.	500	3	0
+84	Unyielding Devotion	1	82	Fully developed three of Sharla's Skill Branches.	500	3	0
+85	Adorable Randomness	1	83	Fully developed three of Riki's Skill Branches.	500	3	0
+86	Serene Candour	1	84	Fully developed three of Melia's Skill Branches.	500	3	0
+87	Phoenix	1	58	Been wiped out 50 times.	500	50	4
+88	Secret Weapon	1	85	Fully developed any character's Skill Branches.	1000	0	0
+89	Dream Team	1	86	Fully developed every character's Skill Branches.	1500	0	0
+90	Turning it Around	1	87	Successfully achieved Burst Affinity.	10	1	4
+91	Changing Course	1	88	Used Burst Affinity 300 times.	200	300	4
+92	Complete 180	1	89	Achieved Burst Affinity 2000 times.	500	2000	4
+93	Looking For Trouble	1	90	Defeated an enemy 5 levels higher than yourself.	50	5	2
+94	Beating the Odds	1	91	Defeated an enemy 10 levels higher than yourself.	500	10	2
+95	Unlucky Sixes	1	92	Performed an attack that dealt exactly 666 damage.	66	666	1
+96	Lucky Sevens	1	93	Performed an attack that dealt exactly 777 damage.	77	777	1
+97	First Steps	2	4	Discovered a Landmark for the first time.	10	1	4
+98	A Corner of the World	2	5	Discovered 10 Landmarks.	50	10	4
+99	Seasoned Traveller	2	6	Discovered 40 Landmarks.	500	40	4
+100	Globetrotter	2	7	Discovered 80 Landmarks.	1000	80	4
+101	Worldly Wise	2	8	Discovered 150 Landmarks.	1500	150	4
+102	Explorer	2	9	Discovered a Secret Area for the first time.	200	1	4
+103	Trailblazer	2	10	Discovered 6 Secret Areas.	500	6	4
+104	Pioneer	2	11	Discovered 12 Secret Areas.	1000	12	4
+105	Skip It	1	94	Used skip travel for the first time.	10	1	4
+106	Lazybones	1	95	Used skip travel 50 times.	100	50	4
+107	Hunting for Treasure	1	96	Obtained 10 Rare Treasure Chests.	50	10	4
+108	Hoarding Treasure	1	97	Obtained 50 Rare Treasure Chests.	500	50	4
+109	Ooh, Shiny	1	98	Obtained a Super Rare Treasure Chest for the first time.	20	1	4
+110	It Hasn't Lost its Lustre	1	99	Obtained 10 Super Rare Treasure Chests.	100	10	4
+111	Need...More...Treasure	1	100	Obtained 50 Super Rare Treasure Chests.	1000	50	4
+112	Titan's Gift	1	102	Harvested an ether crystal for the first time.	20	1	4
+113	Titan's Generosity	1	103	Harvested ether crystals 50 times.	200	50	4
+114	Titan's Greatness	1	104	Harvested ether crystals 500 times.	500	500	4
+115	Raring to Go	1	105	Obtained a rare ether crystal for the first time.	20	1	4
+116	Medium Rare	1	106	Obtained 7 rare ether crystals.	50	7	4
+117	In Rare Form	1	107	Obtained 77 rare ether crystals.	500	77	4
+118	Crystallised Luck	1	108	Mined a rank V ether crystal.	500	0	0
+119	That Hits the Slot	1	109	Filled a gem slot for the first time.	20	0	0
+120	Truly Outrageous	1	110	Filled all 8 possible gem slots at once for any character.	500	0	0
+121	Learning the Craft	1	111	Practised Gem Crafting and received a Synergy Bonus.	20	1	4
+122	Getting Crafty	1	112	Received a Synergy Bonus more than 250 times.	500	250	4
+123	Crafting Your Destiny	1	113	Received a Synergy Bonus more than 500 times.	1000	500	4
+124	Craftacular!	1	114	Entered a Fever state while Gem Crafting.	50	1	4
+125	Craftstravaganza!	1	115	Entered a Fever state 3 times.	1500	3	4
+126	Lending a Hand	1	116	Received a Support Bonus.	20	0	0
+127	Crafting Friendships	1	117	Received a Support Bonus for every character.	1000	0	0
+128	Firing on All Cylinders	1	118	Fill up the Cylinder Gauge 9 times in one crafting session.	2000	9	0
+129	Happy New Year!	1	119	Witnessed the sun rising on the 366th day.	1500	366	4
+130	Terminal Velocity	1	120	Fell to your demise from a great height.	20	0	0
+131	Making Waves	1	121	Fell into water from a height of 200 metres.	50	200	2
+132	One is Never Enough	1	122	Recorded an item in the Collectopaedia for the first time.	10	0	0
+133	Collector's Mentality	1	123	Completed a page in the Collectopaedia.	200	0	0
+134	Stamp of Insanity	1	124	Completed every page in the Collectopaedia.	50000	0	0
+135	Study Aids	1	125	Gave Shulk 20 pieces of machinery as gifts.	100	20	4
+136	Auber the Top	1	126	Gave Reyn an Energy Aubergine as a gift.	500	0	0
+137	Aim for the Heart!	1	127	Had Fiora give 20 gifts to Shulk.	200	20	4
+138	Thanks But No Thanks	1	128	Gave Dunban a gift he truly hated.	500	0	0
+139	Fruitful Gifts	1	129	Gave Sharla fruit as a gift 20 times.	500	20	4
+140	You May Have This	1	130	Had Melia give 30 gifts.	500	30	4
+141	Not Just Riki Eat!	1	131	Had Riki give insects as gifts 30 times.	500	30	4
+142	Love at First Bite	1	132	Gave Love Source as a present.	50000	0	0
+143	Ear to the Ground	1	133	Talked to people 100 times.	100	100	4
+144	Social Butterfly	1	134	Talked to people 1000 times.	1000	1000	4
+145	Breaking the Ice	1	135	Had a party member step into a conversation.	10	1	4
+146	Idle Chit-Chat	1	136	Had party members step into conversations 50 times.	100	50	4
+147	Chatting the Day Away	1	137	Had party members step into conversations 300 times.	500	300	4
+148	Your First Friend	2	12	Got to know a named person for the first time.	10	1	4
+149	Friend Number Ten	2	13	Registered 10 people on the Affinity Chart.	50	10	4
+150	Fifty Fine Friends	2	14	Registered 50 people on the Affinity Chart.	1000	50	4
+151	Friend of the World	2	15	Registered 120 people on the Affinity Chart.	1500	120	4
+152	The Brave Protectors	2	16	Got to know all of the Defence Force soldiers in Colony 9.	50	0	0
+153	Network of Knowledge	2	17	Got to know many Nopon outside of populated areas.	1000	0	0
+154	The Hopeful Survivors	2	18	Got to know a lot of people in Colony 6.	1000	0	0
+155	Know So Many Nopon!	2	19	Got to know the Nopon living in Frontier Village.	1000	0	0
+156	Wings of Nobility	2	20	Got to know many High Entia with small headwings.	1000	0	0
+157	A Village of Machines	2	21	Got to know the numerous Machina in the Hidden Village.	1000	0	0
+158	The Strongest Tie	2	22	Helped two people form a deep Affinity for one another.	100	0	0
+159	Constellation	2	23	Helped people form an Affinity for one another ten times.	50	10	4
+160	Spider's Web	2	24	Helped people form an Affinity for one another 50 times.	500	50	4
+161	Neural Network	2	25	Helped people form an Affinity for one another 100 times.	1000	100	4
+162	Roots Across the World	2	26	Helped almost everyone to form Affinities for one another.	30000	200	4
+163	Colony 9 Celeb	2	27	Achieved a 3-star Affinity rating for the Colony 9 area.	500	0	0
+164	Colony 6 Celeb	2	28	Achieved a 3-star Affinity rating for the Colony 6 area.	500	0	0
+165	Honorary Nopon	2	29	Achieved a 3-star Affinity rating for the Frontier Village.	500	0	0
+166	Honorary High Entia	2	30	Achieved a 3-star Affinity rating for the Alcamoth area.	500	0	0
+167	Honorary Machina	2	31	Achieved a 3-star Affinity rating for the Hidden Village.	500	0	0
+168	Local Hero	2	32	Developed a 5-star Affinity with the people of any area.	1000	0	0
+169	World Hero	2	33	Develop a 5-star Affinity with everyone.	30000	0	0
+170	Heartwarming	2	34	Had a Heart-to-Heart go as smoothly as possible.	100	0	0
+171	Heartbreaking	2	35	Had a Heart-to-Heart go as badly as possible.	10	0	0
+172	Pouring Out Your Heart	2	36	Had 20 Heart-to-Hearts.	500	20	4
+173	The Heart of the Matter	2	37	Had 40 Heart-to-Hearts.	1000	40	4
+174	Ace of Hearts	2	38	Had every possible Heart-to-Heart.	1500	63	4
+175	Blossoming Friendship	1	138	Improved the Affinity between two party members.	50	0	0
+176	Unshakeable Trust	1	139	Improved two party members' Affinity still further.	500	0	0
+177	Unbreakable Bond	1	140	Formed the deepest Affinity between two party members.	1500	0	0
+178	Get the Party Started	1	141	Deepened the Affinity between all party members.	8000	0	0
+179	Party's in Full Swing	1	142	Formed the deepest Affinity between all party members.	15000	0	0
+180	Problem Solved!	2	39	Completed a quest for the first time.	20	1	4
+181	Helpful Stranger	2	40	Completed 10 quests (excluding story quests).	100	10	4
+182	Generous Friend	2	41	Completed 100 quests (excluding story quests).	500	100	4
+183	Charitable Ally	2	42	Completed 200 quests (excluding story quests).	1000	200	4
+184	Selfless Giver	2	43	Completed 300 quests (excluding story quests).	50000	300	4
+185	Shaping History	2	44	Changed someone's life through your actions.	50	0	0
+186	Treasure Trove	1	101	Obtained 1000 Rare or Super Rare Treasure chests.	1000	1000	4
+187	Equivalent Exchange	1	143	Successfully traded items with someone.	20	1	4
+188	Tradesman	1	144	Traded items 20 times.	100	20	4
+189	Master Tradesman	1	145	Traded items 100 times.	500	100	4
+190	Mysterious Mantis	1	146	Obtained a Minute Mantis through trading.	3000	0	0
+191	Shining Impracticality	1	147	Obtained a Golden Cog through trading.	3000	0	0
+192	Indigo Belligerence	1	148	Obtained a Love Beetle through trading.	3000	0	0
+193	Stormy Outlook	1	149	Obtained a Thunder Compass through trading.	3000	0	0
+194	Angelic Imitation	1	150	Obtained an Angel Engine Y through trading.	5000	0	0
+195	Drawing a Crowd	2	45	Increased the population of Colony 6 to 50 people.	500	50	4
+196	Building a Community	2	46	Increased the population of Colony 6 to 100 people.	1000	100	4
+197	Bursting at the Seams	2	47	Filled up Colony 6 with a population of 150 people.	50000	150	4
+198	A Fixer-Upper	2	48	Started reconstructing Colony 6.	200	1	4
+199	A Fix on the Solution	2	49	Made good progress in reconstructing Colony 6.	1000	50	4
+200	Good and Fixed	2	50	Finished reconstructing Colony 6. Amazing!	50000	100	4

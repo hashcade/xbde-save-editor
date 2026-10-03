@@ -58,6 +58,18 @@ public sealed class SaveDocument
     }
 
     public byte[] Serialize() => (byte[])_data.Clone();
+    public bool CanEditAchievements => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
+    public IReadOnlyList<AchievementRecord> Achievements => AchievementCatalog.All
+        .Select(definition => new AchievementRecord(this, definition)).ToArray();
+    public AchievementRecord GetAchievement(int id) => new(this, AchievementCatalog.Get(id));
+
+    public void UnlockAllAchievements()
+    {
+        if (!CanEditAchievements)
+            throw new ArgumentException("Achievements require a confirmed main-story save with format version 7.");
+        foreach (var achievement in Achievements) achievement.Unlock();
+    }
+
     public IReadOnlyList<InventoryItemRecord> Inventory(InventoryKind kind) => Enumerable.Range(0, InventoryCatalog.Capacity)
         .Select(index => GetInventoryItem(kind, index)).Where(item => item.Exists).ToArray();
 

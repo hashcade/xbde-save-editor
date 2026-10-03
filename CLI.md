@@ -1,5 +1,17 @@
 # CLI
 
+## Achievements
+
+```sh
+XbdeEditor.Cli achievements bfsgame00.sav
+XbdeEditor.Cli unlock-achievement bfsgame00.sav edited.sav 7
+XbdeEditor.Cli unlock-all-achievements bfsgame00.sav edited.sav
+```
+
+Inspection reports support status, flags, conditions, rewards and cumulative
+counters. Unlocking requires a confirmed main-story save with format version 7,
+and does not add party EXP or change quests. ID 7 is the 5,000-enemy achievement.
+
 Run commands using `dotnet run --project cli/Cli.csproj -- <command>`, or use
 the standalone `XbdeEditor.Cli` executable from a platform download.
 
