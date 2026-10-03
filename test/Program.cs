@@ -104,6 +104,7 @@ foreach (bool future in new[] { false, true })
     copy[0] ^= 0xff;
     Check(copy[0] != save.Serialize()[0], "Serialization exposes mutable storage.");
 }
+ArtsTests.Run(Fixture, Check, Reject);
 Reject(() => SaveDocument.Parse(new byte[1688]), "System save was accepted.");
 Reject(() => SaveDocument.Parse(new byte[SaveDocument.FileSize]), "Invalid party was accepted.");
 byte[] bad = Fixture();
@@ -222,6 +223,13 @@ try
                 Check(reserveBytes.AsSpan(0, recordOffset + 0xf4).SequenceEqual(before.AsSpan(0, recordOffset + 0xf4))
                     && reserveBytes.AsSpan(recordOffset + 0xf8).SequenceEqual(before.AsSpan(recordOffset + 0xf8)),
                     "Real reserve edit changed level, EXP or unrelated data.");
+                var artsCopy = SaveDocument.Parse(before);
+                artsCopy.GetCharacter(actualCharacter.Id).MaxArts();
+                byte[] artsBytes = artsCopy.Serialize();
+                Check(artsBytes.AsSpan(0, 0x1536e8).SequenceEqual(before.AsSpan(0, 0x1536e8)),
+                    "Real art maximum changed resources, palette or other save sections.");
+                Check(artsCopy.GetCharacter(actualCharacter.Id).Arts.Where(art => art.CanEdit)
+                    .All(art => art.Level == art.MaximumLevel), "Real art maximum missed an upgradeable art.");
             }
             string realCopy = Path.Combine(temporary, Path.GetFileName(realPath));
             realSession.Save(realCopy);

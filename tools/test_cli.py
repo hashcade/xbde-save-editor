@@ -29,6 +29,9 @@ def main() -> None:
         original[0x152330] = 2
         struct.pack_into("<I", original, 0x152368, 20)
         struct.pack_into("<I", original, 0x1524A0, 20)
+        original[0x1536E8] = 1
+        original[0x1536E8 + 22] = 3
+        original[0x1536E8 + 20] = 1
         source = root / "bfsgame00.sav"
         output = root / "output.sav"
         source.write_bytes(original)
@@ -90,10 +93,34 @@ def main() -> None:
         run("inspect", invalid, success=False)
         assert source.read_bytes() == original
         assert not list(root.glob(".xbde-*.tmp"))
+        arts = json.loads(run("arts", source, "1"))
+        slash = next(art for art in arts if art["Id"] == 12)
+        assert slash["Level"] == 3 and slash["MaximumLevel"] == 12
+        run("art", source, output, "1", "12", "--level", "8")
+        art_bytes = output.read_bytes()
+        assert art_bytes[0x1536E8 + 22:0x1536E8 + 24] == bytes((8, 3))
+        assert art_bytes[:0x1536E8 + 22] == original[:0x1536E8 + 22]
+        assert art_bytes[0x1536E8 + 24:] == original[0x1536E8 + 24:]
+        for invalid in ("0", "13", "1.5", "-1", "4294967295", "4294967296"):
+            run("art", source, output, "1", "12", "--level", invalid, success=False)
+            assert output.read_bytes() == art_bytes
+        for art_id in ("1", "17", "20", "189", "invalid"):
+            run("max-art", source, output, "1", art_id, success=False)
+            assert output.read_bytes() == art_bytes
+        run("max-art", source, output, "1", "12")
+        assert output.read_bytes()[0x1536E8 + 22:0x1536E8 + 24] == bytes((12, 7))
+        run("max-arts", source, output, "1")
+        bulk_arts = output.read_bytes()
+        assert bulk_arts[0x1536E8 + 20:0x1536E8 + 24] == bytes((12, 7, 12, 7))
+        assert bulk_arts[:0x1536E8 + 20] == original[:0x1536E8 + 20]
+        assert bulk_arts[0x1536E8 + 24:] == original[0x1536E8 + 24:]
+        assert source.read_bytes() == original
         ambiguous = bytearray(original)
         ambiguous[0x152330] = 1
         source.write_bytes(ambiguous)
         run("character", source, output, "1", "--coins", "1", success=False)
+        run("max-arts", source, output, "1", success=False)
+        assert output.read_bytes() == bulk_arts
         assert source.read_bytes() == ambiguous
     print("CLI tests passed.")
 

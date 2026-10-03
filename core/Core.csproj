@@ -3,4 +3,7 @@
     <AssemblyName>XbdeEditor.Core</AssemblyName>
     <RootNamespace>XbdeEditor.Core</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data/arts.tsv" />
+  </ItemGroup>
 </Project>

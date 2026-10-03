@@ -12,6 +12,10 @@ XbdeEditor.Cli character bfsgame00.sav edited.sav 1 --reserve-exp 1000000
 XbdeEditor.Cli max-ap bfsgame00.sav edited.sav
 XbdeEditor.Cli progression bfsgame00.sav edited.sav 1 --level 50
 XbdeEditor.Cli progression bfsgame00.sav edited.sav 1 --level 1 --exp 101
+XbdeEditor.Cli arts bfsgame00.sav 1
+XbdeEditor.Cli art bfsgame00.sav edited.sav 1 12 --level 10
+XbdeEditor.Cli max-art bfsgame00.sav edited.sav 1 12
+XbdeEditor.Cli max-arts bfsgame00.sav edited.sav 1
 ```
 
 `inspect` prints JSON containing campaign, resources and joined characters,
@@ -40,3 +44,11 @@ Unconfirmed campaigns and unsupported guests reject progression editing.
 campaign. It does not unlock arts or skills, spend AP, add characters, or change
 level/EXP. `--reserve-exp` edits only the Expert Mode reserve pool, not the current
 level or EXP. Spend it through the game's Expert Mode menu to raise a level.
+
+`arts` lists a character's art IDs, levels, learned state and applicable maxima
+as JSON. `art --level` sets a learned art's level; `max-art` maximizes one art;
+`max-arts` maximizes all learned, upgradeable arts for that character, independent
+of GUI search filters. Ordinary arts grant the required manual permission without
+spending AP. Monado arts retain their story permission, and missing/talent arts
+are never upgraded. Melia's discharge levels follow their summon arts. See the
+[validated limits](docs/arts.md); art IDs are returned by `arts`, not list positions.

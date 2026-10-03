@@ -10,7 +10,7 @@ try
     }
     if (args is [] or ["--help"])
     {
-        Console.WriteLine("XBDE Save Editor\n\ninspect <save>\ncopy <save> <output>\nresources <save> <output> [--money N] [--noponstones N]\ncharacter <save> <output> <id> [--ap N] [--coins N] [--reserve-exp N]\nprogression <save> <output> <id> [--level N] [--exp N]\nmax-ap <save> <output>\n--version");
+        Console.WriteLine("XBDE Save Editor\n\ninspect <save>\ncopy <save> <output>\nresources <save> <output> [--money N] [--noponstones N]\ncharacter <save> <output> <id> [--ap N] [--coins N] [--reserve-exp N]\nprogression <save> <output> <id> [--level N] [--exp N]\nmax-ap <save> <output>\narts <save> <character-id>\nart <save> <output> <character-id> <art-id> --level N\nmax-art <save> <output> <character-id> <art-id>\nmax-arts <save> <output> <character-id>\n--version");
         return 0;
     }
     if (args is ["inspect", var source])
@@ -32,6 +32,40 @@ try
                 character.ExpertLevel, character.ExpertExperience, character.ReserveExperience
             })
         }, new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["arts", var artsSource, var artsCharacter])
+    {
+        var character = SaveSession.Open(artsSource).Document.GetCharacter(ParseId(artsCharacter));
+        Console.WriteLine(JsonSerializer.Serialize(character.Arts.Select(art => new
+        {
+            art.Id, art.Name, art.Level, art.Learned, art.IsTalent, art.CanEdit, art.MaximumLevel, art.UnlockedMaximum
+        }), new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["max-arts", var allArtsSource, var allArtsOutput, var allArtsCharacter])
+    {
+        var session = SaveSession.Open(allArtsSource);
+        session.Document.GetCharacter(ParseId(allArtsCharacter)).MaxArts();
+        session.Save(allArtsOutput);
+        return 0;
+    }
+    if (args is ["max-art", var maxArtSource, var maxArtOutput, var maxArtCharacter, var maxArtId])
+    {
+        var session = SaveSession.Open(maxArtSource);
+        var art = session.Document.GetCharacter(ParseId(maxArtCharacter)).GetArt(ParseId(maxArtId));
+        art.SetLevel(art.MaximumLevel);
+        session.Save(maxArtOutput);
+        return 0;
+    }
+    if (args is ["art", var artSource, var artOutput, var artCharacter, var artId, .. var artFields])
+    {
+        var session = SaveSession.Open(artSource);
+        var artOptions = ParseOptions(artFields, "--level");
+        uint level = artOptions["--level"];
+        if (level > int.MaxValue) throw new ArgumentOutOfRangeException(nameof(level));
+        session.Document.GetCharacter(ParseId(artCharacter)).GetArt(ParseId(artId)).SetLevel((int)level);
+        session.Save(artOutput);
         return 0;
     }
     if (args is ["copy", var input, var output])
@@ -105,6 +139,9 @@ catch (Exception error) when (error is IOException or InvalidDataException or Ar
     Console.Error.WriteLine(error.Message);
     return 1;
 }
+
+static int ParseId(string value) => int.TryParse(value, out int id) ? id
+    : throw new ArgumentException("ID must be an integer.");
 
 static IReadOnlyDictionary<string, uint> ParseOptions(string[] options, params string[] allowed)
 {

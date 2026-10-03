@@ -30,6 +30,18 @@ public sealed class CharacterRecord
         _ => false
     };
     public uint MinimumLevel => LevelProgression.MinimumLevel(Id, _document.Campaign);
+    public IReadOnlyList<ArtRecord> Arts => ArtCatalog.All.Where(art => art.CharacterId == Id && art.LinkedArtId is null)
+        .OrderBy(art => art.Order).ThenBy(art => art.Id)
+        .Select(art => new ArtRecord(_document, art)).ToArray();
+
+    public ArtRecord GetArt(int id) => Arts.FirstOrDefault(art => art.Id == id)
+        ?? throw new ArgumentException("This art does not belong to the selected character.", nameof(id));
+
+    public void MaxArts()
+    {
+        if (!CanEditProgression) throw new ArgumentException("Arts require an identified campaign and supported character.");
+        foreach (var art in Arts.Where(art => art.CanEdit)) art.SetLevel(art.MaximumLevel);
+    }
 
     public void SetProgression(uint? level = null, uint? experience = null)
     {

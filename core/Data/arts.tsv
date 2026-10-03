@@ -1,0 +1,179 @@
+Id	CharacterId	Name	Talent	Order
+1	1	Activate Monado	1	0
+2	1	Turn Strike	1	0
+3	1	Buster	0	9
+4	1	Enchant	0	10
+5	1	Shield	0	11
+6	1	Speed	0	12
+7	1	Purge	0	13
+8	1	Eater	0	15
+9	1	Armour	0	16
+10	1	Cyclone	0	14
+11	1	Slit Edge	0	2
+12	1	Back Slash	0	1
+13	1	Light Heal	0	6
+14	1	Shaker Edge	0	5
+15	1	Air Slash	0	4
+16	1	Shadow Eye	0	7
+17	1	Battle Soul	0	8
+18	1	Stream Edge	0	3
+19	2	Mad Taunt	1	0
+20	2	Hammer Beat	0	1
+21	2	Wild Down	0	7
+22	2	Guard Shift	0	15
+23	2	War Swing	0	4
+24	2	Sword Drive	0	5
+25	2	Berserker	0	11
+26	2	Shield Bash	0	8
+27	2	Engage	0	10
+28	2	Last Stand	0	12
+29	2	Rage	0	9
+30	2	Magnum Charge	0	16
+31	2	Bone Upper	0	2
+32	2	Dive Sobat	0	3
+33	2	Aura Burst	0	14
+34	2	Anchor Chain	0	13
+35	2	Lariat	0	6
+36	3	Butterfly Step	1	0
+37	3	Power Smash	0	1
+38	3	Screw Edge	0	3
+39	3	Hidden Thorn	0	4
+40	3	Lacerate	0	2
+41	4	Blossom Dance	1	0
+42	4	Cutting Petal	1	0
+43	4	Twisting Petal	1	0
+44	4	Falling Petal	1	0
+45	4	Gale Slash	0	1
+46	4	Electric Gutbuster	0	3
+47	4	Peerless	0	9
+48	4	Worldly Slash	0	2
+49	4	Battle Eye	0	10
+50	4	Steel Strike	0	6
+51	4	Serene Heart	0	12
+52	4	Final Flicker	0	16
+53	4	Jaws of Death	0	14
+54	4	Tempest Kick	0	4
+55	4	Heat Haze	0	13
+56	4	Spirit Breath	0	11
+57	4	Soaring Tempest	0	5
+58	4	Thunder	0	8
+59	4	Demon Slayer	0	7
+60	4	Blinding Blossom	0	15
+61	5	Cool Off	1	0
+62	5	Overdrive	1	0
+63	5	Heal Bullet	0	1
+64	5	Thunder Bullet	0	10
+65	5	Shield Bullet	0	6
+66	5	Cure Bullet	0	4
+67	5	Drive Boost	0	13
+68	5	Heal Blast	0	2
+69	5	Heal Round	0	3
+70	5	Head Shot	0	16
+71	5	Metal Blast	0	14
+72	5	Aura Bullet	0	9
+73	5	Heat Bullet	0	8
+74	5	Head Shaker	0	15
+75	5	Covert Stance	0	12
+76	5	Heal Counter	0	7
+77	5	Tranquilliser	0	11
+78	5	Cure Round	0	5
+79	6	Yoink!	1	0
+80	6	Happy Happy	0	12
+81	6	Bitey Bitey	0	2
+82	6	Sneaky	0	1
+83	6	Play Dead	0	15
+84	6	Lurgy	0	5
+85	6	Hero Time	0	14
+86	6	Roly-Poly	0	11
+87	6	Behave	0	6
+88	6	Riki is Angry	0	16
+89	6	Bedtime	0	8
+90	6	You Can Do It	0	13
+91	6	Peekaboo	0	3
+92	6	Say Sorry	0	4
+93	6	Burninate	0	9
+94	6	Freezinate	0	7
+95	6	Tantrum	0	10
+96	7	Elemental Discharge	1	0
+97	7	Electric Discharge	1	0
+98	7	Fire Discharge	1	0
+99	7	Ice Discharge	1	0
+100	7	Wind Discharge	1	0
+101	7	Earth Discharge	1	0
+102	7	Water Discharge	1	0
+103	7	Summon Bolt	0	1
+104	7	Summon Flare	0	2
+105	7	Summon Ice	0	6
+106	7	Hypnotise	0	12
+107	7	Spear Break	0	14
+108	7	Shadow Stitch	0	13
+109	7	Summon Copy	0	7
+110	7	Reflection	0	8
+111	7	Summon Wind	0	4
+112	7	Summon Earth	0	5
+113	7	Summon Aqua	0	3
+114	7	Healing Gift	0	9
+115	7	Starlight Kick	0	15
+116	7	Power Effect	0	10
+117	7	Burst End	0	11
+118	7	Mind Blast	0	16
+119	8	Cannon Drones I	1	0
+120	8	Gun Drones I	1	0
+121	8	Sword Drones I	1	0
+122	8	Shield Drones I	1	0
+123	8	Cannon Drones II	1	0
+124	8	Gun Drones II	1	0
+125	8	Sword Drones II	1	0
+126	8	Shield Drones II	1	0
+127	8	Sword Drones X	1	0
+128	8	Double Blade	0	1
+129	8	Healing Energy	0	9
+130	8	Spear Blade	0	2
+131	8	Cross Impact	0	6
+132	8	Speed Shift	0	12
+133	8	Zero Gravity	0	14
+134	8	Lock-On	0	10
+135	8	Ether Drain	0	13
+136	8	Double Wind	0	3
+137	8	Mag Storm	0	7
+138	8	Shutdown	0	4
+139	8	Air Fang	0	5
+140	8	Power Drain	0	15
+141	8	Guard Shift	0	11
+142	8	Second Gear	0	8
+143	8	Final Cross	0	16
+153	14	Doze Off	1	0
+154	14	Overdrive	1	0
+155	14	Healy Bullet	0	1
+156	14	Crackle Bullet	0	10
+157	14	Shield Kaclang	0	6
+158	14	Cure Thingamie	0	4
+159	14	B-B-B-Boost	0	13
+160	14	Heal Kaboom	0	2
+161	14	Heal Round-a-Round	0	3
+162	14	Noggin Shot	0	16
+163	14	'Ittle Blast	0	14
+164	14	Aurorora Bullet	0	9
+165	14	Toasty-Hot Bullet	0	8
+166	14	Egg Shaker	0	15
+167	14	Yoghurt Stance	0	12
+168	14	Healy Counter	0	7
+169	14	Tranquilsnooze	0	11
+170	14	Curedy-Pure Round	0	5
+171	15	Glad Taunt	1	0
+172	15	Hammer Beat	0	1
+173	15	Mild Down	0	7
+174	15	Guard Sift	0	15
+175	15	Feather Swing	0	4
+176	15	Sword Drive	0	5
+177	15	Berserker	0	11
+178	15	Shield Kersmash	0	8
+179	15	Engage	0	10
+180	15	Last Stand	0	12
+181	15	Hangry	0	9
+182	15	Magnum Starch	0	16
+183	15	Bone Upper	0	2
+184	15	Chive Sobat	0	3
+185	15	Aura Toast	0	14
+186	15	Anchor Chain	0	13
+187	15	Lariat	0	6

@@ -11,6 +11,7 @@ public sealed class SaveDocument
     internal const int PartyOffset = 0x152318;
     internal const int CharacterOffset = 0x152368;
     internal const int CharacterSize = 0x138;
+    internal const int ArtsOffset = 0x1536e8;
     private readonly byte[] _data;
 
     private SaveDocument(byte[] data)
@@ -64,6 +65,8 @@ public sealed class SaveDocument
             character.SetResources(ap: CharacterRecord.MaximumAP);
     }
 
+    internal byte ReadByte(int offset) => _data[offset];
+    internal void WriteByte(int offset, byte value) => _data[offset] = value;
     internal uint ReadUInt32(int offset) => BinaryPrimitives.ReadUInt32LittleEndian(_data.AsSpan(offset, 4));
     internal ushort ReadUInt16(int offset) => BinaryPrimitives.ReadUInt16LittleEndian(_data.AsSpan(offset, 2));
     internal void WriteUInt32(int offset, uint value) => BinaryPrimitives.WriteUInt32LittleEndian(_data.AsSpan(offset, 4), value);
