@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>XbdeEditor.Core</AssemblyName>
+    <RootNamespace>XbdeEditor.Core</RootNamespace>
+  </PropertyGroup>
+</Project>

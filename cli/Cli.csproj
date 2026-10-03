@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>XbdeEditor.Cli</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup><ProjectReference Include="../core/Core.csproj" /></ItemGroup>
+</Project>

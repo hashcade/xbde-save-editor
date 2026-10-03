@@ -1,0 +1,12 @@
+**/bin/
+**/obj/
+dist/
+**/__pycache__/
+.DS_Store
+*.user
+*.log
+analysis/
+private-data/
+*.sav
+*.tmb
+main.npdm
