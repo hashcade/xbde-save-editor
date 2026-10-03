@@ -36,6 +36,61 @@ def main() -> None:
         source = root / "bfsgame00.sav"
         output = root / "output.sav"
         source.write_bytes(original)
+        assert "max-colony6" in run("--help")
+        colony_bytes = bytearray(original)
+        colony_bytes[0xCF8:0xCFF] = bytes([20, 30, 1, 0, 0, 0, 0])
+        colony_source = root / "colony6.sav"
+        colony_source.write_bytes(colony_bytes)
+        info = json.loads(run("colony6", colony_source))
+        assert info["CanMaximize"] and info["Housing"] == 1 and info["Development"] == 20
+        rows = [
+            (2,4,0,51,991), (2,8,0,52,992), (3,15,0,53,993), (3,18,0,54,994), (3,27,46,55,995),
+            (2,1,0,0,0), (2,1,0,96,0), (2,1,0,0,0), (3,1,0,0,0), (4,2,0,0,982),
+            (1,0,0,0,984), (2,0,38,0,985), (2,0,0,0,986), (3,0,0,0,987), (5,3,0,0,998),
+            (3,0,0,0,934), (3,2,39,0,990), (4,0,53,0,997), (5,0,44,0,937), (6,3,29,0,938),
+            (0,0,32,0,0), (0,0,33,0,0), (0,0,34,0,0), (0,0,35,0,0), (0,0,36,0,0),
+        ]
+        expected = bytearray(colony_bytes)
+        for category in range(5):
+            for level in range(colony_bytes[0xCFA + category], 5):
+                development, population, effect, self_flag, quest = rows[category * 5 + level]
+                expected[0xCF8] += development
+                expected[0xCF9] += population
+                if effect:
+                    bit = 0x278A + effect - 0xA20
+                    expected[0x50 + (bit >> 3)] |= 1 << (bit & 7)
+                if self_flag:
+                    expected[0xC94 + self_flag] = 1
+                if quest:
+                    expected[0x5F0 + quest] = 200
+            expected[0xCFA + category] = 5
+        run("max-colony6", colony_source, output)
+        assert output.read_bytes() == expected and colony_source.read_bytes() == colony_bytes
+        assert json.loads(run("colony6", output))["IsMaximum"]
+        run("max-colony6", output, output)
+        assert output.read_bytes() == expected
+        for offset, value in [(0, 8), (0xCF8, 255), (0xCF9, 255), (0xCFA, 6),
+                              (0xCFE, 1), (0xCF4, 2), (0x5F0 + 998, 255)]:
+            invalid_colony = bytearray(colony_bytes)
+            invalid_colony[offset] = value
+            colony_source.write_bytes(invalid_colony)
+            assert not json.loads(run("colony6", colony_source))["CanMaximize"]
+            run("max-colony6", colony_source, output, success=False)
+            assert output.read_bytes() == expected and colony_source.read_bytes() == invalid_colony
+        for kind in ["unstarted", "future", "unknown"]:
+            invalid_colony = bytearray(colony_bytes)
+            if kind == "unstarted":
+                invalid_colony[0xCFA:0xCFF] = bytes(5)
+            elif kind == "future":
+                struct.pack_into("<H", invalid_colony, 0x15231A, 14)
+                struct.pack_into("<I", invalid_colony, 0x152368 + 13 * 0x138, 20)
+            else:
+                invalid_colony[0x152330] = 1
+            colony_source.write_bytes(invalid_colony)
+            info = json.loads(run("colony6", colony_source))
+            assert info is None or not info["CanMaximize"]
+            run("max-colony6", colony_source, output, success=False)
+            assert output.read_bytes() == expected
         equipment_bytes = bytearray(original)
         slots = ["Weapon", "Head", "Torso", "Arms", "Legs", "Feet"]
         starts = [0x3B10, 0x98D0, 0xF690, 0x15450, 0x1B210, 0x20FD0]

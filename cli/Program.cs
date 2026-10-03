@@ -19,6 +19,20 @@ try
         Console.WriteLine("affinities <save>\naffinity <save> <output> <first-character-id> <second-character-id> --points N\nmax-affinity <save> <output> <first-character-id> <second-character-id>\nmax-all-affinity <save> <output>");
         Console.WriteLine("region-affinities <save>\nregion-affinity <save> <output> <region-id> --points N\nregion-affinity <save> <output> <region-id> --stars N\nmax-region-affinity <save> <output> <region-id>\nmax-all-region-affinity <save> <output>");
         Console.WriteLine("equipment-inventory <save> <Weapon|Head|Torso|Arms|Legs|Feet>\nadd-equipment <save> <output> <item-id>\nfill-missing-equipment <save> <output> <slot> <character-id>\nequipment-favorite <save> <output> <slot> <index> <true|false>\ndelete-equipment <save> <output> <slot> <index>");
+        Console.WriteLine("colony6 <save>\nmax-colony6 <save> <output>");
+        return 0;
+    }
+    if (args is ["colony6", var colonySource])
+    {
+        Console.WriteLine(JsonSerializer.Serialize(SaveSession.Open(colonySource).Document.Colony6,
+            new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["max-colony6", var colonyInput, var colonyOutput])
+    {
+        var session = SaveSession.Open(colonyInput);
+        session.Document.MaximizeColony6();
+        session.Save(colonyOutput);
         return 0;
     }
     if (args is ["equipment-inventory", var equipmentInventorySource, var equipmentInventorySlot])

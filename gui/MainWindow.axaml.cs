@@ -117,6 +117,7 @@ public partial class MainWindow : Window
         _refreshing = true;
         try
         {
+            RefreshColony6();
             ResourceInputs.IsEnabled = SaveMenu.IsEnabled = SaveAsMenu.IsEnabled = Session is not null;
             if (Session is null) return;
             MoneyInput.Value = Session.Document.Money;

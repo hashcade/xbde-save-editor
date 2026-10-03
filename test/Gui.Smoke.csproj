@@ -9,6 +9,8 @@
     <Compile Include="EquipmentSwitchTests.cs" />
     <Compile Include="EquipmentInventoryTests.cs" />
     <Compile Include="EquipmentInventoryGuiTests.cs" />
+    <Compile Include="Colony6Tests.cs" />
+    <Compile Include="Colony6GuiTests.cs" />
     <Compile Include="InventoryTests.cs" />
     <Compile Include="SkillLinksTests.cs" />
     <Compile Include="AffinityTests.cs" />

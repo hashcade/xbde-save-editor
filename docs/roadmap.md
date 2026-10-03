@@ -25,6 +25,7 @@ Each feature is committed separately with core tests and matching CLI support.
 - [ ] Achievements: localized game text and in-game verification of newly completed records.
 - [x] Character affinity: single/bulk maximum, direct points editing and monotonic skill-link slot synchronization, with matching CLI support.
 - [x] Region affinity: linked points/stars for all five main-story areas, single/bulk maximum and matching CLI support.
+- [x] Colony 6: inspect facilities/development/population and maximize started reconstruction with native linked writes, all-or-nothing validation and matching CLI support.
 
 Prioritize grind reduction, bulk edits and actions that are difficult or unavailable
 in-game. Basic party sorting is intentionally excluded; it adds little value to
@@ -32,7 +33,7 @@ a save editor and does not justify another panel. Ordinary menu settings, includ
 the Expert Mode enabled switch, are also excluded. Direct level and reserve EXP
 editing remain available for progression changes without grinding.
 
-NPC affinity, quests, Colony 6, Time Attack, Ponspectors and system-save
+NPC affinity, quests, Colony 6 initial quest/recruitment, Time Attack, Ponspectors and system-save
 unlocks need further format validation. They are not promised or exposed as editable fields.
 Localized game catalogs are deferred until genuine game text is available.
 Do not synthesize official translations or block verified features on missing text.
@@ -58,3 +59,4 @@ See [Inventory validation](inventory.md) for stack limits, safe allocation and s
 See [Achievement validation](achievements.md) for condition types, completion flags and write boundaries.
 See [Affinity validation](affinity.md) for canonical pairs, point limits and directed skill-link unlocks.
 See [Region affinity validation](region-affinity.md) for star thresholds, area IDs and isolated point writes.
+See [Colony 6 validation](colony6.md) for native upgrade rows, linked flags and reconstruction write boundaries.

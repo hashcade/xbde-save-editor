@@ -1,5 +1,22 @@
 # CLI
 
+## Colony 6
+
+```sh
+XbdeEditor.Cli colony6 bfsgame00.sav
+XbdeEditor.Cli max-colony6 bfsgame00.sav edited.sav
+```
+
+Inspection reports the four facility levels, overall reconstruction level,
+development, population and whether reconstruction can be maximized. Other
+campaigns return `null`. Maximum applies only missing native upgrade rows,
+including their linked effect/self/quest flags and development/population
+increases. It leaves materials, money, recruitment, EXP and achievements alone.
+At least one facility must already have an upgrade; the command does not start
+the reconstruction quest. Invalid levels, counter overflow, unsupported linked
+states and unverified formats reject the entire operation before saving.
+Already-maximized colonies remain byte-identical. See [validation](docs/colony6.md).
+
 ## Achievements
 
 ```sh

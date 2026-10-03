@@ -81,6 +81,7 @@ Directory.CreateDirectory(temporary);
 try
 {
     EquipmentInventoryGuiTests.Run(window, temporary, Check);
+    Colony6GuiTests.Run(window, temporary, Check);
     byte[] regionFixture = new byte[SaveDocument.FileSize];
     BinaryPrimitives.WriteUInt32LittleEndian(regionFixture, 7);
     BinaryPrimitives.WriteUInt16LittleEndian(regionFixture.AsSpan(0x152318), 1);

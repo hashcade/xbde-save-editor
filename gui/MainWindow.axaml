@@ -39,19 +39,47 @@
     </Grid>
     <ScrollViewer Name="MainScroll" Grid.Row="1" Margin="24,4,24,0" HorizontalScrollBarVisibility="Disabled">
       <Grid ColumnDefinitions="*,*" ColumnSpacing="24" VerticalAlignment="Top">
-        <suki:GlassCard Padding="20" VerticalAlignment="Top">
-          <StackPanel Spacing="16">
-            <TextBlock Text="{DynamicResource Resources}" FontWeight="SemiBold" />
-            <StackPanel Name="ResourceInputs" Spacing="12" IsEnabled="False">
-              <Grid ColumnDefinitions="160,*" RowDefinitions="Auto,Auto" ColumnSpacing="16" RowSpacing="12">
-                <TextBlock Text="{DynamicResource Money}" VerticalAlignment="Center" />
-                <NumericUpDown Name="MoneyInput" Grid.Column="1" Minimum="0" Maximum="4294967295" Increment="1" FormatString="0" Height="42" Margin="0" ValueChanged="Resources_Changed" />
-                <TextBlock Grid.Row="1" Text="{DynamicResource Noponstones}" VerticalAlignment="Center" />
-                <NumericUpDown Name="NoponstonesInput" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="4294967295" Increment="1" FormatString="0" Height="42" Margin="0" ValueChanged="Resources_Changed" />
-              </Grid>
+        <StackPanel Spacing="24">
+          <suki:GlassCard Padding="20" VerticalAlignment="Top">
+            <StackPanel Spacing="16">
+              <TextBlock Text="{DynamicResource Resources}" FontWeight="SemiBold" />
+              <StackPanel Name="ResourceInputs" Spacing="12" IsEnabled="False">
+                <Grid ColumnDefinitions="160,*" RowDefinitions="Auto,Auto" ColumnSpacing="16" RowSpacing="12">
+                  <TextBlock Text="{DynamicResource Money}" VerticalAlignment="Center" />
+                  <NumericUpDown Name="MoneyInput" Grid.Column="1" Minimum="0" Maximum="4294967295" Increment="1" FormatString="0" Height="42" Margin="0" ValueChanged="Resources_Changed" />
+                  <TextBlock Grid.Row="1" Text="{DynamicResource Noponstones}" VerticalAlignment="Center" />
+                  <NumericUpDown Name="NoponstonesInput" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="4294967295" Increment="1" FormatString="0" Height="42" Margin="0" ValueChanged="Resources_Changed" />
+                </Grid>
+              </StackPanel>
             </StackPanel>
-          </StackPanel>
-        </suki:GlassCard>
+          </suki:GlassCard>
+          <suki:GlassCard Name="Colony6Card" Padding="20" VerticalAlignment="Top" IsVisible="False">
+            <StackPanel Spacing="16">
+              <TextBlock Text="{DynamicResource Colony6Title}" FontWeight="SemiBold" TextWrapping="Wrap" />
+              <Grid ColumnDefinitions="*,Auto,*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="16" RowSpacing="16">
+                <TextBlock Text="Housing" />
+                <TextBlock Name="Colony6HousingValue" Grid.Column="1" />
+                <TextBlock Text="Commerce" Grid.Column="2" />
+                <TextBlock Name="Colony6CommerceValue" Grid.Column="3" />
+                <TextBlock Text="Nature" Grid.Row="1" />
+                <TextBlock Name="Colony6NatureValue" Grid.Row="1" Grid.Column="1" />
+                <TextBlock Text="Special" Grid.Row="1" Grid.Column="2" />
+                <TextBlock Name="Colony6SpecialValue" Grid.Row="1" Grid.Column="3" />
+              </Grid>
+              <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="16" RowSpacing="12">
+                <TextBlock Text="{DynamicResource Colony6OverallLevel}" TextWrapping="Wrap" />
+                <TextBlock Name="Colony6OverallValue" Grid.Column="1" />
+                <TextBlock Text="{DynamicResource Colony6Development}" Grid.Row="1" TextWrapping="Wrap" />
+                <TextBlock Name="Colony6DevelopmentValue" Grid.Row="1" Grid.Column="1" />
+                <TextBlock Text="{DynamicResource Colony6Population}" Grid.Row="2" TextWrapping="Wrap" />
+                <TextBlock Name="Colony6PopulationValue" Grid.Row="2" Grid.Column="1" />
+              </Grid>
+              <Button Name="MaxColony6Button" Content="{DynamicResource MaxColony6}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxColony6_Click">
+                <Button.ContentTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" /></DataTemplate></Button.ContentTemplate>
+              </Button>
+            </StackPanel>
+          </suki:GlassCard>
+        </StackPanel>
         <suki:GlassCard Grid.Column="1" Padding="20" VerticalAlignment="Top">
           <StackPanel Spacing="16">
             <TextBlock Text="{DynamicResource SaveFile}" FontWeight="SemiBold" />

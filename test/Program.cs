@@ -110,6 +110,7 @@ SkillsTests.Run(Fixture, Check, Reject);
 SkillLinksTests.Run(Fixture, Check, Reject);
 AffinityTests.Run(Fixture, Check, Reject);
 RegionAffinityTests.Run(Fixture, Check, Reject);
+Colony6Tests.Run(Fixture, Check, Reject);
 EquipmentTests.Run(Fixture, Check, Reject);
 EquipmentSwitchTests.Run(Fixture, Check, Reject);
 EquipmentInventoryTests.Run(Fixture, Check, Reject);
@@ -235,6 +236,7 @@ try
             SkillLinksTests.VerifyRealSave(before, Check);
             AffinityTests.VerifyRealSave(before, Check);
             RegionAffinityTests.VerifyRealSave(before, Check);
+            Colony6Tests.VerifyRealSave(before, Check);
             EquipmentTests.VerifyRealSave(before, Check);
             EquipmentSwitchTests.VerifyRealSave(before, Check);
             EquipmentInventoryTests.VerifyRealSave(before, Check);
