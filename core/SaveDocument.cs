@@ -33,6 +33,15 @@ public sealed class SaveDocument
         ? Campaign.FutureConnected : Campaign.MainStory;
 
     public string Sha256 => Convert.ToHexString(SHA256.HashData(_data));
+    public uint Money => ReadUInt32(0x151b40);
+    public uint Noponstones => ReadUInt32(0x10);
+
+    public void SetResources(uint money, uint noponstones)
+    {
+        WriteUInt32(0x151b40, money);
+        WriteUInt32(0x10, noponstones);
+    }
+
     public byte[] Serialize() => (byte[])_data.Clone();
 
     internal uint ReadUInt32(int offset) => BinaryPrimitives.ReadUInt32LittleEndian(_data.AsSpan(offset, 4));

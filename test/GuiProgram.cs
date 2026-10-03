@@ -1,0 +1,69 @@
+using System.Buffers.Binary;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Headless;
+using Avalonia.Threading;
+using XbdeEditor.Core;
+using XbdeEditor.Gui;
+using XbdeEditor.Gui.Localization;
+
+AppBuilder.Configure<App>().UseSkia().WithInterFont()
+    .UseHeadless(new AvaloniaHeadlessPlatformOptions { UseHeadlessDrawing = false }).SetupWithoutStarting();
+var window = new MainWindow();
+window.Show();
+Dispatcher.UIThread.RunJobs();
+void Check(bool value, string message)
+{
+    if (!value) throw new InvalidOperationException(message);
+}
+Check(UiLanguage.Current == "en", "Default language is not English.");
+Check(!window.FindControl<StackPanel>("ResourceInputs")!.IsEnabled, "Empty form is editable.");
+Check(window.FindControl<ScrollViewer>("MainScroll") is not null, "Main page has no shared scroll container.");
+Check(!MainWindow.WholeNumber(1.5m, out _), "Fractional amount is accepted.");
+Check(!MainWindow.WholeNumber(-1, out _), "Negative amount is accepted.");
+Check(!MainWindow.WholeNumber((decimal)uint.MaxValue + 1, out _), "Overflow is accepted.");
+string temporary = Path.Combine(Path.GetTempPath(), $"xbde-gui-{Guid.NewGuid():N}");
+Directory.CreateDirectory(temporary);
+try
+{
+    byte[] original = new byte[SaveDocument.FileSize];
+    BinaryPrimitives.WriteUInt16LittleEndian(original.AsSpan(0x152318), 1);
+    original[0x152330] = 1;
+    BinaryPrimitives.WriteUInt32LittleEndian(original.AsSpan(0x1524a0), 20);
+    BinaryPrimitives.WriteUInt32LittleEndian(original.AsSpan(0x151b40), 999999999);
+    string source = Path.Combine(temporary, "bfsgame00.sav");
+    File.WriteAllBytes(source, original);
+    Check(window.LoadSave(source), "Could not load a game save.");
+    Check(!window.Session!.HasChanges, "GUI load changes a save.");
+    var money = window.FindControl<NumericUpDown>("MoneyInput")!;
+    Check(money.Value == 999999999, "Existing resource amount was clamped.");
+    money.Value = 123;
+    Check(window.Session.Document.Money == 123, "GUI edits are not linked to the core.");
+    foreach (string language in UiLanguage.Languages.Keys)
+    {
+        window.SetLanguage("zh-Hans");
+        window.SetLanguage(language);
+        Dispatcher.UIThread.RunJobs();
+        Check(window.FindControl<MenuItem>("SaveMenu")!.Header?.ToString() == UiLanguage.Get("Save"), "Menu translation is stale.");
+        Check(window.FindControl<TextBlock>("CampaignValue")!.Text == UiLanguage.Get("MainStory"), "Campaign translation is stale.");
+        Check(window.Session.Document.Money == 123, "Language switch changed edits.");
+    }
+    window.SetLanguage("en");
+    string output = Path.Combine(temporary, "edited.sav");
+    Check(window.SaveTo(output), "GUI save failed.");
+    Check(SaveDocument.Parse(File.ReadAllBytes(output)).Money == 123, "Saved amount differs.");
+    Check(File.ReadAllBytes(source).AsSpan().SequenceEqual(original), "GUI test modified its input.");
+    Check(!window.LoadSave(Path.Combine(temporary, "missing.sav")), "Missing save was accepted.");
+    Check(window.Session.Document.Money == 123, "Failed open replaced the current document.");
+    Check(window.SaveTo(source), "Could not save the synthetic source before closing.");
+    if (args is ["--screenshot", var realSave, var screenshot])
+    {
+        Check(window.LoadSave(realSave), "Could not open the screenshot save.");
+        Dispatcher.UIThread.RunJobs();
+        using var frame = window.CaptureRenderedFrame()!;
+        frame.Save(screenshot, Avalonia.Media.Imaging.PngBitmapEncoderOptions.Default);
+        Console.WriteLine($"Screenshot: {screenshot}");
+    }
+}
+finally { window.Close(); Directory.Delete(temporary, recursive: true); }
+Console.WriteLine("GUI smoke tests passed.");

@@ -1,0 +1,10 @@
+{
+  "File": "File", "OpenSave": "Open Save...", "Save": "Save", "SaveAs": "Save As...", "Exit": "Exit",
+  "Language": "Language", "Help": "Help", "About": "About", "Version": "Version:",
+  "Main": "Main", "Resources": "Resources", "Money": "Money", "Noponstones": "Noponstones",
+  "SaveFile": "Save File", "FileName": "File", "Campaign": "Campaign", "Characters": "Characters",
+  "MainStory": "Main Story", "FutureConnected": "Future Connected",
+  "OpenFailed": "Could not open save:", "SaveFailed": "Could not save:", "Saved": "Saved:",
+  "InvalidValue": "Enter a whole number within the allowed range.",
+  "UnsavedChanges": "Unsaved Changes", "DiscardQuestion": "Discard unsaved changes?", "Discard": "Discard", "Cancel": "Cancel"
+}

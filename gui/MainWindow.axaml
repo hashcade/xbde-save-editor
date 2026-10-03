@@ -1,0 +1,60 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:suki="https://github.com/kikipoulet/SukiUI"
+        x:Class="XbdeEditor.Gui.MainWindow"
+        Title="XBDE Save Editor" Width="1120" Height="780" MinWidth="860" MinHeight="600">
+  <Window.Styles>
+    <Style Selector="ListBox">
+      <Setter Property="ItemsPanel"><ItemsPanelTemplate><VirtualizingStackPanel CacheLength="1" /></ItemsPanelTemplate></Setter>
+    </Style>
+  </Window.Styles>
+  <Grid RowDefinitions="Auto,*,Auto" Margin="0,0,0,24" RowSpacing="24">
+    <Grid Name="Header" ColumnDefinitions="Auto,*">
+      <Menu FontSize="13" VerticalAlignment="Center">
+        <MenuItem Header="{DynamicResource File}">
+          <MenuItem Header="{DynamicResource OpenSave}" Click="OpenSave_Click" />
+          <MenuItem Name="SaveMenu" Header="{DynamicResource Save}" Click="Save_Click" IsEnabled="False" />
+          <MenuItem Name="SaveAsMenu" Header="{DynamicResource SaveAs}" Click="SaveAs_Click" IsEnabled="False" />
+          <Separator />
+          <MenuItem Header="{DynamicResource Exit}" Click="Exit_Click" />
+        </MenuItem>
+        <MenuItem Name="LanguageMenu" Header="{DynamicResource Language}" />
+        <MenuItem Header="{DynamicResource Help}"><MenuItem Header="{DynamicResource About}" Click="About_Click" /></MenuItem>
+      </Menu>
+      <TabStrip Name="MainNavigation" Grid.Column="1" HorizontalAlignment="Right" FontSize="13" SelectedIndex="0">
+        <TabStripItem Content="{DynamicResource Main}" />
+      </TabStrip>
+    </Grid>
+    <ScrollViewer Name="MainScroll" Grid.Row="1" Margin="24,0" HorizontalScrollBarVisibility="Disabled">
+      <Grid ColumnDefinitions="*,*" ColumnSpacing="24" VerticalAlignment="Top">
+        <suki:GlassCard Padding="20" VerticalAlignment="Top">
+          <StackPanel Spacing="16">
+            <TextBlock Text="{DynamicResource Resources}" FontWeight="SemiBold" />
+            <StackPanel Name="ResourceInputs" Spacing="12" IsEnabled="False">
+              <Grid ColumnDefinitions="160,*" RowDefinitions="Auto,Auto" ColumnSpacing="16" RowSpacing="12">
+                <TextBlock Text="{DynamicResource Money}" VerticalAlignment="Center" />
+                <NumericUpDown Name="MoneyInput" Grid.Column="1" Minimum="0" Maximum="4294967295" Increment="1" FormatString="0" Height="42" Margin="0" ValueChanged="Resources_Changed" />
+                <TextBlock Grid.Row="1" Text="{DynamicResource Noponstones}" VerticalAlignment="Center" />
+                <NumericUpDown Name="NoponstonesInput" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="4294967295" Increment="1" FormatString="0" Height="42" Margin="0" ValueChanged="Resources_Changed" />
+              </Grid>
+            </StackPanel>
+          </StackPanel>
+        </suki:GlassCard>
+        <suki:GlassCard Grid.Column="1" Padding="20" VerticalAlignment="Top">
+          <StackPanel Spacing="16">
+            <TextBlock Text="{DynamicResource SaveFile}" FontWeight="SemiBold" />
+            <Grid ColumnDefinitions="160,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="16" RowSpacing="16">
+              <TextBlock Text="{DynamicResource FileName}" />
+              <TextBlock Name="FileNameValue" Grid.Column="1" TextWrapping="Wrap" />
+              <TextBlock Grid.Row="1" Text="{DynamicResource Campaign}" />
+              <TextBlock Name="CampaignValue" Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" />
+              <TextBlock Grid.Row="2" Text="{DynamicResource Characters}" />
+              <TextBlock Name="CharacterCountValue" Grid.Row="2" Grid.Column="1" />
+            </Grid>
+          </StackPanel>
+        </suki:GlassCard>
+      </Grid>
+    </ScrollViewer>
+    <TextBlock Name="StatusMessage" Grid.Row="2" Margin="24,0" TextWrapping="Wrap" IsVisible="False" />
+  </Grid>
+</Window>

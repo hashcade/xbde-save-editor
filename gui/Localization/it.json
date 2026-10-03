@@ -1,0 +1,10 @@
+{
+  "File": "File", "OpenSave": "Apri salvataggio…", "Save": "Salva", "SaveAs": "Salva con nome…", "Exit": "Esci",
+  "Language": "Lingua", "Help": "Aiuto", "About": "Informazioni", "Version": "Versione:",
+  "Main": "Principale", "Resources": "Risorse", "Money": "Denaro", "Noponstones": "Cristalli Nopon",
+  "SaveFile": "Salvataggio", "FileName": "File", "Campaign": "Campagna", "Characters": "Personaggi",
+  "MainStory": "Storia principale", "FutureConnected": "Un futuro comune",
+  "OpenFailed": "Impossibile aprire il salvataggio:", "SaveFailed": "Impossibile salvare:", "Saved": "Salvato:",
+  "InvalidValue": "Inserisci un intero nell’intervallo consentito.",
+  "UnsavedChanges": "Modifiche non salvate", "DiscardQuestion": "Scartare le modifiche non salvate?", "Discard": "Scarta", "Cancel": "Annulla"
+}

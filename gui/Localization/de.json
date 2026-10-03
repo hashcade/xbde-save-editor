@@ -1,0 +1,10 @@
+{
+  "File": "Datei", "OpenSave": "Spielstand öffnen…", "Save": "Speichern", "SaveAs": "Speichern unter…", "Exit": "Beenden",
+  "Language": "Sprache", "Help": "Hilfe", "About": "Über", "Version": "Version:",
+  "Main": "Start", "Resources": "Ressourcen", "Money": "Geld", "Noponstones": "Noponsteine",
+  "SaveFile": "Spielstand", "FileName": "Datei", "Campaign": "Kampagne", "Characters": "Charaktere",
+  "MainStory": "Hauptgeschichte", "FutureConnected": "Die verbundene Zukunft",
+  "OpenFailed": "Spielstand konnte nicht geöffnet werden:", "SaveFailed": "Speichern fehlgeschlagen:", "Saved": "Gespeichert:",
+  "InvalidValue": "Eine ganze Zahl im erlaubten Bereich eingeben.",
+  "UnsavedChanges": "Ungespeicherte Änderungen", "DiscardQuestion": "Ungespeicherte Änderungen verwerfen?", "Discard": "Verwerfen", "Cancel": "Abbrechen"
+}

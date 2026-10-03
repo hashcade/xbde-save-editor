@@ -2,19 +2,31 @@
 
 Edit Xenoblade Chronicles: Definitive Edition saves, including Future Connected.
 
+![Main editor](docs/main.png)
+
 ## Features
 
 - **Save files:** Open compatible `bfsgame*.sav` and `bfsmeria*.sav` game saves, inspect the saved party and create byte-identical copies. System saves and thumbnails are not editable.
-- **CLI:** Inspect saves as JSON or copy them without changing unknown data.
+- **Main:** Edit money and Noponstones. Save and Save As are available in the File menu; unrecognized layouts are rejected and unknown bytes remain untouched.
+- **CLI:** Inspect saves as JSON, copy them or edit resources without changing unknown data.
+
+English is the default language. The interface also supports Simplified Chinese,
+Traditional Chinese, Japanese, Korean, German, French, Spanish and Italian.
+Help → About shows the version and repository link.
 
 ## Get started
 
 With the .NET 10 SDK installed:
 
 ```sh
+dotnet run --project gui/XbdeEditor.Gui.csproj -c Release
 dotnet run --project cli/Cli.csproj -- inspect /path/to/bfsgame00.sav
 dotnet run --project cli/Cli.csproj -- copy /path/to/bfsgame00.sav /path/to/copy.sav
 ```
+
+Resource inputs currently validate unsigned 32-bit storage bounds, not an
+independently verified in-game currency cap. Existing high amounts are preserved
+on opening; they are not silently normalized.
 
 See the [development plan](docs/roadmap.md) for the next panels.
 

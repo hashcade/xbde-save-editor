@@ -2,4 +2,6 @@
   <Project Path="core/Core.csproj" />
   <Project Path="cli/Cli.csproj" />
   <Project Path="test/Core.Test.csproj" />
+  <Project Path="gui/XbdeEditor.Gui.csproj" />
+  <Project Path="test/Gui.Smoke.csproj" />
 </Solution>

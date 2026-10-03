@@ -1,0 +1,10 @@
+{
+  "File": "ファイル", "OpenSave": "セーブを開く…", "Save": "保存", "SaveAs": "名前を付けて保存…", "Exit": "終了",
+  "Language": "言語", "Help": "ヘルプ", "About": "このアプリについて", "Version": "バージョン：",
+  "Main": "メイン", "Resources": "所持品", "Money": "所持金", "Noponstones": "ノポンクリスタル",
+  "SaveFile": "セーブ", "FileName": "ファイル", "Campaign": "シナリオ", "Characters": "キャラクター",
+  "MainStory": "本編", "FutureConnected": "つながる未来",
+  "OpenFailed": "セーブを開けません：", "SaveFailed": "保存できません：", "Saved": "保存しました：",
+  "InvalidValue": "範囲内の整数を入力してください。",
+  "UnsavedChanges": "未保存の変更", "DiscardQuestion": "未保存の変更を破棄しますか？", "Discard": "破棄", "Cancel": "キャンセル"
+}

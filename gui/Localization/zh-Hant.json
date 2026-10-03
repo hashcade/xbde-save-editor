@@ -1,0 +1,10 @@
+{
+  "File": "檔案", "OpenSave": "開啟存檔…", "Save": "儲存", "SaveAs": "另存為…", "Exit": "結束",
+  "Language": "語言", "Help": "說明", "About": "關於", "Version": "版本：",
+  "Main": "首頁", "Resources": "資源", "Money": "金錢", "Noponstones": "諾彭水晶",
+  "SaveFile": "存檔", "FileName": "檔案", "Campaign": "篇章", "Characters": "角色",
+  "MainStory": "本篇", "FutureConnected": "相連的未來",
+  "OpenFailed": "開啟存檔失敗：", "SaveFailed": "儲存失敗：", "Saved": "已儲存：",
+  "InvalidValue": "請輸入範圍內的整數。",
+  "UnsavedChanges": "尚未儲存的修改", "DiscardQuestion": "捨棄尚未儲存的修改？", "Discard": "捨棄", "Cancel": "取消"
+}

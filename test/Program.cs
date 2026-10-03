@@ -33,6 +33,13 @@ foreach (bool future in new[] { false, true })
     byte[] original = Fixture(future);
     var save = SaveDocument.Parse(original);
     Check(save.Serialize().AsSpan().SequenceEqual(original), "Round-trip altered unknown bytes.");
+    save.SetResources(123, 456);
+    byte[] edited = save.Serialize();
+    Check(save.Money == 123 && save.Noponstones == 456, "Resource edit differs.");
+    for (int offset = 0; offset < edited.Length; offset++)
+        if (offset is not (>= 0x10 and < 0x14) and not (>= 0x151b40 and < 0x151b44)
+            && original[offset] != edited[offset])
+            throw new InvalidOperationException($"Resource editing altered byte {offset:X}.");
     Check(save.Campaign == (future ? Campaign.FutureConnected : Campaign.MainStory), "Campaign mismatch.");
     original[0] ^= 0xff;
     Check(save.Serialize()[0] != original[0], "The parser retains its caller's buffer.");
