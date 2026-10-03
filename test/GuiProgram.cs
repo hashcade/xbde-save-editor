@@ -42,7 +42,7 @@ void VerifyPageSpacing()
     double gap = page.Bounds.Top - header.Bounds.Bottom;
     Check(Math.Abs(gap - (main.IsVisible ? 20 : 16)) < 0.1,
         $"Header-to-page spacing changed: {gap}.");
-    if (items.IsVisible)
+    if (items.IsVisible && window.FindControl<Grid>("GemsPanel")!.IsVisible)
     {
         var card = window.FindControl<Control>("GemEditorCard")!;
         var apply = window.FindControl<Button>("ApplyGemButton")!;
@@ -561,6 +561,72 @@ try
     VerifyPageSpacing();
     window.Width = 1120;
     window.Height = 780;
+    byte[] inventoryFixture = InventoryTests.Fixture(EquipmentTests.Fixture(original));
+    string inventoryPath = Path.Combine(temporary, "inventory.sav");
+    File.WriteAllBytes(inventoryPath, inventoryFixture);
+    Check(window.LoadSave(inventoryPath), "Could not load inventory fixture.");
+    window.ShowInventory(InventoryKind.Collectables);
+    var itemTabs = window.FindControl<TabStrip>("ItemNavigation")!;
+    var itemList = window.FindControl<ListBox>("InventoryList")!;
+    var addItem = window.FindControl<Button>("AddInventoryButton")!;
+    var quantity = window.FindControl<NumericUpDown>("InventoryQuantityInput")!;
+    var favorite = window.FindControl<CheckBox>("InventoryFavoriteInput")!;
+    Check(itemTabs.SelectedIndex == 1 && itemList.ItemCount == 0 && !window.Session!.HasChanges,
+        "Inventory inspection changes bytes or displays the wrong category.");
+    addItem.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(itemList.ItemCount == 1 && quantity.Value == 1, "GUI failed to create a stack.");
+    quantity.Value = 2;
+    favorite.IsChecked = true;
+    window.FindControl<Button>("ApplyInventoryButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    var stack = window.Session.Document.Inventory(InventoryKind.Collectables).Single();
+    Check(stack.Quantity == 2 && stack.Favorite, "GUI quantity/favorite edit failed.");
+    quantity.Value = 2.5m;
+    itemTabs.SelectedIndex = 2;
+    Check(itemTabs.SelectedIndex == 1 && stack.Quantity == 2, "Invalid item draft was discarded by tab switching.");
+    string invalidItemPath = Path.Combine(temporary, "invalid-item.sav");
+    Check(!window.SaveTo(invalidItemPath) && !File.Exists(invalidItemPath), "Invalid inventory draft was saved.");
+    quantity.Value = 3;
+    window.SetLanguage("ja");
+    Check(stack.Quantity == 3, "Language switching lost a valid inventory draft.");
+    var inventoryBytes = window.Session.Document.Serialize();
+    foreach (string language in UiLanguage.Languages.Keys)
+    {
+        window.SetLanguage(language);
+        Check(window.FindControl<TextBlock>("InventoryTitle")!.Text == UiLanguage.Get("Collectables")
+            && addItem.Content?.ToString() == UiLanguage.Get("Add"), "Inventory UI translation is stale.");
+        Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(inventoryBytes), "Inventory language switch changed bytes.");
+    }
+    window.FindControl<Button>("MaxInventoryButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(stack.Quantity == 99 && quantity.Value == 99, "GUI bulk quantity maximum failed.");
+    window.FindControl<Button>("DeleteInventoryButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(itemList.ItemCount == 0 && !stack.Exists, "GUI deletion failed.");
+    window.ShowInventory(InventoryKind.KeyItems);
+    Check(!window.FindControl<StackPanel>("AddInventoryInputs")!.IsVisible
+        && !window.FindControl<Button>("MaxInventoryButton")!.IsVisible, "Quest items expose mutation controls.");
+    window.ShowInventory(InventoryKind.ArtManuals);
+    window.FindControl<TextBox>("InventoryCatalogSearch")!.Text = "(Master)";
+    Check(window.FindControl<ComboBox>("InventoryDefinitionInput")!.ItemCount > 0, "Manual tier search found no books.");
+    window.ShowGems();
+    Check(itemTabs.SelectedIndex == 0 && !window.FindControl<Button>("DeleteGemButton")!.IsEnabled,
+        "Gems navigation or equipped-gem deletion guard failed.");
+    window.FindControl<Button>("AddGemButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Dispatcher.UIThread.RunJobs();
+    var gemDialog = window.OwnedWindows.Single();
+    T DialogControl<T>(string name) where T : Control => gemDialog.GetVisualDescendants().OfType<T>().Single(control => control.Name == name);
+    Check(DialogControl<NumericUpDown>("NewGemStrength").Maximum == 100, "Gem creation does not use linked limits.");
+    DialogControl<Button>("CreateGem").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Dispatcher.UIThread.RunJobs();
+    Check(window.OwnedWindows.Count == 0 && gemList.ItemCount == 6
+        && window.FindControl<Button>("DeleteGemButton")!.IsEnabled, "GUI gem creation or selection failed.");
+    window.FindControl<Button>("DeleteGemButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(gemList.ItemCount == 5, "GUI unreferenced gem deletion failed.");
+    window.ShowInventory(InventoryKind.Materials);
+    window.Width = 860;
+    window.Height = 600;
+    VerifyPageSpacing();
+    window.Width = 1120;
+    window.Height = 780;
+    Check(File.ReadAllBytes(inventoryPath).AsSpan().SequenceEqual(inventoryFixture), "Inventory GUI tests changed the source.");
     if (args is ["--screenshot", var realSave, var screenshot, .. var page])
     {
         // Use a fresh renderer: resizing the headless test window retains stale clipping masks.
@@ -568,7 +634,9 @@ try
         window = new MainWindow();
         window.Show();
         Check(window.LoadSave(realSave), "Could not open the screenshot save.");
-        if (page.Length > 0 && page[0] == "gems")
+        if (page.Length > 0 && page[0] == "inventory")
+            window.ShowInventory(page.Length > 2 ? Enum.Parse<InventoryKind>(page[2]) : InventoryKind.Collectables);
+        else if (page.Length > 0 && page[0] == "gems")
         {
             window.ShowGems();
             if (page.Length > 2) window.FindControl<ListBox>("GemList")!.SelectedIndex = int.Parse(page[2]);

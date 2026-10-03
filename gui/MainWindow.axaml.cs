@@ -31,9 +31,12 @@ public partial class MainWindow : Window
             var session = SaveSession.Open(path);
             Session = session;
             _gem = null;
+            _inventoryItem = null;
+            _inventorySelections.Clear();
             RefreshMain();
             RefreshCharacters();
             RefreshGems();
+            RefreshInventory();
             ShowStatus(null);
             return true;
         }
@@ -62,9 +65,11 @@ public partial class MainWindow : Window
             if (!CommitSkillDrafts()) return false;
             if (!CommitProgressionDraft()) return false;
             if (!CommitGemDraft()) return false;
+            if (!CommitInventoryDraft()) return false;
             Session.Save(path);
             RefreshCharacters();
             RefreshGems();
+            RefreshInventory();
             ShowStatus(UiLanguage.Get("Saved") + " " + Path.GetFileName(path));
             return true;
         }
@@ -79,10 +84,12 @@ public partial class MainWindow : Window
     {
         if (!CommitProgressionDraft()) return;
         if (!CommitGemDraft()) return;
+        if (!CommitInventoryDraft()) return;
         UiLanguage.Apply(language);
         RefreshMain();
         RefreshCharacters();
         RefreshGems();
+        RefreshInventory();
         ShowStatus(null);
     }
 
@@ -159,7 +166,7 @@ public partial class MainWindow : Window
 
     private async Task<bool> ConfirmDiscard()
     {
-        if (Session?.HasChanges != true && !HasProgressionDraft && !HasGemDraft && _skillProgressDrafts.Count == 0) return true;
+        if (Session?.HasChanges != true && !HasProgressionDraft && !HasGemDraft && !HasInventoryDraft && _skillProgressDrafts.Count == 0) return true;
         var discard = new Button { Content = UiLanguage.Get("Discard") };
         var cancel = new Button { Content = UiLanguage.Get("Cancel") };
         var dialog = new Window
@@ -183,7 +190,7 @@ public partial class MainWindow : Window
 
     private async void Window_Closing(object? sender, WindowClosingEventArgs e)
     {
-        if (_allowClose || (Session?.HasChanges != true && !HasProgressionDraft && !HasGemDraft && _skillProgressDrafts.Count == 0)) return;
+        if (_allowClose || (Session?.HasChanges != true && !HasProgressionDraft && !HasGemDraft && !HasInventoryDraft && _skillProgressDrafts.Count == 0)) return;
         e.Cancel = true;
         if (await ConfirmDiscard())
         {

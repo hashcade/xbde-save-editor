@@ -220,16 +220,28 @@
         </Grid>
       </suki:GlassCard>
     </Grid>
-    <Grid Name="ItemsPanel" Grid.Row="1" Margin="24,0" ColumnDefinitions="280,*" ColumnSpacing="24" IsVisible="False">
+    <Grid Name="ItemsPanel" Grid.Row="1" Margin="24,0" RowDefinitions="Auto,*" RowSpacing="16" IsVisible="False">
+      <TabStrip Name="ItemNavigation" Classes="page-tabs" FontSize="13" SelectedIndex="0" SelectionChanged="ItemNavigation_Changed">
+        <TabStripItem Content="{DynamicResource Gems}" />
+        <TabStripItem Content="{DynamicResource Collectables}" />
+        <TabStripItem Content="{DynamicResource Materials}" />
+        <TabStripItem Content="{DynamicResource ArtManuals}" />
+        <TabStripItem Content="{DynamicResource KeyItems}" />
+      </TabStrip>
+      <Grid Name="GemsPanel" Grid.Row="1" ColumnDefinitions="280,*" ColumnSpacing="24">
       <suki:GlassCard Padding="20">
-        <Grid RowDefinitions="Auto,Auto,*" RowSpacing="16">
-          <TextBlock Text="{DynamicResource Gems}" FontWeight="SemiBold" />
+        <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="16">
+          <Grid ColumnDefinitions="*,Auto"><TextBlock Text="{DynamicResource Gems}" FontWeight="SemiBold" /><TextBlock Name="GemCountValue" Grid.Column="1" /></Grid>
           <TextBox Name="GemSearch" Grid.Row="1" PlaceholderText="{DynamicResource Search}" TextChanged="GemSearch_Changed" />
           <ListBox Name="GemList" Grid.Row="2" SelectionChanged="GemList_Changed">
             <ListBox.ItemTemplate>
               <DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>
+          <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="12">
+            <Button Name="AddGemButton" Content="{DynamicResource Add}" HorizontalAlignment="Stretch" Click="AddGem_Click" IsEnabled="False" />
+            <Button Name="DeleteGemButton" Grid.Column="1" Content="{DynamicResource Delete}" HorizontalAlignment="Stretch" Click="DeleteGem_Click" IsEnabled="False" />
+          </Grid>
         </Grid>
       </suki:GlassCard>
       <suki:GlassCard Name="GemEditorCard" Grid.Column="1" Padding="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
@@ -264,6 +276,45 @@
           </StackPanel>
         </ScrollViewer>
       </suki:GlassCard>
+      </Grid>
+      <Grid Name="StackItemsPanel" Grid.Row="1" ColumnDefinitions="280,*" ColumnSpacing="24" IsVisible="False">
+        <suki:GlassCard Padding="20">
+          <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="16">
+            <Grid ColumnDefinitions="*,Auto"><TextBlock Name="InventoryTitle" FontWeight="SemiBold" /><TextBlock Name="InventoryCountValue" Grid.Column="1" /></Grid>
+            <TextBox Name="InventorySearch" Grid.Row="1" PlaceholderText="{DynamicResource Search}" TextChanged="InventorySearch_Changed" />
+            <ListBox Name="InventoryList" Grid.Row="2" SelectionChanged="InventoryList_Changed">
+              <ListBox.ItemTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate></ListBox.ItemTemplate>
+            </ListBox>
+            <Button Name="MaxInventoryButton" Grid.Row="3" Content="{DynamicResource MaxQuantities}" HorizontalAlignment="Stretch" Click="MaxInventory_Click" IsEnabled="False" />
+          </Grid>
+        </suki:GlassCard>
+        <suki:GlassCard Grid.Column="1" Padding="20" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+          <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Spacing="24">
+              <StackPanel Name="InventoryEditor" Spacing="16" IsEnabled="False">
+                <TextBlock Text="{DynamicResource Quantity}" />
+                <NumericUpDown Name="InventoryQuantityInput" Minimum="1" Maximum="99" Height="42" Margin="0" FormatString="0" />
+                <CheckBox Name="InventoryFavoriteInput" Content="{DynamicResource Favorite}" />
+                <Button Name="ApplyInventoryButton" Content="{DynamicResource ApplyChanges}" HorizontalAlignment="Stretch" Click="ApplyInventory_Click" />
+                <Button Name="DeleteInventoryButton" Content="{DynamicResource Delete}" HorizontalAlignment="Stretch" Click="DeleteInventory_Click" />
+              </StackPanel>
+              <StackPanel Name="InventoryReadOnly" Spacing="8" IsVisible="False">
+                <TextBlock Text="{DynamicResource Quantity}" /><TextBlock Name="InventoryQuantityValue" />
+              </StackPanel>
+              <StackPanel Name="AddInventoryInputs" Spacing="12" IsEnabled="False">
+                <TextBlock Text="{DynamicResource AddItem}" FontWeight="SemiBold" />
+                <TextBox Name="InventoryCatalogSearch" PlaceholderText="{DynamicResource Search}" TextChanged="InventoryCatalogSearch_Changed" />
+                <ComboBox Name="InventoryDefinitionInput" HorizontalAlignment="Stretch">
+                  <ComboBox.ItemTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate></ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock Text="{DynamicResource Quantity}" />
+                <NumericUpDown Name="AddInventoryQuantityInput" Minimum="1" Maximum="99" Value="1" Height="42" Margin="0" FormatString="0" />
+                <Button Name="AddInventoryButton" Content="{DynamicResource Add}" HorizontalAlignment="Stretch" Click="AddInventory_Click" />
+              </StackPanel>
+            </StackPanel>
+          </ScrollViewer>
+        </suki:GlassCard>
+      </Grid>
     </Grid>
     <TextBlock Name="StatusMessage" Grid.Row="2" Margin="24,0" TextWrapping="Wrap" IsVisible="False" />
   </Grid>

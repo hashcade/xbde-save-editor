@@ -14,7 +14,11 @@ public partial class MainWindow
     private int? _selectedGem;
     private bool _refreshingGems;
 
-    public void ShowGems() => MainNavigation.SelectedIndex = 2;
+    public void ShowGems()
+    {
+        MainNavigation.SelectedIndex = 2;
+        ItemNavigation.SelectedIndex = 0;
+    }
 
     private GemDefinition? GemDraftDefinition => GemEffectInput.SelectedItem is GemEffectChoice effect
         && GemRankInput.SelectedItem is GemRankChoice rank ? GemCatalog.Find(effect.Id, rank.Rank) : null;
@@ -29,6 +33,8 @@ public partial class MainWindow
         try
         {
             string query = GemSearch.Text?.Trim() ?? "";
+            GemCountValue.Text = $"{Session?.Document.Gems.Count ?? 0}/{InventoryCatalog.Capacity}";
+            AddGemButton.IsEnabled = Session is not null && Session.Document.Campaign != Campaign.Unknown;
             var rows = Session?.Document.Gems.Where(gem => !gem.IsCylinder)
                 .Select(gem => new GemRow(gem.Index, gem.Label))
                 .Where(row => row.Label.Contains(query, StringComparison.OrdinalIgnoreCase)).ToArray() ?? [];
@@ -37,17 +43,25 @@ public partial class MainWindow
             _selectedGem = (GemList.SelectedItem as GemRow)?.Index;
             _gem = _selectedGem is { } index ? Session?.Document.GetGem(index) : null;
             GemInputs.IsEnabled = _gem?.CanEdit ?? false;
+            DeleteGemButton.IsEnabled = _gem?.CanDelete == true;
             IEnumerable<GemDefinition> definitions = _gem?.AvailableDefinitions ?? GemCatalog.Definitions;
             if (_gem?.Definition is { } existing) definitions = definitions.Append(existing);
-            var effects = definitions.DistinctBy(rule => rule.EffectId).ToArray();
-            var choices = effects.Select(rule => new GemEffectChoice(rule.EffectId,
-                effects.Count(other => other.Name == rule.Name) > 1 ? $"{rule.Name} ({rule.EffectId})" : rule.Name)).ToArray();
+            var choices = GemEffectChoices(definitions);
             GemEffectInput.ItemsSource = choices;
             GemEffectInput.SelectedItem = choices.FirstOrDefault(choice => choice.Id == _gem?.EffectId);
             SetGemRanks(_gem?.Rank ?? 1);
             UpdateGemBounds(_gem?.Strength ?? 0, preserve: true);
         }
         finally { _refreshingGems = false; }
+    }
+
+    private static GemEffectChoice[] GemEffectChoices(IEnumerable<GemDefinition> definitions)
+    {
+        var effects = definitions.DistinctBy(rule => rule.EffectId).ToArray();
+        var repeatedNames = effects.GroupBy(rule => rule.Name).Where(group => group.Count() > 1)
+            .Select(group => group.Key).ToHashSet();
+        return effects.Select(rule => new GemEffectChoice(rule.EffectId,
+            repeatedNames.Contains(rule.Name) ? $"{rule.Name} ({rule.EffectId})" : rule.Name)).ToArray();
     }
 
     private void SetGemRanks(int preferred)
@@ -151,5 +165,68 @@ public partial class MainWindow
         RefreshGems();
         RefreshEquipment();
         ShowStatus(null);
+    }
+
+    private void DeleteGem_Click(object? sender, RoutedEventArgs e)
+    {
+        if (_gem is null) return;
+        try { _gem.Delete(); RefreshGemViews(); }
+        catch (ArgumentException) { ShowStatus(UiLanguage.Get("InvalidInventory")); }
+    }
+
+    private async void AddGem_Click(object? sender, RoutedEventArgs e)
+    {
+        if (Session is null || !CommitGemDraft()) return;
+        var session = Session;
+        var effect = new ComboBox { Name = "NewGemEffect", HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
+        var rank = new ComboBox { Name = "NewGemRank", ItemsSource = new[] { 1, 2, 3, 4, 5, 6 }, SelectedIndex = 5,
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
+        var strength = new NumericUpDown { Name = "NewGemStrength", Minimum = 0, Maximum = 255, FormatString = "0" };
+        effect.ItemsSource = GemEffectChoices(GemCatalog.Definitions);
+        effect.DisplayMemberBinding = new Avalonia.Data.Binding("Label");
+        var add = new Button { Name = "CreateGem", Content = UiLanguage.Get("Add"), HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
+        var cancel = new Button { Content = UiLanguage.Get("Cancel"), HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
+        var error = new TextBlock { TextWrapping = Avalonia.Media.TextWrapping.Wrap };
+        var dialog = new Window
+        {
+            Title = UiLanguage.Get("AddGem"), Width = 420, SizeToContent = SizeToContent.Height,
+            CanResize = false, WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            Content = new StackPanel { Margin = new Avalonia.Thickness(24), Spacing = 12, Children =
+            {
+                new TextBlock { Text = UiLanguage.Get("GemEffect") }, effect,
+                new TextBlock { Text = UiLanguage.Get("GemRank") }, rank,
+                new TextBlock { Text = UiLanguage.Get("GemStrength") }, strength, error, add, cancel
+            } }
+        };
+        void UpdateValue()
+        {
+            if (effect.SelectedItem is not GemEffectChoice choice || rank.SelectedItem is not int level
+                || GemCatalog.Find(choice.Id, level) is not { } rule) return;
+            strength.Minimum = 0;
+            strength.Maximum = 255;
+            strength.Value = rule.Maximum;
+            strength.Minimum = rule.Minimum;
+            strength.Maximum = rule.Maximum;
+        }
+        effect.SelectionChanged += (_, _) => UpdateValue();
+        rank.SelectionChanged += (_, _) => UpdateValue();
+        effect.SelectedIndex = 0;
+        add.Click += (_, _) =>
+        {
+            if (Session != session || effect.SelectedItem is not GemEffectChoice choice || rank.SelectedItem is not int level
+                || !WholeNumber(strength.Value, out uint value)) { error.Text = UiLanguage.Get("InvalidValue"); return; }
+            try
+            {
+                _selectedGem = session.Document.AddGem(choice.Id, level, (int)value).Index;
+                _refreshingGems = true;
+                GemSearch.Text = "";
+                _refreshingGems = false;
+                dialog.Close();
+                RefreshGemViews();
+            }
+            catch (ArgumentException) { error.Text = UiLanguage.Get("InvalidInventory"); }
+        };
+        cancel.Click += (_, _) => dialog.Close();
+        await dialog.ShowDialog(this);
     }
 }
