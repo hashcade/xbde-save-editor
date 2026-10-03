@@ -10,7 +10,7 @@ try
     }
     if (args is [] or ["--help"])
     {
-        Console.WriteLine("XBDE Save Editor\n\ninspect <save>\ncopy <save> <output>\nresources <save> <output> [--money N] [--noponstones N]\ncharacter <save> <output> <id> [--ap N] [--coins N] [--reserve-exp N]\nprogression <save> <output> <id> [--level N] [--exp N]\nmax-ap <save> <output>\narts <save> <character-id>\nart <save> <output> <character-id> <art-id> --level N\nmax-art <save> <output> <character-id> <art-id>\nmax-arts <save> <output> <character-id>\nskills <save> <character-id>\nskill-tree <save> <output> <character-id> <tree-index> --learned N\nskill-tree <save> <output> <character-id> <tree-index> --sp N\nmax-skill-tree <save> <output> <character-id> <tree-index>\nmax-skills <save> <output> <character-id>\nmax-all-skills <save> <output>\nequipment <save> <character-id>\nequipment-gem <save> <output> <character-id> <Weapon|Head|Torso|Arms|Legs|Feet> <socket> <gem-index|none>\n--version");
+        Console.WriteLine("XBDE Save Editor\n\ninspect <save>\ncopy <save> <output>\nresources <save> <output> [--money N] [--noponstones N]\ncharacter <save> <output> <id> [--ap N] [--coins N] [--reserve-exp N]\nprogression <save> <output> <id> [--level N] [--exp N]\nmax-ap <save> <output>\narts <save> <character-id>\nart <save> <output> <character-id> <art-id> --level N\nmax-art <save> <output> <character-id> <art-id>\nmax-arts <save> <output> <character-id>\nskills <save> <character-id>\nskill-tree <save> <output> <character-id> <tree-index> --learned N\nskill-tree <save> <output> <character-id> <tree-index> --sp N\nmax-skill-tree <save> <output> <character-id> <tree-index>\nmax-skills <save> <output> <character-id>\nmax-all-skills <save> <output>\nequipment <save> <character-id>\nequip <save> <output> <character-id> <Weapon|Head|Torso|Arms|Legs|Feet> <inventory-index>\nequipment-gem <save> <output> <character-id> <Weapon|Head|Torso|Arms|Legs|Feet> <socket> <gem-index|none>\n--version");
         return 0;
     }
     if (args is ["inspect", var source])
@@ -50,13 +50,23 @@ try
         Console.WriteLine(JsonSerializer.Serialize(character.Equipment.Select(equipment => new
         {
             Slot = equipment.Slot.ToString(), equipment.Index, equipment.ItemId, equipment.Name, equipment.Exists,
-            equipment.CanEdit, equipment.GemSlotCount,
+            equipment.CanEdit, equipment.CanSwitch, equipment.GemSlotCount,
+            AvailableItems = equipment.AvailableItems.Select(item => new { item.Index, item.ItemId, item.Name, item.GemSlotCount }),
             Sockets = equipment.GemSockets.Select(socket => new
             {
                 socket.Index, socket.Name, socket.GemIndex, socket.FixedItemId, socket.CanEdit,
                 AvailableGems = socket.CanEdit ? socket.AvailableGems.Select(gem => new { gem.Index, gem.Name, gem.Rank, gem.Value }) : []
             })
         }), new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["equip", var equipSource, var equipOutput, var equipCharacter, var equipSlot, var itemIndex])
+    {
+        if (!Enum.TryParse<EquipmentSlot>(equipSlot, true, out var slot) || !Enum.IsDefined(slot))
+            throw new ArgumentException("Unrecognized equipment slot.");
+        var session = SaveSession.Open(equipSource);
+        session.Document.GetCharacter(ParseId(equipCharacter)).GetEquipment(slot).Equip(ParseId(itemIndex));
+        session.Save(equipOutput);
         return 0;
     }
     if (args is ["equipment-gem", var gemSource, var gemOutput, var gemCharacter, var equipmentSlot, var socketIndex, var gemChoice])

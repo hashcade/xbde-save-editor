@@ -262,6 +262,25 @@ def main() -> None:
         struct.pack_into("<I", expected_equipment, weapon + 0x18, 0)
         assert output.read_bytes() == expected_equipment
         assert equipment_source.read_bytes() == equipment
+        switching = bytearray(equipment)
+        struct.pack_into("<H", switching, weapon + 4, 2)
+        struct.pack_into("<H", switching, weapon + 2 * 0x30 + 4, 2)
+        switching_source = root / "switching.sav"
+        switching_source.write_bytes(switching)
+        rows = json.loads(run("equipment", switching_source, "1"))
+        assert rows[0]["CanSwitch"]
+        assert [item["Index"] for item in rows[0]["AvailableItems"]] == [0, 2]
+        run("equip", switching_source, output, "1", "Weapon", "2")
+        switched = bytearray(switching)
+        struct.pack_into("<I", switched, 0x152368 + 0x28, 2 | (2 << 16))
+        assert output.read_bytes() == switched
+        for slot, index in (("Weapon", "-1"), ("Weapon", "1"), ("Weapon", "499"),
+                            ("Weapon", "500"), ("Weapon", "1.5"), ("Unknown", "0"), ("Head", "2")):
+            run("equip", switching_source, output, "1", slot, index, success=False)
+            assert output.read_bytes() == switched
+        run("equip", output, output, "1", "Weapon", "0")
+        assert output.read_bytes() == switching
+        assert switching_source.read_bytes() == switching
         assert not list(root.glob(".xbde-*.tmp"))
     print("CLI tests passed.")
 

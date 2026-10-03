@@ -107,6 +107,7 @@ foreach (bool future in new[] { false, true })
 ArtsTests.Run(Fixture, Check, Reject);
 SkillsTests.Run(Fixture, Check, Reject);
 EquipmentTests.Run(Fixture, Check, Reject);
+EquipmentSwitchTests.Run(Fixture, Check, Reject);
 Reject(() => SaveDocument.Parse(new byte[1688]), "System save was accepted.");
 Reject(() => SaveDocument.Parse(new byte[SaveDocument.FileSize]), "Invalid party was accepted.");
 byte[] bad = Fixture();
@@ -210,6 +211,7 @@ try
             Check(realSession.Document.Serialize().AsSpan().SequenceEqual(before), "Real save round-trip differs.");
             SkillsTests.VerifyRealSave(before, Check);
             EquipmentTests.VerifyRealSave(before, Check);
+            EquipmentSwitchTests.VerifyRealSave(before, Check);
             foreach (var actualCharacter in realSession.Document.Characters)
             {
                 Check(actualCharacter.Level is >= 1 and <= 99, "Real character mapping produced an invalid level.");

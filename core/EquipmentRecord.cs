@@ -26,6 +26,31 @@ public sealed class EquipmentRecord
     public bool CanEdit => Exists && GemSlotCount <= 3 && _document.Campaign != Campaign.Unknown
         && _document.Characters.Count(character => character.Equipment.Any(equipment => equipment.Slot == Slot && equipment.Index == Index && equipment.Exists)) == 1;
 
+    public bool CanSwitch => CanEdit
+        && _document.Characters.Count(character => character.GetEquipment(Slot).Index == Index) == 1
+        && EquipmentRules.CanUse(_document, CharacterId,
+        new InventoryEquipmentRecord(_document, Slot, Index));
+
+    public IReadOnlyList<InventoryEquipmentRecord> AvailableItems
+    {
+        get
+        {
+            if (!CanSwitch) return [];
+            var occupied = _document.Characters.Where(character => character.Id != CharacterId)
+                .Select(character => character.GetEquipment(Slot).Index).ToHashSet();
+            return Enumerable.Range(0, 500).Select(index => new InventoryEquipmentRecord(_document, Slot, index))
+                .Where(item => !occupied.Contains(item.Index) && EquipmentRules.CanUse(_document, CharacterId, item))
+                .OrderBy(item => item.Name, StringComparer.Ordinal).ThenBy(item => item.Index).ToArray();
+        }
+    }
+
+    public void Equip(int inventoryIndex)
+    {
+        if (!CanSwitch || inventoryIndex is < 0 or >= 500 || !AvailableItems.Any(item => item.Index == inventoryIndex))
+            throw new ArgumentException("Choose an owned, compatible item that is not equipped by another character.");
+        _document.WriteUInt32(ReferenceOffset, (uint)inventoryIndex | ((uint)EquipmentCatalog.Type(Slot) << 16));
+    }
+
     public void SetGems(IReadOnlyList<int?> indices)
     {
         if (!CanEdit || indices.Count != GemSlotCount)
