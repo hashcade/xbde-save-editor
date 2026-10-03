@@ -112,6 +112,28 @@ try
         && window.FindControl<ItemsControl>("RegionAffinityCards")!.Items.Count == 5,
         "Region affinity did not switch the entire panel or expose five areas.");
     Check(!window.Session!.HasChanges, "Displaying region affinity changed bytes.");
+    foreach (bool invalid in new[] { false, true })
+    {
+        var pendingRegion = RegionControl<NumericUpDown>("RegionPointsInput");
+        if (invalid) pendingRegion.Text = "not-a-number";
+        else pendingRegion.Value = 100;
+        Check(!window.Session.HasChanges, "An unapplied region draft changed the document.");
+        window.Close();
+        Dispatcher.UIThread.RunJobs();
+        var discardDialog = window.OwnedWindows.SingleOrDefault(dialog => dialog.Title == UiLanguage.Get("UnsavedChanges"));
+        Check(window.IsVisible && discardDialog is not null,
+            "Closing silently discarded an unapplied region draft.");
+        discardDialog!.GetVisualDescendants().OfType<Button>()
+            .Single(button => Equals(button.Content, UiLanguage.Get("Cancel")))
+            .RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        Dispatcher.UIThread.RunJobs();
+        Check(window.IsVisible && !window.OwnedWindows.Any()
+            && pendingRegion.Text == (invalid ? "not-a-number" : "100")
+            && File.ReadAllBytes(regionPath).AsSpan().SequenceEqual(regionFixture),
+            "Canceling close lost the region draft or changed the source.");
+        pendingRegion.Text = "0";
+        pendingRegion.Value = 0;
+    }
     RegionControl<ComboBox>("RegionStarsInput", 2).SelectedItem = 5;
     byte[] regionExpected = (byte[])regionFixture.Clone();
     BinaryPrimitives.WriteUInt16LittleEndian(regionExpected.AsSpan(0xdf8), 8_000);

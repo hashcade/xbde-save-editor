@@ -11,6 +11,8 @@ public partial class MainWindow : Window
     private bool _refreshing;
     private bool _allowClose;
     public SaveSession? Session { get; private set; }
+    private bool HasUnsavedChanges => Session?.HasChanges == true || HasProgressionDraft
+        || HasGemDraft || HasInventoryDraft || _skillProgressDrafts.Count != 0 || _regionDrafts.Count != 0;
 
     public MainWindow()
     {
@@ -204,7 +206,7 @@ public partial class MainWindow : Window
 
     private async Task<bool> ConfirmDiscard()
     {
-        if (Session?.HasChanges != true && !HasProgressionDraft && !HasGemDraft && !HasInventoryDraft && _skillProgressDrafts.Count == 0) return true;
+        if (!HasUnsavedChanges) return true;
         var discard = new Button { Content = UiLanguage.Get("Discard") };
         var cancel = new Button { Content = UiLanguage.Get("Cancel") };
         var dialog = new Window
@@ -228,7 +230,7 @@ public partial class MainWindow : Window
 
     private async void Window_Closing(object? sender, WindowClosingEventArgs e)
     {
-        if (_allowClose || (Session?.HasChanges != true && !HasProgressionDraft && !HasGemDraft && !HasInventoryDraft && _skillProgressDrafts.Count == 0)) return;
+        if (_allowClose || !HasUnsavedChanges) return;
         e.Cancel = true;
         if (await ConfirmDiscard())
         {
