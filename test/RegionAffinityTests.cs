@@ -57,6 +57,8 @@ internal static class RegionAffinityTests
             && unusual.Serialize().AsSpan().SequenceEqual(anomalous), "Unusual region affinity was normalized on load.");
         unusual.GetRegionAffinity(1).SetStars(5);
         check(unusual.Serialize().AsSpan().SequenceEqual(anomalous), "Unchanged stars rewrote unusual saved points.");
+        VerifyRealSave(bytes, check);
+        VerifyRealSave(anomalous, check);
         foreach (uint version in new uint[] { 0, 1, 6, 8, uint.MaxValue })
         {
             byte[] unsupported = (byte[])bytes.Clone();
@@ -77,6 +79,7 @@ internal static class RegionAffinityTests
             reject(protectedSave.MaxAllRegionAffinity, "Another campaign accepted bulk region editing.");
             reject(() => protectedSave.GetRegionAffinity(1), "Another campaign exposes a main-story region.");
             check(protectedSave.Serialize().AsSpan().SequenceEqual(unsupported), "Protected campaign changed bytes.");
+            VerifyRealSave(unsupported, check);
         }
     }
 
@@ -85,18 +88,31 @@ internal static class RegionAffinityTests
         var save = SaveDocument.Parse(bytes);
         if (save.Campaign == Campaign.FutureConnected)
         {
-            check(save.RegionAffinities.Count == 0 && bytes.AsSpan(0xdf4, 10).IndexOfAnyExcept((byte)0) < 0,
-                "Real Future Connected fields differ from the protected zeroed region layout.");
+            check(save.RegionAffinities.Count == 0 && save.Serialize().AsSpan().SequenceEqual(bytes),
+                "Inspecting Future Connected exposed main-story regions or changed protected bytes.");
             return;
         }
         if (!save.CanEditRegionAffinity) return;
-        check(save.RegionAffinities.Count == 5 && save.RegionAffinities.All(region => region.Points == 10_000),
-            "Real main-story region fields differ from the five verified maximum values.");
+        check(save.RegionAffinities.Select(region => region.Id).SequenceEqual(new[] { 1, 2, 3, 4, 5 }),
+            "Real main-story regions differ from the five native areas.");
+        foreach (var region in save.RegionAffinities)
+        {
+            int points = BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(0xdf2 + region.Id * 2));
+            check(region.Points == points && region.Stars == Math.Min(points / 2_000 + 1, 5),
+                "Real region points or stars differ from the native field.");
+            var copy = SaveDocument.Parse(bytes);
+            copy.GetRegionAffinity(region.Id).SetPoints(1);
+            byte[] expected = (byte[])bytes.Clone();
+            BinaryPrimitives.WriteUInt16LittleEndian(expected.AsSpan(0xdf2 + region.Id * 2), 1);
+            check(copy.Serialize().AsSpan().SequenceEqual(expected), "Real region editing changed unrelated bytes.");
+        }
+        check(save.Serialize().AsSpan().SequenceEqual(bytes), "Inspecting real regions changed bytes.");
+        byte[] maximum = (byte[])bytes.Clone();
+        for (int id = 1; id <= 5; id++) BinaryPrimitives.WriteUInt16LittleEndian(maximum.AsSpan(0xdf2 + id * 2), 10_000);
         save.MaxAllRegionAffinity();
-        check(save.Serialize().AsSpan().SequenceEqual(bytes), "Maximum real region affinity was rewritten.");
-        save.GetRegionAffinity(3).SetPoints(1);
-        byte[] expected = (byte[])bytes.Clone();
-        BinaryPrimitives.WriteUInt16LittleEndian(expected.AsSpan(0xdf8), 1);
-        check(save.Serialize().AsSpan().SequenceEqual(expected), "Real region editing changed unrelated bytes.");
+        check(save.RegionAffinities.All(region => region.IsMaximum) && save.Serialize().AsSpan().SequenceEqual(maximum),
+            "Maximum real region affinity changed unrelated bytes or missed an area.");
+        save.MaxAllRegionAffinity();
+        check(save.Serialize().AsSpan().SequenceEqual(maximum), "Maximum real region affinity is not idempotent.");
     }
 }

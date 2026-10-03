@@ -103,6 +103,9 @@ internal static class AffinityTests
         ExpectEdit(partialExpected, 1, 5_000);
         check(partialSave.Affinities.Count == 1 && partialSave.Serialize().AsSpan().SequenceEqual(partialExpected),
             "Bulk affinity changed an unjoined pair.");
+        VerifyRealSave(bytes, check);
+        VerifyRealSave(partial, check);
+        VerifyRealSave(unusual, check);
         foreach (var kind in new[] { "future", "unknown", "version" })
         {
             byte[] unsupported = kind == "future" ? fixture(true) : (byte[])bytes.Clone();
@@ -121,13 +124,31 @@ internal static class AffinityTests
     {
         var save = SaveDocument.Parse(bytes);
         if (!save.CanEditAffinity) return;
-        check(save.Affinities.Count == 21 && save.Affinities.All(pair => pair.IsMaximum), "Real affinity layout differs from the verified 21 maximum pairs.");
+        int[] joined = save.PartyIds.Where(id => id is >= 1 and <= 8)
+            .Select(id => id == 8 ? 3 : id).Distinct().ToArray();
+        int[] indices = joined.SelectMany((first, position) => joined.Skip(position + 1)
+            .Select(second => Matrix[first - 1][second - 1])).Order().ToArray();
+        check(save.Affinities.Select(pair => pair.Index).Order().SequenceEqual(indices),
+            "Real affinity pairs differ from the joined characters and native matrix.");
+        foreach (var pair in save.Affinities)
+        {
+            int index = Matrix[pair.FirstCharacterId - 1][pair.SecondCharacterId - 1];
+            check(pair.Index == index && pair.Points == BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(0xe00 + index * 2)),
+                "Real affinity points differ from the native pair field.");
+            var copy = SaveDocument.Parse(bytes);
+            copy.GetAffinity(pair.FirstCharacterId, pair.SecondCharacterId).SetPoints(0);
+            byte[] expected = (byte[])bytes.Clone();
+            ExpectEdit(expected, index, 0);
+            check(copy.Serialize().AsSpan().SequenceEqual(expected),
+                "Lowering real affinity changed another field or relocked slots.");
+        }
+        check(save.Serialize().AsSpan().SequenceEqual(bytes), "Inspecting real affinity changed bytes.");
+        byte[] maximum = (byte[])bytes.Clone();
+        foreach (int index in indices) ExpectEdit(maximum, index, 5_000);
         save.MaxAllAffinity();
-        check(save.Serialize().AsSpan().SequenceEqual(bytes), "Maximum real affinity changed already-unlocked records.");
-        var copy = SaveDocument.Parse(bytes);
-        copy.GetAffinity(1, 8).SetPoints(0);
-        byte[] expected = (byte[])bytes.Clone();
-        ExpectEdit(expected, 2, 0);
-        check(copy.Serialize().AsSpan().SequenceEqual(expected), "Lowering real Fiora affinity changed another field or relocked slots.");
+        check(save.Affinities.All(pair => pair.IsMaximum) && save.Serialize().AsSpan().SequenceEqual(maximum),
+            "Maximum real affinity changed unrelated bytes or missed a joined pair.");
+        save.MaxAllAffinity();
+        check(save.Serialize().AsSpan().SequenceEqual(maximum), "Maximum real affinity is not idempotent.");
     }
 }
