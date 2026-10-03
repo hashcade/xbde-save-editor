@@ -5,7 +5,7 @@
   "Language": "语言", "Help": "帮助", "About": "关于", "Version": "版本：",
   "Main": "首页", "Resources": "资源", "Money": "金钱", "Noponstones": "诺彭水晶",
   "SaveFile": "存档", "FileName": "文件", "Campaign": "篇章", "Characters": "角色",
-  "MainStory": "本篇", "FutureConnected": "相连的未来",
+  "MainStory": "本篇", "FutureConnected": "相连的未来", "Unknown": "未确认",
   "OpenFailed": "打开存档失败：", "SaveFailed": "保存失败：", "Saved": "已保存：",
   "InvalidValue": "请输入范围内的整数。",
   "UnsavedChanges": "未保存的修改", "DiscardQuestion": "放弃未保存的修改？", "Discard": "放弃", "Cancel": "取消"

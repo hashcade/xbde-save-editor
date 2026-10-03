@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace XbdeEditor.Core;
 
-public enum Campaign { MainStory, FutureConnected }
+public enum Campaign { MainStory, FutureConnected, Unknown }
 
 public sealed class SaveDocument
 {
@@ -29,8 +29,16 @@ public sealed class SaveDocument
     public IReadOnlyList<int> PartyIds => Enumerable.Range(0, _data[PartyOffset + 24])
         .Select(index => (int)ReadUInt16(PartyOffset + index * 2)).ToArray();
 
-    public Campaign Campaign => PartyIds.Any(id => id is 14 or 15)
-        ? Campaign.FutureConnected : Campaign.MainStory;
+    public Campaign Campaign
+    {
+        get
+        {
+            var ids = PartyIds;
+            if (ids.Any(id => id >= 14)) return Campaign.FutureConnected;
+            if (ids.Any(id => id is not (1 or 7))) return Campaign.MainStory;
+            return Campaign.Unknown;
+        }
+    }
 
     public IReadOnlyList<CharacterRecord> Characters => PartyIds.Where(id => id <= 15)
         .Select(id => new CharacterRecord(this, id)).ToArray();

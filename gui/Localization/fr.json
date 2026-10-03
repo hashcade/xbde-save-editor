@@ -5,7 +5,7 @@
   "Language": "Langue", "Help": "Aide", "About": "À propos", "Version": "Version :",
   "Main": "Accueil", "Resources": "Ressources", "Money": "Argent", "Noponstones": "Cristaux nopons",
   "SaveFile": "Sauvegarde", "FileName": "Fichier", "Campaign": "Campagne", "Characters": "Personnages",
-  "MainStory": "Histoire principale", "FutureConnected": "Un avenir commun",
+  "MainStory": "Histoire principale", "FutureConnected": "Un avenir commun", "Unknown": "Non confirmé",
   "OpenFailed": "Impossible d’ouvrir la sauvegarde :", "SaveFailed": "Échec de l’enregistrement :", "Saved": "Enregistré :",
   "InvalidValue": "Saisissez un entier dans la plage autorisée.",
   "UnsavedChanges": "Modifications non enregistrées", "DiscardQuestion": "Abandonner les modifications non enregistrées ?", "Discard": "Abandonner", "Cancel": "Annuler"

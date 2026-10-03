@@ -89,6 +89,14 @@ bad = Fixture(true);
 BinaryPrimitives.WriteUInt32LittleEndian(bad.AsSpan(0x152368 + 13 * 0x138), 0);
 Reject(() => SaveDocument.Parse(bad), "Character ID 14 did not map to record 13.");
 
+byte[] ambiguous = Fixture(true);
+ambiguous[0x152330] = 2;
+var ambiguousSave = SaveDocument.Parse(ambiguous);
+Check(ambiguousSave.Campaign == Campaign.Unknown, "Shared characters incorrectly identify a campaign.");
+Reject(() => ambiguousSave.GetCharacter(1).SetResources(affinityCoins: 100),
+    "An ambiguous campaign allowed main-story coin editing.");
+Check(ambiguousSave.Serialize().AsSpan().SequenceEqual(ambiguous), "Ambiguous campaign parsing changed bytes.");
+
 string temporary = Path.Combine(Path.GetTempPath(), $"xbde-test-{Guid.NewGuid():N}");
 Directory.CreateDirectory(temporary);
 try

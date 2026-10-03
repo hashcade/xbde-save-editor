@@ -29,8 +29,10 @@ try
 {
     byte[] original = new byte[SaveDocument.FileSize];
     BinaryPrimitives.WriteUInt16LittleEndian(original.AsSpan(0x152318), 1);
-    original[0x152330] = 1;
+    BinaryPrimitives.WriteUInt16LittleEndian(original.AsSpan(0x15231a), 2);
+    original[0x152330] = 2;
     BinaryPrimitives.WriteUInt32LittleEndian(original.AsSpan(0x152368), 20);
+    BinaryPrimitives.WriteUInt32LittleEndian(original.AsSpan(0x1524a0), 20);
     BinaryPrimitives.WriteUInt32LittleEndian(original.AsSpan(0x151b40), 999999999);
     string source = Path.Combine(temporary, "bfsgame00.sav");
     File.WriteAllBytes(source, original);
@@ -73,6 +75,16 @@ try
     Check(!window.LoadSave(Path.Combine(temporary, "missing.sav")), "Missing save was accepted.");
     Check(window.Session.Document.Money == 123, "Failed open replaced the current document.");
     Check(window.SaveTo(source), "Could not save the synthetic source before closing.");
+    byte[] ambiguous = (byte[])original.Clone();
+    ambiguous[0x152330] = 1;
+    string ambiguousPath = Path.Combine(temporary, "ambiguous.sav");
+    File.WriteAllBytes(ambiguousPath, ambiguous);
+    Check(window.LoadSave(ambiguousPath), "Could not open an ambiguous campaign.");
+    Check(window.FindControl<TextBlock>("CampaignValue")!.Text == UiLanguage.Get("Unknown"),
+        "An ambiguous campaign was shown as the main story.");
+    Check(!window.FindControl<StackPanel>("AffinityCoinsField")!.IsVisible,
+        "An ambiguous campaign exposes coin editing.");
+    Check(!window.Session!.HasChanges, "Opening an ambiguous campaign altered it.");
     if (args is ["--screenshot", var realSave, var screenshot, .. var page])
     {
         Check(window.LoadSave(realSave), "Could not open the screenshot save.");

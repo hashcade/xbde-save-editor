@@ -31,6 +31,9 @@ on opening; they are not silently normalized.
 AP uses the same storage-bound validation. Affinity Coin edits are restricted
 to 0–999. Level and Expert Mode edits remain disabled until their linked
 progression rules have been verified.
+Campaign identification currently uses joined characters. When only characters
+shared by both campaigns are present, the campaign is shown as unconfirmed and
+Affinity Coin editing is unavailable.
 
 See the [CLI reference](CLI.md) and [development plan](docs/roadmap.md).
 

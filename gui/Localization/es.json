@@ -5,7 +5,7 @@
   "Language": "Idioma", "Help": "Ayuda", "About": "Acerca de", "Version": "Versión:",
   "Main": "Inicio", "Resources": "Recursos", "Money": "Dinero", "Noponstones": "Cristales nopon",
   "SaveFile": "Partida", "FileName": "Archivo", "Campaign": "Campaña", "Characters": "Personajes",
-  "MainStory": "Historia principal", "FutureConnected": "Futuros conectados",
+  "MainStory": "Historia principal", "FutureConnected": "Futuros conectados", "Unknown": "Sin confirmar",
   "OpenFailed": "No se pudo abrir la partida:", "SaveFailed": "No se pudo guardar:", "Saved": "Guardado:",
   "InvalidValue": "Introduce un número entero dentro del rango permitido.",
   "UnsavedChanges": "Cambios sin guardar", "DiscardQuestion": "¿Descartar los cambios sin guardar?", "Discard": "Descartar", "Cancel": "Cancelar"

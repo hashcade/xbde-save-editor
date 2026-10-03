@@ -5,7 +5,7 @@
   "Language": "언어", "Help": "도움말", "About": "정보", "Version": "버전:",
   "Main": "메인", "Resources": "자원", "Money": "소지금", "Noponstones": "노폰 크리스털",
   "SaveFile": "저장 파일", "FileName": "파일", "Campaign": "시나리오", "Characters": "캐릭터",
-  "MainStory": "본편", "FutureConnected": "이어지는 미래",
+  "MainStory": "본편", "FutureConnected": "이어지는 미래", "Unknown": "미확인",
   "OpenFailed": "저장 파일을 열 수 없습니다:", "SaveFailed": "저장할 수 없습니다:", "Saved": "저장됨:",
   "InvalidValue": "허용 범위 내의 정수를 입력하세요.",
   "UnsavedChanges": "저장하지 않은 변경", "DiscardQuestion": "저장하지 않은 변경을 취소할까요?", "Discard": "버리기", "Cancel": "취소"

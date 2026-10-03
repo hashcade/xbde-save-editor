@@ -27,7 +27,7 @@ public sealed class CharacterRecord
         if (affinityCoins is > 999)
             throw new ArgumentOutOfRangeException(nameof(affinityCoins), "Affinity Coins must be between 0 and 999.");
         if (affinityCoins is not null && !UsesAffinityCoins)
-            throw new ArgumentException("Future Connected does not use Affinity Coins.");
+            throw new ArgumentException("Affinity Coins can only be edited in an identified main-story save.");
         if (ap is { } newAP) _document.WriteUInt32(_offset + 8, newAP);
         if (affinityCoins is { } newCoins) _document.WriteUInt32(_offset + 12, newCoins);
     }

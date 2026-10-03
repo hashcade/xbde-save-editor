@@ -86,7 +86,7 @@ public partial class MainWindow : Window
             MoneyInput.Value = Session.Document.Money;
             NoponstonesInput.Value = Session.Document.Noponstones;
             FileNameValue.Text = Path.GetFileName(Session.SourcePath);
-            CampaignValue.Text = UiLanguage.Get(Session.Document.Campaign == Campaign.FutureConnected ? "FutureConnected" : "MainStory");
+            CampaignValue.Text = UiLanguage.Get(Session.Document.Campaign.ToString());
             CharacterCountValue.Text = Session.Document.Characters.Count.ToString();
         }
         finally { _refreshing = false; }

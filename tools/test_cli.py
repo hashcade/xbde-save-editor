@@ -25,13 +25,15 @@ def main() -> None:
         root = Path(directory)
         original = bytearray(0x153860)
         struct.pack_into("<H", original, 0x152318, 1)
-        original[0x152330] = 1
+        struct.pack_into("<H", original, 0x15231A, 2)
+        original[0x152330] = 2
         struct.pack_into("<I", original, 0x152368, 20)
+        struct.pack_into("<I", original, 0x1524A0, 20)
         source = root / "bfsgame00.sav"
         output = root / "output.sav"
         source.write_bytes(original)
         assert run("--version").strip()
-        assert json.loads(run("inspect", source))["PartyIds"] == [1]
+        assert json.loads(run("inspect", source))["PartyIds"] == [1, 2]
         run("copy", source, output)
         assert output.read_bytes() == original
         run("resources", source, output, "--money", "123", "--noponstones", "456")
@@ -47,7 +49,7 @@ def main() -> None:
         assert character_bytes[0x152378:] == original[0x152378:]
         run("character", source, output, "1", "--ap", "1", "--coins", "1000", success=False)
         assert output.read_bytes() == character_bytes
-        run("character", source, output, "2", "--ap", "1", success=False)
+        run("character", source, output, "14", "--ap", "1", success=False)
         run("character", source, output, "1", "--ap", "-1", success=False)
         output.write_bytes(changed)
         for invalid in ("-1", "1.5", "4294967296", "wrong"):
@@ -61,6 +63,11 @@ def main() -> None:
         run("inspect", invalid, success=False)
         assert source.read_bytes() == original
         assert not list(root.glob(".xbde-*.tmp"))
+        ambiguous = bytearray(original)
+        ambiguous[0x152330] = 1
+        source.write_bytes(ambiguous)
+        run("character", source, output, "1", "--coins", "1", success=False)
+        assert source.read_bytes() == ambiguous
     print("CLI tests passed.")
 
 
