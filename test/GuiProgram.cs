@@ -47,12 +47,16 @@ void VerifyPageSpacing()
     if (items.IsVisible && window.FindControl<Grid>("GemsPanel")!.IsVisible)
     {
         var card = window.FindControl<Control>("GemEditorCard")!;
+        var scroll = window.FindControl<ScrollViewer>("GemCardsScroll")!;
         var apply = window.FindControl<Button>("ApplyGemButton")!;
-        var position = apply.TranslatePoint(new Point(0, 0), card)!.Value;
-        Check(Math.Abs(card.Bounds.Right - items.Bounds.Width) < 0.1,
-            $"Gem card does not fill its column: {card.Bounds} / {items.Bounds}.");
-        Check(position.X >= 20 && position.X + apply.Bounds.Width <= card.Bounds.Width - 19.9,
-            "Gem editor controls are clipped horizontally.");
+        Check(Math.Abs(scroll.Bounds.Right - items.Bounds.Width) < 0.1,
+            $"Gem cards do not fill their column: {scroll.Bounds} / {items.Bounds}.");
+        if (card.IsVisible)
+        {
+            var position = apply.TranslatePoint(new Point(0, 0), card)!.Value;
+            Check(position.X >= 20 && position.X + apply.Bounds.Width <= card.Bounds.Width - 19.9,
+                "Gem editor controls are clipped horizontally.");
+        }
     }
     if (!characters.IsVisible) return;
     var tabs = window.FindControl<TabStrip>("CharacterNavigation")!;
@@ -800,21 +804,24 @@ try
     window.ShowInventory(InventoryKind.Collectables);
     var itemTabs = window.FindControl<TabStrip>("ItemNavigation")!;
     var itemList = window.FindControl<ListBox>("InventoryList")!;
-    var addItem = window.FindControl<Button>("AddInventoryButton")!;
+    var addItem = window.FindControl<Button>("CreateItem")!;
+    var newQuantity = window.FindControl<NumericUpDown>("NewItemQuantity")!;
     var quantity = window.FindControl<NumericUpDown>("InventoryQuantityInput")!;
     var favorite = window.FindControl<CheckBox>("InventoryFavoriteInput")!;
     Check(itemTabs.SelectedIndex == 1 && itemList.ItemCount == 0 && !window.Session!.HasChanges,
         "Inventory inspection changes bytes or displays the wrong category.");
+    Check(window.FindControl<Control>("CreateItemCard")!.IsVisible && addItem.IsEffectivelyEnabled
+        && !window.FindControl<Control>("InventoryEditorCard")!.IsVisible && window.OwnedWindows.Count == 0,
+        "Empty inventory blocks inline creation or exposes an unrelated editor.");
+    newQuantity.Value = 1.5m;
     addItem.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-    Dispatcher.UIThread.RunJobs();
-    var itemDialog = window.OwnedWindows.Single();
-    T ItemDialogControl<T>(string name) where T : Control => itemDialog.GetVisualDescendants().OfType<T>().Single(control => control.Name == name);
-    ItemDialogControl<NumericUpDown>("NewItemQuantity").Value = 1.5m;
-    ItemDialogControl<Button>("CreateItem").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-    Check(itemList.ItemCount == 0 && window.OwnedWindows.Count == 1 && !window.Session!.HasChanges,
+    Check(itemList.ItemCount == 0 && window.OwnedWindows.Count == 0 && !window.Session!.HasChanges,
         "Creation committed a fractional quantity.");
-    ItemDialogControl<NumericUpDown>("NewItemQuantity").Value = 1;
-    ItemDialogControl<Button>("CreateItem").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    newQuantity.Value = 1;
+    string creationDraftOutput = Path.Combine(temporary, "creation-draft.sav");
+    Check(window.SaveTo(creationDraftOutput) && File.ReadAllBytes(creationDraftOutput).AsSpan().SequenceEqual(inventoryFixture),
+        "Saving a selected creation definition silently added an item.");
+    addItem.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
     Dispatcher.UIThread.RunJobs();
     Check(itemList.ItemCount == 1 && quantity.Value == 1, "GUI failed to create a stack.");
     quantity.Value = 2;
@@ -823,6 +830,10 @@ try
     var stack = window.Session.Document.Inventory(InventoryKind.Collectables).Single();
     Check(stack.Quantity == 2 && stack.Favorite, "GUI quantity/favorite edit failed.");
     quantity.Value = 2.5m;
+    byte[] invalidDraftBytes = window.Session.Document.Serialize();
+    addItem.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(invalidDraftBytes),
+        "Inline creation ignored an invalid selected-item draft.");
     itemTabs.SelectedIndex = 2;
     Check(itemTabs.SelectedIndex == 1 && stack.Quantity == 2, "Invalid item draft was discarded by tab switching.");
     string invalidItemPath = Path.Combine(temporary, "invalid-item.sav");
@@ -843,49 +854,101 @@ try
     window.FindControl<Button>("DeleteInventoryButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
     Check(itemList.ItemCount == 0 && !stack.Exists, "GUI deletion failed.");
     window.ShowInventory(InventoryKind.KeyItems);
-    Check(!window.FindControl<StackPanel>("InventoryActions")!.IsVisible, "Quest items expose mutation controls.");
+    Check(!window.FindControl<StackPanel>("InventoryActions")!.IsVisible
+        && !window.FindControl<Control>("CreateItemCard")!.IsVisible && !addItem.IsEnabled,
+        "Quest items expose mutation controls.");
     window.ShowInventory(InventoryKind.ArtManuals);
-    addItem.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-    Dispatcher.UIThread.RunJobs();
-    itemDialog = window.OwnedWindows.Single();
-    var itemSearch = ItemDialogControl<TextBox>("NewItemSearch");
-    var catalogItems = ItemDialogControl<ComboBox>("NewItemDefinition");
+    var itemSearch = window.FindControl<TextBox>("NewItemSearch")!;
+    var catalogItems = window.FindControl<ComboBox>("NewItemDefinition")!;
     itemSearch.Text = "(Master)";
     Dispatcher.UIThread.RunJobs();
     Check(catalogItems.ItemCount > 0, "Manual tier search found no books.");
     itemSearch.Text = "no matching manual";
     Dispatcher.UIThread.RunJobs();
-    Check(catalogItems.ItemCount == 0 && !ItemDialogControl<Button>("CreateItem").IsEnabled,
+    Check(catalogItems.ItemCount == 0 && !addItem.IsEnabled,
         "Empty creation search retains a hidden selection.");
-    ItemDialogControl<Button>("CancelCreateItem").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-    Dispatcher.UIThread.RunJobs();
-    Check(window.Session.Document.Inventory(InventoryKind.ArtManuals).Count == 0, "Cancelling creation added an item.");
+    Check(window.Session.Document.Inventory(InventoryKind.ArtManuals).Count == 0, "Searching creation definitions added an item.");
     window.ShowGems();
     Check(itemTabs.SelectedIndex == 0 && !window.FindControl<Button>("DeleteGemButton")!.IsEnabled,
         "Gems navigation or equipped-gem deletion guard failed.");
-    window.FindControl<Button>("AddGemButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-    Dispatcher.UIThread.RunJobs();
-    var gemDialog = window.OwnedWindows.Single();
-    T DialogControl<T>(string name) where T : Control => gemDialog.GetVisualDescendants().OfType<T>().Single(control => control.Name == name);
-    Check(DialogControl<NumericUpDown>("NewGemStrength").Maximum == 100, "Gem creation does not use linked limits.");
-    DialogControl<Button>("CreateGem").RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    var newGemStrength = window.FindControl<NumericUpDown>("NewGemStrength")!;
+    var newGemEffect = window.FindControl<ComboBox>("NewGemEffect")!;
+    var createGem = window.FindControl<Button>("CreateGem")!;
+    Check(newGemStrength.Maximum == 100 && createGem.IsEffectivelyEnabled && window.OwnedWindows.Count == 0,
+        "Inline gem creation does not use linked limits.");
+    byte[] beforeGemCreation = window.Session.Document.Serialize();
+    newGemStrength.Value = 99.5m;
+    createGem.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(beforeGemCreation),
+        "Gem creation committed a fractional value.");
+    newGemStrength.Value = 100;
+    createGem.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
     Dispatcher.UIThread.RunJobs();
     Check(window.OwnedWindows.Count == 0 && gemList.ItemCount == 6
         && window.FindControl<Button>("DeleteGemButton")!.IsEnabled, "GUI gem creation or selection failed.");
     window.FindControl<Button>("DeleteGemButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
     Check(gemList.ItemCount == 5, "GUI unreferenced gem deletion failed.");
+    newGemEffect.SelectedItem = newGemEffect.Items.Cast<object>().Single(choice =>
+        (int)choice.GetType().GetProperty("Id")!.GetValue(choice)! == 39);
+    Check(!window.FindControl<StackPanel>("NewGemStrengthField")!.IsVisible
+        && window.FindControl<StackPanel>("NewGemChanceField")!.IsVisible
+        && newGemStrength.Value == 0, "Chance-only gem creation exposes a meaningless strength input.");
+    beforeGemCreation = window.Session.Document.Serialize();
+    window.SetLanguage("ja");
+    Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(beforeGemCreation)
+        && newGemStrength.Value == 0 && createGem.Content?.ToString() == UiLanguage.Get("Add"),
+        "Language switching committed or reset an independent gem creation draft.");
     window.ShowInventory(InventoryKind.Materials);
     window.Width = 860;
     window.Height = 600;
     VerifyPageSpacing();
+    void VerifyCreationCards(string editorName, string creationName, string scrollName, string buttonName)
+    {
+        Dispatcher.UIThread.RunJobs();
+        var editor = window.FindControl<Control>(editorName)!;
+        var creation = window.FindControl<Control>(creationName)!;
+        var scroll = window.FindControl<ScrollViewer>(scrollName)!;
+        var button = window.FindControl<Button>(buttonName)!;
+        Check(creation.IsVisible && creation.GetVisualAncestors().OfType<ScrollViewer>().Single() == scroll
+            && creation.GetVisualDescendants().OfType<ScrollViewer>().All(view => view.Extent.Height <= view.Viewport.Height + 0.1),
+            "Creation card has independent scrolling instead of sharing the right column.");
+        if (editor.IsVisible)
+            Check(Math.Abs(creation.Bounds.Top - editor.Bounds.Bottom - 24) < 0.1,
+                "Selected-item editing and creation cards have incorrect spacing.");
+        var position = button.TranslatePoint(new Point(0, 0), creation)!.Value;
+        Check(position.X >= 20 && position.X + button.Bounds.Width <= creation.Bounds.Width - 19.9,
+            "Inline creation controls are clipped horizontally at minimum window size.");
+        scroll.Offset = new Vector(0, scroll.Extent.Height);
+        Dispatcher.UIThread.RunJobs();
+        position = button.TranslatePoint(new Point(0, 0), scroll)!.Value;
+        Check(position.Y >= 0 && position.Y + button.Bounds.Height <= scroll.Bounds.Height + 0.1,
+            "Inline Add button cannot be reached by shared scrolling.");
+        scroll.Offset = new Vector(0, 0);
+    }
+    VerifyCreationCards("InventoryEditorCard", "CreateItemCard", "InventoryCardsScroll", "CreateItem");
     var inventoryActions = window.FindControl<StackPanel>("InventoryActions")!;
-    Check(inventoryActions.GetVisualDescendants().Contains(addItem)
-        && inventoryActions.GetVisualDescendants().Contains(window.FindControl<Button>("DeleteInventoryButton")!),
+    Check(!inventoryActions.GetVisualDescendants().Contains(addItem)
+        && inventoryActions.GetVisualDescendants().Contains(window.FindControl<Button>("DeleteInventoryButton")!)
+        && window.FindControl<Control>("CreateItemCard")!.GetVisualDescendants().Contains(addItem),
         "List-wide inventory actions are not in the left card footer.");
     var stackPanel = window.FindControl<Grid>("StackItemsPanel")!;
     var footerPoint = inventoryActions.TranslatePoint(new Point(0, 0), stackPanel)!.Value;
     Check(footerPoint.X >= 20 && footerPoint.X + inventoryActions.Bounds.Width <= 260.1,
         "Inventory actions escaped the left card or are clipped.");
+    window.ShowGems();
+    VerifyCreationCards("GemEditorCard", "CreateGemCard", "GemCardsScroll", "CreateGem");
+    byte[] emptyGemFixture = (byte[])inventoryFixture.Clone();
+    emptyGemFixture.AsSpan(0x2c380, 500 * 44).Clear();
+    string emptyGemPath = Path.Combine(temporary, "empty-gems.sav");
+    File.WriteAllBytes(emptyGemPath, emptyGemFixture);
+    Check(window.LoadSave(emptyGemPath) && gemList.ItemCount == 0 && createGem.IsEffectivelyEnabled
+        && !window.FindControl<Control>("GemEditorCard")!.IsVisible,
+        "Empty gem inventory disables its independent creation card.");
+    createGem.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(gemList.ItemCount == 1 && window.OwnedWindows.Count == 0,
+        "Empty gem inventory cannot create a gem inline.");
+    Check(File.ReadAllBytes(emptyGemPath).AsSpan().SequenceEqual(emptyGemFixture),
+        "Inline gem creation overwrote its source file before Save.");
     window.Width = 1120;
     window.Height = 780;
     Check(File.ReadAllBytes(inventoryPath).AsSpan().SequenceEqual(inventoryFixture), "Inventory GUI tests changed the source.");

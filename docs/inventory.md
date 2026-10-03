@@ -5,8 +5,11 @@ Key Items. Ordinary stacks support quantity/favorite editing, creation, deletion
 and a category-wide maximum of existing quantities. Adding an existing item
 increases its stack rather than creating a duplicate. Key items are view-only
 because their quest-state dependencies have not been validated. List-wide actions
-live in the left card footer. Add opens a separate creation dialog; the right
-card only edits the selected existing item.
+live in the left card footer. The right column has separate, naturally sized
+cards for editing the selected item and adding an item. Creation is available
+even when the inventory or filtered list is empty; no dialog is needed.
+Selecting a definition or entering a creation value does not change the save
+until Add is clicked. Both cards share one page scroll container.
 
 ![Material inventory](inventory-zh.png)
 

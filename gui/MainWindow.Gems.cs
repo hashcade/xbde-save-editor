@@ -13,6 +13,7 @@ public partial class MainWindow
     private GemRecord? _gem;
     private int? _selectedGem;
     private bool _refreshingGems;
+    private bool _refreshingNewGem;
 
     public void ShowGems()
     {
@@ -34,7 +35,7 @@ public partial class MainWindow
         {
             string query = GemSearch.Text?.Trim() ?? "";
             GemCountValue.Text = $"{Session?.Document.Gems.Count ?? 0}/{InventoryCatalog.Capacity}";
-            AddGemButton.IsEnabled = Session is not null && Session.Document.Campaign != Campaign.Unknown;
+            RefreshNewGem();
             var rows = Session?.Document.Gems.Where(gem => !gem.IsCylinder)
                 .Select(gem => new GemRow(gem.Index, gem.Label))
                 .Where(row => row.Label.Contains(query, StringComparison.OrdinalIgnoreCase)).ToArray() ?? [];
@@ -42,6 +43,7 @@ public partial class MainWindow
             GemList.SelectedItem = rows.FirstOrDefault(row => row.Index == _selectedGem) ?? rows.FirstOrDefault();
             _selectedGem = (GemList.SelectedItem as GemRow)?.Index;
             _gem = _selectedGem is { } index ? Session?.Document.GetGem(index) : null;
+            GemEditorCard.IsVisible = _gem is not null;
             GemInputs.IsEnabled = _gem?.CanEdit ?? false;
             DeleteGemButton.IsEnabled = _gem?.CanDelete == true;
             IEnumerable<GemDefinition> definitions = _gem?.AvailableDefinitions ?? GemCatalog.Definitions;
@@ -66,12 +68,16 @@ public partial class MainWindow
 
     private void SetGemRanks(int preferred)
     {
-        int? effect = (GemEffectInput.SelectedItem as GemEffectChoice)?.Id;
-        string[] labels = ["I", "II", "III", "IV", "V", "VI"];
-        var ranks = GemCatalog.Definitions.Where(rule => rule.EffectId == effect)
-            .Select(rule => new GemRankChoice(rule.Rank, labels[rule.Rank - 1])).ToArray();
+        var ranks = GemRanks((GemEffectInput.SelectedItem as GemEffectChoice)?.Id);
         GemRankInput.ItemsSource = ranks;
         GemRankInput.SelectedItem = ranks.FirstOrDefault(rank => rank.Rank == preferred) ?? ranks.FirstOrDefault();
+    }
+
+    private static GemRankChoice[] GemRanks(int? effect)
+    {
+        string[] labels = ["I", "II", "III", "IV", "V", "VI"];
+        return GemCatalog.Definitions.Where(rule => rule.EffectId == effect)
+            .Select(rule => new GemRankChoice(rule.Rank, labels[rule.Rank - 1])).ToArray();
     }
 
     private void UpdateGemBounds(decimal value, bool preserve = false)
@@ -122,6 +128,7 @@ public partial class MainWindow
 
     private void GemSearch_Changed(object? sender, TextChangedEventArgs e)
     {
+        if (_refreshingGems) return;
         if (CommitGemDraft()) { RefreshGems(); RefreshEquipment(); }
     }
 
@@ -174,59 +181,75 @@ public partial class MainWindow
         catch (ArgumentException) { ShowStatus(UiLanguage.Get("InvalidInventory")); }
     }
 
-    private async void AddGem_Click(object? sender, RoutedEventArgs e)
+    private GemDefinition? NewGemDefinition => NewGemEffect.SelectedItem is GemEffectChoice effect
+        && NewGemRank.SelectedItem is GemRankChoice rank ? GemCatalog.Find(effect.Id, rank.Rank) : null;
+
+    private void RefreshNewGem()
     {
-        if (Session is null || !CommitGemDraft()) return;
-        var session = Session;
-        var effect = new ComboBox { Name = "NewGemEffect", HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
-        var rank = new ComboBox { Name = "NewGemRank", ItemsSource = new[] { 1, 2, 3, 4, 5, 6 }, SelectedIndex = 5,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
-        var strength = new NumericUpDown { Name = "NewGemStrength", Minimum = 0, Maximum = 255, FormatString = "0" };
-        effect.ItemsSource = GemEffectChoices(GemCatalog.Definitions);
-        effect.DisplayMemberBinding = new Avalonia.Data.Binding("Label");
-        var add = new Button { Name = "CreateGem", Content = UiLanguage.Get("Add"), HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
-        var cancel = new Button { Content = UiLanguage.Get("Cancel"), HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch };
-        var error = new TextBlock { TextWrapping = Avalonia.Media.TextWrapping.Wrap };
-        var dialog = new Window
+        if (NewGemEffect.ItemCount == 0)
         {
-            Title = UiLanguage.Get("AddGem"), Width = 420, SizeToContent = SizeToContent.Height,
-            CanResize = false, WindowStartupLocation = WindowStartupLocation.CenterOwner,
-            Content = new StackPanel { Margin = new Avalonia.Thickness(24), Spacing = 12, Children =
-            {
-                new TextBlock { Text = UiLanguage.Get("GemEffect") }, effect,
-                new TextBlock { Text = UiLanguage.Get("GemRank") }, rank,
-                new TextBlock { Text = UiLanguage.Get("GemStrength") }, strength, error, add, cancel
-            } }
-        };
-        void UpdateValue()
-        {
-            if (effect.SelectedItem is not GemEffectChoice choice || rank.SelectedItem is not int level
-                || GemCatalog.Find(choice.Id, level) is not { } rule) return;
-            strength.Minimum = 0;
-            strength.Maximum = 255;
-            strength.Value = rule.Maximum;
-            strength.Minimum = rule.Minimum;
-            strength.Maximum = rule.Maximum;
-        }
-        effect.SelectionChanged += (_, _) => UpdateValue();
-        rank.SelectionChanged += (_, _) => UpdateValue();
-        effect.SelectedIndex = 0;
-        add.Click += (_, _) =>
-        {
-            if (Session != session || effect.SelectedItem is not GemEffectChoice choice || rank.SelectedItem is not int level
-                || !WholeNumber(strength.Value, out uint value)) { error.Text = UiLanguage.Get("InvalidValue"); return; }
+            _refreshingNewGem = true;
             try
             {
-                _selectedGem = session.Document.AddGem(choice.Id, level, (int)value).Index;
-                _refreshingGems = true;
-                GemSearch.Text = "";
-                _refreshingGems = false;
-                dialog.Close();
-                RefreshGemViews();
+                NewGemEffect.ItemsSource = GemEffectChoices(GemCatalog.Definitions);
+                NewGemEffect.SelectedIndex = 0;
+                SetNewGemRanks(6);
+                UpdateNewGemBounds();
             }
-            catch (ArgumentException) { error.Text = UiLanguage.Get("InvalidInventory"); }
-        };
-        cancel.Click += (_, _) => dialog.Close();
-        await dialog.ShowDialog(this);
+            finally { _refreshingNewGem = false; }
+        }
+        NewGemInputs.IsEnabled = Session is not null && Session.Document.Campaign != Campaign.Unknown;
+        CreateGem.IsEnabled = NewGemInputs.IsEnabled && NewGemDefinition is not null;
+    }
+
+    private void SetNewGemRanks(int preferred)
+    {
+        var ranks = GemRanks((NewGemEffect.SelectedItem as GemEffectChoice)?.Id);
+        NewGemRank.ItemsSource = ranks;
+        NewGemRank.SelectedItem = ranks.FirstOrDefault(rank => rank.Rank == preferred) ?? ranks.FirstOrDefault();
+    }
+
+    private void UpdateNewGemBounds()
+    {
+        var rule = NewGemDefinition;
+        NewGemStrength.Minimum = 0;
+        NewGemStrength.Maximum = 255;
+        NewGemStrength.Value = rule?.Maximum ?? 0;
+        NewGemStrength.Minimum = rule?.Minimum ?? 0;
+        NewGemStrength.Maximum = rule?.Maximum ?? 0;
+        NewGemStrengthField.IsVisible = rule?.Maximum > 0;
+        NewGemChanceField.IsVisible = rule?.Chance > 0;
+        NewGemChanceValue.Text = rule is null ? "" : $"{rule.Chance}%";
+        CreateGem.IsEnabled = NewGemInputs.IsEnabled && rule is not null;
+    }
+
+    private void NewGemEffect_Changed(object? sender, SelectionChangedEventArgs e)
+    {
+        if (_refreshingNewGem || NewGemRank is null) return;
+        int rank = (NewGemRank.SelectedItem as GemRankChoice)?.Rank ?? 6;
+        _refreshingNewGem = true;
+        try { SetNewGemRanks(rank); UpdateNewGemBounds(); }
+        finally { _refreshingNewGem = false; }
+    }
+
+    private void NewGemRank_Changed(object? sender, SelectionChangedEventArgs e)
+    { if (!_refreshingNewGem && NewGemStrength is not null) UpdateNewGemBounds(); }
+
+    private void CreateGem_Click(object? sender, RoutedEventArgs e)
+    {
+        if (Session is null) return;
+        if (NewGemDefinition is not { } rule || !WholeNumber(NewGemStrength.Value, out uint value)
+            || value < rule.Minimum || value > rule.Maximum)
+        { ShowStatus(UiLanguage.Get("InvalidValue")); return; }
+        if (!CommitGemDraft()) return;
+        try
+        {
+            _selectedGem = Session.Document.AddGem(rule.EffectId, rule.Rank, (int)value).Index;
+            _refreshingGems = true;
+            try { GemSearch.Text = ""; }
+            finally { _refreshingGems = false; }
+            RefreshGemViews();
+        }
+        catch (ArgumentException) { ShowStatus(UiLanguage.Get("InvalidInventory")); }
     }
 }

@@ -7,6 +7,11 @@ upper strength bound, not rank VI. Add creates a normal gem with linked effect,
 rank and strength limits; Delete removes an unfitted gem without shifting indices.
 File → Save persists edits.
 
+The right column separates the selected-gem editor from the Add Gem card,
+matching the stack and equipment inventory layouts. Creation does not require
+a selected owned gem and never opens a dialog. Choosing an effect or rank only
+updates the creation controls; Add explicitly creates the new record.
+
 ![Gem editor](gems-zh.png)
 
 The interface supports nine languages; game effect names currently use English.
