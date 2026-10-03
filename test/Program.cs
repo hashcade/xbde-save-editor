@@ -110,7 +110,6 @@ EquipmentTests.Run(Fixture, Check, Reject);
 EquipmentSwitchTests.Run(Fixture, Check, Reject);
 GemTests.Run(Fixture, Check, Reject);
 InventoryTests.Run(Fixture, Check, Reject);
-PartyTests.Run(Fixture, Check, Reject);
 Reject(() => SaveDocument.Parse(new byte[1688]), "System save was accepted.");
 Reject(() => SaveDocument.Parse(new byte[SaveDocument.FileSize]), "Invalid party was accepted.");
 byte[] bad = Fixture();
@@ -217,14 +216,6 @@ try
             EquipmentSwitchTests.VerifyRealSave(before, Check);
             GemTests.VerifyRealSave(before, Check);
             InventoryTests.VerifyRealSave(before, Check);
-            var partyCopy = SaveDocument.Parse(before);
-            var reversedParty = partyCopy.PartyIds.Reverse().ToArray();
-            partyCopy.ReorderParty(reversedParty);
-            var partyBytes = partyCopy.Serialize();
-            Check(partyCopy.PartyIds.SequenceEqual(reversedParty)
-                && partyBytes.AsSpan(0, 0x152318).SequenceEqual(before.AsSpan(0, 0x152318))
-                && partyBytes.AsSpan(0x152318 + reversedParty.Length * 2).SequenceEqual(before.AsSpan(0x152318 + reversedParty.Length * 2)),
-                "Real party reorder changed another field.");
             foreach (var actualCharacter in realSession.Document.Characters)
             {
                 Check(actualCharacter.Level is >= 1 and <= 99, "Real character mapping produced an invalid level.");

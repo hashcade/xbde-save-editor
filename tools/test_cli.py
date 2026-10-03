@@ -37,15 +37,6 @@ def main() -> None:
         source.write_bytes(original)
         assert run("--version").strip()
         assert json.loads(run("inspect", source))["PartyIds"] == [1, 2]
-        run("party-order", source, output, "2", "1")
-        reordered = bytearray(original)
-        struct.pack_into("<2H", reordered, 0x152318, 2, 1)
-        assert output.read_bytes() == reordered
-        for ids in (("1",), ("1", "1"), ("2", "3"), ("1", "2", "3"), ("1.5", "2")):
-            run("party-order", source, output, *ids, success=False)
-            assert output.read_bytes() == reordered
-        run("party-order", output, output, "1", "2")
-        assert output.read_bytes() == original
         run("copy", source, output)
         assert output.read_bytes() == original
         run("resources", source, output, "--money", "123", "--noponstones", "456")
