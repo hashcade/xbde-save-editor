@@ -1,4 +1,5 @@
 {
+  "Arts": "Techniken", "ArtStatus": "Status", "NotLearned": "Nicht erlernt", "FixedTalent": "Spezialtechnik (feste Stufe)", "Upgradeable": "Steigerbar", "Unavailable": "Nicht verfügbar", "MaximumLevel": "Maximale Stufe", "MaxArt": "Maximale Stufe", "MaxCharacterArts": "Alle Techniken maximieren",
   "ApplyChanges": "Änderungen anwenden", "HighestLevel": "Höchste Stufe", "RecordedExperience": "Gespeicherte EP",
   "MaxAP": "AP maximieren", "MaxAllAP": "Alle AP maximieren", "MaxReserveExperience": "Reserve-EP maximieren",
   "Search": "Suchen…", "General": "Allgemein", "Level": "Level", "Experience": "Erfahrung",

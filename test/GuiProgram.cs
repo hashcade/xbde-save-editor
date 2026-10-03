@@ -37,6 +37,9 @@ try
     BinaryPrimitives.WriteUInt32LittleEndian(original.AsSpan(0x152368), 20);
     BinaryPrimitives.WriteUInt32LittleEndian(original.AsSpan(0x1524a0), 20);
     BinaryPrimitives.WriteUInt32LittleEndian(original.AsSpan(0x151b40), 999999999);
+    original[0x1536e8] = 1;
+    original[0x1536e8 + 22] = 3;
+    original[0x1536e8 + 20] = 1;
     string source = Path.Combine(temporary, "bfsgame00.sav");
     File.WriteAllBytes(source, original);
     Check(window.LoadSave(source), "Could not load a game save.");
@@ -160,6 +163,51 @@ try
     experienceInput.Value = 0;
     Check(window.SaveTo(Path.Combine(temporary, "future-edited.sav")), "Could not save Future Connected edits.");
     Check(File.ReadAllBytes(futurePath).AsSpan().SequenceEqual(future), "Future Connected input was overwritten.");
+    byte[] beforeArtEditing = File.ReadAllBytes(source);
+    Check(window.LoadSave(source), "Could not reload the art fixture.");
+    window.SetLanguage("en");
+    window.ShowArts();
+    Dispatcher.UIThread.RunJobs();
+    var artList = window.FindControl<ListBox>("ArtList")!;
+    var artLevel = window.FindControl<ComboBox>("ArtLevelInput")!;
+    var maxArt = window.FindControl<Button>("MaxArtButton")!;
+    var maxArts = window.FindControl<Button>("MaxCharacterArtsButton")!;
+    Check(window.FindControl<Grid>("ArtsPanel")!.IsVisible, "Arts tab is disconnected.");
+    Check(artList.ItemsPanel.Build() is VirtualizingStackPanel { CacheLength: 1 }, "Art list has no render buffer.");
+    Check(artLevel.SelectedItem is 3, "Art selection does not prefer an upgradeable art.");
+    levelInput.SelectedItem = 1u;
+    experienceInput.Value = 101;
+    artLevel.SelectedItem = 8;
+    Check(window.Session.Document.GetCharacter(1).GetArt(12).Level == 8, "Art level input is disconnected.");
+    Check(levelInput.SelectedItem is 3u && experienceInput.Value == 1,
+        "Art editing did not refresh committed General progression fields.");
+    maxArt.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.GetCharacter(1).GetArt(12).Level == 12, "Single art maximum is disconnected.");
+    var artSearch = window.FindControl<TextBox>("ArtSearch")!;
+    artSearch.Text = "no matching art";
+    Dispatcher.UIThread.RunJobs();
+    maxArts.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.GetCharacter(1).GetArt(11).Level == 12, "Bulk art maximum is disconnected.");
+    artSearch.Text = "";
+    Dispatcher.UIThread.RunJobs();
+    Check(!window.Session.Document.GetCharacter(1).GetArt(17).Learned, "GUI bulk maximum unlocked an unlearned art.");
+    artList.SelectedIndex = 0;
+    Check(!artLevel.IsEnabled && !maxArt.IsEnabled, "Fixed talent art is editable.");
+    Check(!artLevel.IsVisible && window.FindControl<TextBlock>("ArtLevelValue")!.IsVisible,
+        "Readonly talent level is shown as an input.");
+    foreach (string language in UiLanguage.Languages.Keys)
+    {
+        window.SetLanguage("zh-Hans");
+        window.SetLanguage(language);
+        Dispatcher.UIThread.RunJobs();
+        Check(maxArts.Content?.ToString() == UiLanguage.Get("MaxCharacterArts"), "Art button translation is stale.");
+        Check(window.FindControl<TextBlock>("ArtStatusValue")!.Text == UiLanguage.Get("FixedTalent"), "Art status translation is stale.");
+    }
+    window.SetLanguage("en");
+    Check(window.SaveTo(Path.Combine(temporary, "arts-edited.sav")), "Could not save GUI art edits.");
+    var artsSaved = SaveDocument.Parse(File.ReadAllBytes(Path.Combine(temporary, "arts-edited.sav")));
+    Check(artsSaved.GetCharacter(1).GetArt(12).Level == 12, "GUI art edit was not persisted.");
+    Check(File.ReadAllBytes(source).AsSpan().SequenceEqual(beforeArtEditing), "GUI art edit overwrote the input save.");
     byte[] ambiguous = (byte[])original.Clone();
     ambiguous[0x152330] = 1;
     string ambiguousPath = Path.Combine(temporary, "ambiguous.sav");
@@ -191,7 +239,16 @@ try
     if (args is ["--screenshot", var realSave, var screenshot, .. var page])
     {
         Check(window.LoadSave(realSave), "Could not open the screenshot save.");
-        if (page is ["characters"]) window.ShowCharacters();
+        if (page is ["arts"])
+        {
+            window.ShowArts();
+            window.FindControl<ListBox>("ArtList")!.SelectedIndex = 2;
+        }
+        else if (page is ["characters"])
+        {
+            window.ShowCharacters();
+            window.FindControl<TabStrip>("CharacterNavigation")!.SelectedIndex = 0;
+        }
         else window.FindControl<TabStrip>("MainNavigation")!.SelectedIndex = 0;
         Dispatcher.UIThread.RunJobs();
         using var frame = window.CaptureRenderedFrame()!;

@@ -1,4 +1,5 @@
 {
+  "Arts": "아츠", "ArtStatus": "상태", "NotLearned": "미습득", "FixedTalent": "탤런트 아츠 (레벨 고정)", "Upgradeable": "레벨 변경 가능", "Unavailable": "변경 불가", "MaximumLevel": "최대 레벨", "MaxArt": "최대 레벨로", "MaxCharacterArts": "모든 아츠 최대 레벨",
   "ApplyChanges": "변경 적용", "HighestLevel": "최고 도달 레벨", "RecordedExperience": "기록 경험치",
   "MaxAP": "AP 최대", "MaxAllAP": "전원 AP 최대", "MaxReserveExperience": "저장 경험치 최대",
   "Search": "검색…", "General": "기본 정보", "Level": "레벨", "Experience": "경험치",

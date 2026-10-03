@@ -70,43 +70,74 @@
         </Grid>
       </suki:GlassCard>
       <suki:GlassCard Grid.Column="1" Padding="20">
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-          <Grid Name="CharacterInputs" ColumnDefinitions="*,*" ColumnSpacing="32" IsEnabled="False" VerticalAlignment="Top">
-            <StackPanel Spacing="16">
-              <TextBlock Text="{DynamicResource General}" FontWeight="SemiBold" />
-              <StackPanel Name="ProgressionInputs" Spacing="8">
-                <TextBlock Text="{DynamicResource Level}" />
-                <ComboBox Name="LevelInput" HorizontalAlignment="Stretch" SelectionChanged="LevelInput_Changed" />
-                <TextBlock Text="{DynamicResource Experience}" Margin="0,8,0,0" />
-                <NumericUpDown Name="ExperienceInput" Minimum="0" Maximum="99999999" Height="42" Margin="0" FormatString="0" />
-                <Button Name="ApplyProgressionButton" Content="{DynamicResource ApplyChanges}" HorizontalAlignment="Stretch" Click="ApplyProgression_Click" />
+        <Grid RowDefinitions="Auto,*" RowSpacing="20">
+          <TabStrip Name="CharacterNavigation" FontSize="13" SelectedIndex="0" SelectionChanged="CharacterNavigation_Changed">
+            <TabStripItem Content="{DynamicResource General}" />
+            <TabStripItem Content="{DynamicResource Arts}" />
+          </TabStrip>
+          <ScrollViewer Name="GeneralCharacterScroll" Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+            <Grid Name="CharacterInputs" ColumnDefinitions="*,*" ColumnSpacing="32" IsEnabled="False" VerticalAlignment="Top">
+              <StackPanel Spacing="16">
+                <TextBlock Text="{DynamicResource General}" FontWeight="SemiBold" />
+                <StackPanel Name="ProgressionInputs" Spacing="8">
+                  <TextBlock Text="{DynamicResource Level}" />
+                  <ComboBox Name="LevelInput" HorizontalAlignment="Stretch" SelectionChanged="LevelInput_Changed" />
+                  <TextBlock Text="{DynamicResource Experience}" Margin="0,8,0,0" />
+                  <NumericUpDown Name="ExperienceInput" Minimum="0" Maximum="99999999" Height="42" Margin="0" FormatString="0" />
+                  <Button Name="ApplyProgressionButton" Content="{DynamicResource ApplyChanges}" HorizontalAlignment="Stretch" Click="ApplyProgression_Click" />
+                </StackPanel>
+                <StackPanel Spacing="8">
+                  <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                    <TextBlock Text="AP" VerticalAlignment="Center" />
+                    <Button Name="MaxAPButton" Grid.Column="1" Content="{DynamicResource MaxAP}" Click="MaxAP_Click" />
+                  </Grid>
+                  <NumericUpDown Name="APInput" Minimum="0" Maximum="99999999" Height="42" Margin="0" FormatString="0" ValueChanged="CharacterResources_Changed" />
+                </StackPanel>
+                <StackPanel Name="AffinityCoinsField" Spacing="8">
+                  <TextBlock Text="{DynamicResource AffinityCoins}" />
+                  <NumericUpDown Name="AffinityCoinsInput" Minimum="0" Maximum="999" Height="42" Margin="0" FormatString="0" ValueChanged="CharacterResources_Changed" />
+                </StackPanel>
               </StackPanel>
-              <StackPanel Spacing="8">
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
-                  <TextBlock Text="AP" VerticalAlignment="Center" />
-                  <Button Name="MaxAPButton" Grid.Column="1" Content="{DynamicResource MaxAP}" Click="MaxAP_Click" />
+              <StackPanel Grid.Column="1" Spacing="16">
+                <TextBlock Name="ExpertModeTitle" Text="{DynamicResource ExpertMode}" FontWeight="SemiBold" />
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" RowDefinitions="Auto,Auto" RowSpacing="16">
+                  <TextBlock Text="{DynamicResource HighestLevel}" /><TextBlock Name="ExpertLevelValue" Grid.Column="1" />
+                  <TextBlock Text="{DynamicResource RecordedExperience}" Grid.Row="1" /><TextBlock Name="ExpertExperienceValue" Grid.Row="1" Grid.Column="1" />
                 </Grid>
-                <NumericUpDown Name="APInput" Minimum="0" Maximum="99999999" Height="42" Margin="0" FormatString="0" ValueChanged="CharacterResources_Changed" />
+                <StackPanel Spacing="8">
+                  <TextBlock Text="{DynamicResource ReserveExperience}" />
+                  <NumericUpDown Name="ReserveExperienceInput" Minimum="0" Maximum="199999998" Height="42" Margin="0" FormatString="0" ValueChanged="CharacterResources_Changed" />
+                  <Button Name="MaxReserveExperienceButton" Content="{DynamicResource MaxReserveExperience}" HorizontalAlignment="Stretch" Click="MaxReserveExperience_Click" />
+                </StackPanel>
               </StackPanel>
-              <StackPanel Name="AffinityCoinsField" Spacing="8">
-                <TextBlock Text="{DynamicResource AffinityCoins}" />
-                <NumericUpDown Name="AffinityCoinsInput" Minimum="0" Maximum="999" Height="42" Margin="0" FormatString="0" ValueChanged="CharacterResources_Changed" />
-              </StackPanel>
-            </StackPanel>
-            <StackPanel Grid.Column="1" Spacing="16">
-              <TextBlock Name="ExpertModeTitle" Text="{DynamicResource ExpertMode}" FontWeight="SemiBold" />
-              <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" RowDefinitions="Auto,Auto" RowSpacing="16">
-                <TextBlock Text="{DynamicResource HighestLevel}" /><TextBlock Name="ExpertLevelValue" Grid.Column="1" />
-                <TextBlock Text="{DynamicResource RecordedExperience}" Grid.Row="1" /><TextBlock Name="ExpertExperienceValue" Grid.Row="1" Grid.Column="1" />
+            </Grid>
+          </ScrollViewer>
+          <Grid Name="ArtsPanel" Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="32" IsVisible="False">
+            <Grid RowDefinitions="Auto,*,Auto" RowSpacing="16">
+              <TextBox Name="ArtSearch" PlaceholderText="{DynamicResource Search}" TextChanged="ArtSearch_Changed" />
+              <ListBox Name="ArtList" Grid.Row="1" SelectionChanged="ArtList_Changed">
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+              <Button Name="MaxCharacterArtsButton" Grid.Row="2" Content="{DynamicResource MaxCharacterArts}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxCharacterArts_Click" />
+            </Grid>
+            <StackPanel Name="ArtInputs" Grid.Column="1" Spacing="16" IsEnabled="False">
+              <TextBlock Text="{DynamicResource ArtStatus}" FontWeight="SemiBold" />
+              <TextBlock Name="ArtStatusValue" TextWrapping="Wrap" />
+              <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" Margin="0,8,0,0">
+                <TextBlock Text="{DynamicResource MaximumLevel}" />
+                <TextBlock Name="ArtMaximumValue" Grid.Column="1" />
               </Grid>
               <StackPanel Spacing="8">
-                <TextBlock Text="{DynamicResource ReserveExperience}" />
-                <NumericUpDown Name="ReserveExperienceInput" Minimum="0" Maximum="199999998" Height="42" Margin="0" FormatString="0" ValueChanged="CharacterResources_Changed" />
-                <Button Name="MaxReserveExperienceButton" Content="{DynamicResource MaxReserveExperience}" HorizontalAlignment="Stretch" Click="MaxReserveExperience_Click" />
+                <TextBlock Text="{DynamicResource Level}" />
+                <ComboBox Name="ArtLevelInput" HorizontalAlignment="Stretch" SelectionChanged="ArtLevelInput_Changed" />
+                <TextBlock Name="ArtLevelValue" />
               </StackPanel>
+              <Button Name="MaxArtButton" Content="{DynamicResource MaxArt}" HorizontalAlignment="Stretch" Click="MaxArt_Click" />
             </StackPanel>
           </Grid>
-        </ScrollViewer>
+        </Grid>
       </suki:GlassCard>
     </Grid>
     <TextBlock Name="StatusMessage" Grid.Row="2" Margin="24,0" TextWrapping="Wrap" IsVisible="False" />

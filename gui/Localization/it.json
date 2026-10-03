@@ -1,4 +1,5 @@
 {
+  "Arts": "Tecniche", "ArtStatus": "Stato", "NotLearned": "Non appresa", "FixedTalent": "Tecnica speciale (livello fisso)", "Upgradeable": "Potenziabile", "Unavailable": "Non disponibile", "MaximumLevel": "Livello massimo", "MaxArt": "Livello massimo", "MaxCharacterArts": "Massimizza tutte le tecniche",
   "ApplyChanges": "Applica modifiche", "HighestLevel": "Livello massimo raggiunto", "RecordedExperience": "ESP registrata",
   "MaxAP": "PA al massimo", "MaxAllAP": "Tutti i PA al massimo", "MaxReserveExperience": "ESP di riserva al massimo",
   "Search": "Cerca…", "General": "Generale", "Level": "Livello", "Experience": "Esperienza",

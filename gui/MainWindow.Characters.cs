@@ -53,6 +53,7 @@ public partial class MainWindow
             AffinityCoinsField.IsVisible = _character?.UsesAffinityCoins ?? true;
             AffinityCoinsInput.Maximum = Math.Max(999, _character?.AffinityCoins ?? 0);
             AffinityCoinsInput.Value = _character?.AffinityCoins;
+            RefreshArts();
         }
         finally { _refreshingCharacters = false; }
     }
