@@ -26,6 +26,9 @@ XbdeEditor.Cli equipment bfsgame00.sav 1
 XbdeEditor.Cli equip bfsgame00.sav edited.sav 2 Weapon 7
 XbdeEditor.Cli equipment-gem bfsgame00.sav edited.sav 1 Weapon 1 3
 XbdeEditor.Cli equipment-gem bfsgame00.sav edited.sav 1 Weapon 1 none
+XbdeEditor.Cli gems bfsgame00.sav
+XbdeEditor.Cli gem bfsgame00.sav edited.sav 3 --effect 26 --rank 6 --value 200
+XbdeEditor.Cli max-gem bfsgame00.sav edited.sav 3
 ```
 
 `inspect` prints JSON containing campaign, resources and joined characters,
@@ -79,8 +82,8 @@ Existing unusual values remain intact unless explicitly normalized. See
 available items and normal gems as JSON. Equipment slots use `Weapon`, `Head`, `Torso`,
 `Arms`, `Legs` or `Feet`; sockets are one-based. Gem indices are zero-based
 inventory references returned in `AvailableGems`, not effect IDs. Gem index zero
-is valid; use `none` to empty a normal socket. The JSON gem `Value` is the raw
-stored effect value, not a uniformly decoded percentage or strength.
+is valid; use `none` to empty a normal socket. The equipment JSON gem `Value` is
+raw storage; `Strength`, `Chance` and `Label` are decoded values.
 
 `equipment-gem` changes only one existing socket. It rejects fixed gems,
 cylinders, missing/invalid gems, already-fitted gems, unsupported references and
@@ -95,3 +98,16 @@ joined character. Main-story armor permissions account for learned skills and
 existing links; story-flagged weapons remain protected. The target equipment and
 all of its gems stay byte-identical. No command creates equipment or changes its
 appearance. `CanSwitch: false` means the current item cannot safely be switched.
+
+`gems` lists owned normal gems as JSON with zero-based inventory indices,
+effect IDs, rank, decoded strength/chance, editability and the selected rank's
+minimum/maximum. Cylinders are excluded. `gem` changes the specified fields;
+omitted fields retain their current values, so changing rank alone can reject a
+strength outside the new range. `--value` is actual strength, not the packed raw
+value. Activation chance follows the effect/rank table and is not independently
+editable. `max-gem` maximizes the current effect/rank, without raising rank.
+
+Edits reject invalid records, unused effects, invalid ranks, incompatible fitted
+effects and strengths outside the game-data range. Equipment ownership includes
+unequipped items. No gem or cylinder is created, deleted, duplicated or moved.
+See [gem validation](docs/gems.md).

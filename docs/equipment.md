@@ -30,9 +30,9 @@ than being silently replaced.
 
 The gem inventory begins at `0x2C380`, with 500 records of `0x2C` bytes.
 Normal gems must have matching index/type, quantity one, rank I–VI, one known
-effect and a clear cylinder flag. Rank and effect values are never rewritten.
-Effect names come from `BTL_skilllist`. Raw effect values can have different
-encodings and are not presented as uniformly decoded strengths in the GUI.
+effect and a clear cylinder flag. Socket fitting never rewrites gem records.
+Effect names come from `BTL_skilllist`; selectors show decoded strength and
+activation chance. Separate [gem editing](gems.md) is available in Items.
 
 Equipment stores its socket count at `+0x15`. Normal references occupy four
 bytes at `+0x18`, `+0x20` and `+0x28`; the adjacent four-byte fields hold fixed
@@ -41,8 +41,8 @@ normal reference is the entire four-byte value zero. Fixed gems are read-only.
 
 Only declared sockets up to three may be edited. All six equipment banks are
 checked for occupied normal gem references, including unequipped items. A gem
-cannot be fitted twice. Shared or unrecognized equipment references and an
-unconfirmed campaign reject edits. Setters validate the complete request before
+cannot be fitted twice. Shared or unrecognized equipment references, incompatible
+weapon/armor effects and unconfirmed campaigns reject edits. Setters validate the complete request before
 changing bytes. Selecting a gem applies it to the in-memory document; File →
 Save or Save As writes the file.
 
@@ -109,6 +109,6 @@ records, rejected edits and exact restoration when switching back. Every offered
 equipment choice in all supplied saves is exercised on an in-memory copy, with
 all bytes outside the character reference required to remain identical.
 
-Story-weapon switching, appearance editing, gem creation and effect/rank editing
+Story-weapon switching, appearance editing and gem creation
 are not implemented. In-game loading still needs user verification; lossless
 round trips and isolated byte changes are not proof of every gameplay rule.

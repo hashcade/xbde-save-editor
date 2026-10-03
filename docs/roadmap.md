@@ -16,7 +16,8 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Equipment: resolve equipped inventory items, inspect fixed gems and fit/remove owned normal gems, with CLI support.
 - [x] Equipment: validated owned weapon/armor switching with character and armor-skill restrictions, preserving gems and protecting story weapons.
 - [ ] Equipment: story-weapon switching, appearance and localized game names.
-- [ ] Items: localized catalogs and validated editing.
+- [x] Items: normal gem effect/rank/strength editing, decoded labels, validated ranges and CLI support.
+- [ ] Items: creation, other inventory types and localized game catalogs.
 - [ ] Party: reorder existing members without altering recruitment.
 
 Affinity, quests, achievements, Colony 6, Time Attack, Ponspectors and system-save
@@ -38,3 +39,4 @@ the verified level/EXP linkage and the remaining Expert Mode operations.
 See [Arts validation](arts.md) for campaign limits, manual flags and linked records.
 See [Skills validation](skills.md) for branch flags, learning costs and write boundaries.
 See [Equipment validation](equipment.md) for inventory references, gem ownership and write boundaries.
+See [Gem validation](gems.md) for effect limits, encoding and inventory editing.
