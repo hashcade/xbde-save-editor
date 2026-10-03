@@ -3,6 +3,8 @@
 ## Current scope
 
 The core and `collectopaedia <save>` CLI command inspect saved registrations.
+`collectopaedia-plan <save>` previews missing registrations and newly earned
+category/page rewards, optionally restricted by `--page` or `--entry`.
 There is no completion setter or GUI completion button yet. Registration,
 reward creation, achievement notification and inventory consumption must be
 handled together before exposing a completion operation.
@@ -22,6 +24,8 @@ Sources:
 
 - [ITM_collectlist](https://xenobladedata.github.io/xb1de/bdat/bdat_common/ITM_collectlist.html)
 - [MNU_col reward rows](https://xenobladedata.github.io/xb1de/bdat/bdat_menu_item/MNU_col.html)
+- [ITM_itemlist reward metadata](https://xenobladedata.github.io/xb1de/bdat/bdat_common/ITM_itemlist.html)
+- [BTL_skilllist gem ranges](https://xenobladedata.github.io/xb1de/bdat/bdat_common/BTL_skilllist.html)
 
 `tools/fetch_collectopaedia_catalog.py` prints the entry TSV; `--rewards` prints
 the separate 133-row reward TSV. The scripts do not save game files or alter
@@ -85,19 +89,57 @@ the item table has no fixed value; it cannot be replaced blindly by a maximum
 crafted gem. Generated reward item IDs and native socket/effect defaults must
 be preserved.
 
+### Category ordering and repeat behavior
+
+The entry builder at `0x1F2D80` scans global item references. Its comparator
+`0x1F9180` orders by map ID, category type, then referenced collection ID.
+`0x1F3FF0` groups the actual types present on each page; missing category types
+do not reserve reward rows. For example, Colony 9 uses types 1, 2, 3, 5, 7, 8
+and reward rows 2–7, plus page reward 1. Memory Space uses page reward 120 and
+category rewards 121–123. Main-story pages cover reward rows 1–123; Future
+Connected pages cover 124–133.
+
+The preview compares saved registration bits before and after the selected
+entries. It returns a category/page reward only when that category/page becomes
+complete. Duplicate input IDs are collapsed. Previously completed categories
+are not rewarded again when finishing their page. Invalid or cross-campaign
+entries reject the whole preview. Tests cover each page/category, partial
+categories, mixed old/new completions and repeated completed selections.
+Planning is read-only and does not reserve inventory capacity.
+
+### Native reward insertion
+
+The acquisition UI at `0x358CE0` passes its item packet to `0xBF350` at
+`0x358DAC`. Allocation uses `0x9A480` and the correct inventory bank. Equipment
+copies its 48-byte packet; gems copy their 44-byte packet. Both retain the
+allocator's index/type and acquisition serial, with quantity/presence set to one.
+They are not ordinary collectable stacks. Reward 109 is Machina Driver III,
+global item 115: this known native reward is not excluded merely because the
+general equipment-creation catalog protects that weapon category.
+
+Gem packets preserve the global item ID, effect, rank, attribute, strength and
+activation chance. `0xBE1B0` reads `rankType` and `percent` from `ITM_itemlist`.
+A zero fixed strength uses the effect/rank's native inclusive random range,
+which may itself be zero for chance-only effects. For example, rank-II Paralysis
+has strength zero and an 8% activation chance. Do not replace these fields with
+arbitrary crafted-gem values. The reward TSV stores these fields, validated
+against the equipment and gem catalogs.
+
 Collection achievements are 132 (first entry), 133 (one complete page) and 134
 (all main-story pages). The checker at `0x7D660` explicitly skips 301–318.
-Reward EXP and actual award writes have not yet been fully traced here.
+`0x7AF60` checks story/runtime gates and existing completion before calling
+`0xB5C50`. That setter writes the achievement flag and calls `0xB5CC0` for
+reward EXP. The reward path invokes `0xBA860` for character IDs 1–8, accounting
+for joined-character checks and Expert Mode routing. Runtime EXP bookkeeping,
+level-up effects and their serialized correspondence still require validation;
+no completion/reward mutation is exposed yet.
 
 ## Remaining completion requirements
 
-- Trace the acquisition task to the final inventory write and verify its packet
-  fields against the existing equipment/gem allocators.
-- Verify the displayed category ordering and page visibility, including the
-  special Memory Space page and campaign-specific pages.
-- Establish repeat/no-op behavior from pre-edit registration bits and validate
-  newly completed category/page rewards without granting old rewards again.
-- Resolve linked achievement/EXP behavior before choosing completion semantics.
+- Implement the traced reward insertion with native equipment/gem packet fields,
+  preserving random-range semantics for gems without a fixed strength.
+- Resolve story gates and linked achievement/EXP behavior before choosing
+  completion semantics.
 - Preflight all inventory banks, serial counters and references; a failed batch
   must leave the whole save unchanged.
 - Add single-entry, page-wide and campaign-wide core/CLI/GUI operations only

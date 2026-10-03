@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using XbdeEditor.Core;
 
@@ -21,6 +22,30 @@ try
         Console.WriteLine("equipment-inventory <save> <Weapon|Head|Torso|Arms|Legs|Feet>\nadd-equipment <save> <output> <item-id>\nfill-missing-equipment <save> <output> <slot> <character-id>\nequipment-favorite <save> <output> <slot> <index> <true|false>\ndelete-equipment <save> <output> <slot> <index>");
         Console.WriteLine("colony6 <save>\nmax-colony6 <save> <output>");
         Console.WriteLine("collectopaedia <save>");
+        Console.WriteLine("collectopaedia-plan <save> [--page <map-id>|--entry <entry-id>]");
+        return 0;
+    }
+    if (args is ["collectopaedia-plan", var planSource, .. var planArguments])
+    {
+        var document = SaveSession.Open(planSource).Document;
+        int[] entryIds;
+        if (planArguments is []) entryIds = document.Collectopaedia.Select(entry => entry.Id).ToArray();
+        else if (planArguments is ["--entry", var entry]) entryIds = [int.Parse(entry, CultureInfo.InvariantCulture)];
+        else if (planArguments is ["--page", var page])
+        {
+            int mapId = int.Parse(page, CultureInfo.InvariantCulture);
+            entryIds = document.Collectopaedia.Where(entry => entry.MapId == mapId).Select(entry => entry.Id).ToArray();
+            if (entryIds.Length == 0) throw new ArgumentException("Choose a Collectopaedia page from this campaign.");
+        }
+        else throw new ArgumentException("Use --page <map-id> or --entry <entry-id>.");
+        var plan = document.PlanCollectopaediaCompletion(entryIds);
+        Console.WriteLine(JsonSerializer.Serialize(new
+        {
+            PreviewOnly = true, NewEntryCount = plan.NewEntries.Count,
+            NewEntries = plan.NewEntries.Select(entry => new { entry.Id, entry.ItemId, entry.Name }),
+            Rewards = plan.Rewards.Select(reward => new { reward.Id, reward.ItemId, reward.Name,
+                reward.ItemType, reward.EffectId, reward.Rank, reward.FixedStrength })
+        }, new JsonSerializerOptions { WriteIndented = true }));
         return 0;
     }
     if (args is ["collectopaedia", var collectopaediaSource])

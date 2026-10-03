@@ -14,6 +14,21 @@ Unverified formats and unidentified campaigns return `Supported: false` with
 an empty catalog. This command is read-only; completion and reward editing are
 not implemented yet. See [validation](docs/collectopaedia.md).
 
+```sh
+XbdeEditor.Cli collectopaedia-plan bfsgame00.sav
+XbdeEditor.Cli collectopaedia-plan bfsgame00.sav --page 2
+XbdeEditor.Cli collectopaedia-plan bfsmeria00.sav --entry 319
+```
+
+These read-only previews report missing registrations and rewards for newly
+completed categories/pages. With no option, the preview covers the identified
+campaign; `--page` uses a map ID from inspection, and `--entry` uses an entry ID.
+Already-completed categories/pages do not award rewards again. The JSON includes
+native reward item IDs and gem effect/rank/fixed-strength data. Zero fixed
+strength denotes a native random range, not a maximum crafted gem. Invalid IDs,
+other campaigns and unverified formats reject previewing. Previews do not check
+inventory capacity, allocate rewards, change registrations or save files.
+
 ## Colony 6
 
 ```sh

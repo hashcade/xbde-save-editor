@@ -37,6 +37,17 @@ def main() -> None:
         output = root / "output.sav"
         source.write_bytes(original)
         assert "collectopaedia" in run("--help")
+        plan = json.loads(run("collectopaedia-plan", source))
+        assert plan["PreviewOnly"] and plan["NewEntryCount"] == 300 and len(plan["Rewards"]) == 123
+        plan = json.loads(run("collectopaedia-plan", source, "--page", "2"))
+        assert [reward["Id"] for reward in plan["Rewards"]] == [2, 3, 4, 5, 6, 7, 1]
+        assert plan["Rewards"][0]["EffectId"] == 77 and plan["Rewards"][0]["FixedStrength"] == 10
+        assert json.loads(run("collectopaedia-plan", source, "--entry", "1"))["Rewards"] == []
+        run("collectopaedia-plan", source, "--page", "29", success=False)
+        run("collectopaedia-plan", source, "--entry", "301", success=False)
+        run("collectopaedia-plan", source, "--entry", "0", success=False)
+        run("collectopaedia-plan", source, "--unknown", success=False)
+        assert source.read_bytes() == original and not output.exists()
         collection_source = root / "collection.sav"
         for future in (False, True):
             collection_bytes = bytearray(original)
@@ -58,6 +69,9 @@ def main() -> None:
             entries = [entry for page in info["Pages"] for entry in page["Entries"]]
             assert {entry["Id"] for entry in entries if entry["IsRegistered"]} == set(ids)
             assert entries[0]["ItemId"] == (3956 if future else 1852)
+            plan = json.loads(run("collectopaedia-plan", collection_source))
+            assert plan["NewEntryCount"] == (28 if future else 300) - len(ids)
+            run("collectopaedia-plan", collection_source, "--entry", "1" if future else "319", success=False)
             assert collection_source.read_bytes() == collection_bytes and not output.exists()
             for unsupported in ("version", "campaign"):
                 unknown = bytearray(collection_bytes)
@@ -68,6 +82,7 @@ def main() -> None:
                 collection_source.write_bytes(unknown)
                 info = json.loads(run("collectopaedia", collection_source))
                 assert not info["Supported"] and info["Count"] == 0 and info["Pages"] == []
+                run("collectopaedia-plan", collection_source, success=False)
                 assert collection_source.read_bytes() == unknown
         assert "max-colony6" in run("--help")
         colony_bytes = bytearray(original)

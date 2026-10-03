@@ -24,6 +24,7 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Region affinity: linked points/stars for all five main-story areas, single/bulk maximum and matching CLI support.
 - [x] Colony 6: inspect facilities/development/population and maximize started reconstruction with native linked writes, all-or-nothing validation and matching CLI support.
 - [x] Collectopaedia: verified campaign-specific item/reward catalogs and read-only registration inspection, with CLI support.
+- [x] Collectopaedia: native category/page reward mapping, gem reward metadata and duplicate-safe read-only completion previews, with CLI support.
 - [ ] Collectopaedia: validated completion with linked rewards/achievements, atomic inventory allocation and matching GUI/CLI operations.
 
 Prioritize grind reduction, bulk edits and actions that are difficult or unavailable

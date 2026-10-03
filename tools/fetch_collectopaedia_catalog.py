@@ -38,7 +38,23 @@ def main() -> None:
     expected = list(range(1, 134)) if args.rewards else list(range(1, 301)) + list(range(319, 347))
     if [row[0] for row in rows] != expected:
         raise ValueError("The extracted table has changed; review the native ID ranges before updating.")
-    print("id\titem_id\tname" if args.rewards else "id\titem_id\tmap_id\tmap_name\tcategory")
+    if args.rewards:
+        with urlopen("https://xenobladedata.github.io/xb1de/bdat/bdat_common/ITM_itemlist.html", timeout=30) as response:
+            item_soup = BeautifulSoup(response.read(), "html.parser")
+        item_rows = {int(row["id"]): row.find_all("td", recursive=False)
+                     for row in item_soup.select("tr[id]") if row["id"].isdigit()}
+        types = {"Weapon": 2, "Gem": 3, "HeadArmor": 4, "BodyArmor": 5,
+                 "ArmArmor": 6, "LegArmor": 7, "FootArmor": 8}
+        for row in rows:
+            cells = item_rows[row[1]]
+            item_type = types[cells[2].get_text(strip=True)]
+            effect, rank, strength = 0, 0, 0
+            if item_type == 3:
+                effect = referenced_id(cells[3], "BTL_skilllist")
+                rank, strength = (int(cells[index].get_text()) for index in (6, 7))
+            row.extend([item_type, effect, rank, strength])
+    print("id\titem_id\tname\ttype\teffect_id\trank\tfixed_strength" if args.rewards
+          else "id\titem_id\tmap_id\tmap_name\tcategory")
     for row in rows:
         fields = [str(value) for value in row]
         if any("\t" in value or "\n" in value for value in fields):

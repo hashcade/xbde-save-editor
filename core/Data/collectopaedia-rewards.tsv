@@ -1,134 +1,134 @@
-id	item_id	name
-1	283	Carbon Driver
-2	3371	Quick Step
-3	3117	Agility Up
-4	3208	Poison Defence
-5	884	Regnas Gauntlets
-6	3111	Ether Up
-7	3105	Strength Up
-8	890	Warrior Cuisses
-9	3293	Lightning Attack
-10	3208	Poison Defence
-11	3122	HP Up
-12	3164	Slow Resist
-13	3145	Attack Plus
-14	3142	Attack Stability
-15	599	White Cluster
-16	928	Pelt Top
-17	3271	Paralysis
-18	934	Grand Gauntlets
-19	3168	Bind Resist
-20	3105	Strength Up
-21	930	Pelt Bottoms
-22	888	Warrior Plate
-23	3351	Auto-Atk Stealth
-24	3216	Paralysis Resist
-25	3132	Ether Def Up
-26	286	Rayon Pike
-27	3298	Back Atk Plus
-28	3200	Bleed Defence
-29	3256	Recovery Up
-30	3325	Topple Up
-31	3127	Muscle Up
-32	988	Panther Top
-33	962	Nopol Gear
-34	971	Jungle Shoes
-35	3176	Lock-On Resist
-36	964	Nopol Gauntlets
-37	3105	Strength Up
-38	3239	Haste
-39	440	Ironwall Gnasher
-40	3161	Sleep Resist
-41	724	Sky Gloves
-42	3172	Blaze Defence
-43	726	Sky Shoes
-44	3275	Slow
-45	3251	Debuff Plus
-46	361	Half-Bloom Striker
-47	3106	Strength Up
-48	3230	Weapon Power
-49	3118	Agility Up
-50	823	Shell Armour
-51	3112	Ether Up
-52	3296	Electric Plus
-53	3133	Ether Def Up
-54	1023	Heavy Armour
-55	3139	Critical Up
-56	993	Mithril Armour
-57	3376	Aerial Cloak
-58	995	Mithril Leggings
-59	3112	Ether Up
-60	401	Gust Shot
-61	3306	Blaze Plus
-62	3128	Muscle Up
-63	3217	Paralysis Resist
-64	1103	Ledios Plate
-65	3407	Break
-66	3406	Good Footing
-67	3120	Agility Up
-68	3108	Strength Up
-69	1105	Ledios Cuisses
-70	3114	Ether Up
-71	373	Cerasus Cutlass
-72	1026	Heavy Boots
-73	3156	Chill Defence
-74	3181	Confuse Resist
-75	3259	Aura Heal
-76	1022	Heavy Gear
-77	3315	Chill Plus
-78	443	Cosmic Nibbler
-79	3193	Good Footing
-80	3290	HP Steal
-81	3385	Auto-Heal Up
-82	3301	First Atk Plus
-83	3197	Arts Seal Resist
-84	285	Arkose Pike
-85	3387	Terrain Defence
-86	3282	Agility Down
-87	3112	Ether Up
-88	1056	Taurus Greaves
-89	3129	Muscle Up
-90	3359	Heat Sink
-91	1051	Gemini Boots
-92	3173	Blaze Defence
-93	3129	Muscle Up
-94	3107	Strength Up
-95	1052	Taurus Helm
-96	1054	Taurus Arms
-97	3119	Agility Up
-98	3304	Daze Up
-99	3301	First Atk Plus
-100	3294	Lightning Attack
-101	3374	Fall Defence
-102	3222	Debuff Resist
-103	3385	Auto-Heal Up
-104	3190	Topple Resist
-105	3134	Ether Def Up
-106	3280	Ether Def Down
-107	3150	Daze Resist
-108	3336	Tension Swing
-109	115	Machina Driver III
-110	3107	Strength Up
-111	3173	Blaze Defence
-112	3113	Ether Up
-113	3178	Lock-On Resist
-114	3357	Talent Boost
-115	3266	Arts Heal
-116	792	Z Speed Goggles
-117	3402	Haste
-118	3363	Aggro Down
-119	3274	Strength Down
-120	3364	Aggro Down
-121	3369	AP Up
-122	3349	EXP Up
-123	3141	Critical Up
-124	3928	Valak Top
-125	3927	Valak Corsage
-126	3929	Valak Bracelets
-127	3930	Valak Skirt
-128	3931	Valak Sandals
-129	3856	Trendy Hoodie
-130	3855	Trendy Goggles
-131	3857	Trendy Gloves
-132	3858	Trendy Leggings
-133	3859	Trendy Fins
+id	item_id	name	type	effect_id	rank	fixed_strength
+1	283	Carbon Driver	2	0	0	0
+2	3371	Quick Step	3	77	3	10
+3	3117	Agility Up	3	65	2	10
+4	3208	Poison Defence	3	18	3	10
+5	884	Regnas Gauntlets	6	0	0	0
+6	3111	Ether Up	3	33	2	15
+7	3105	Strength Up	3	1	2	15
+8	890	Warrior Cuisses	7	0	0	0
+9	3293	Lightning Attack	3	40	2	60
+10	3208	Poison Defence	3	18	3	10
+11	3122	HP Up	3	17	2	10
+12	3164	Slow Resist	3	4	2	15
+13	3145	Attack Plus	3	83	2	12
+14	3142	Attack Stability	3	82	2	12
+15	599	White Cluster	2	0	0	0
+16	928	Pelt Top	5	0	0	0
+17	3271	Paralysis	3	39	2	0
+18	934	Grand Gauntlets	6	0	0	0
+19	3168	Bind Resist	3	5	2	15
+20	3105	Strength Up	3	1	2	15
+21	930	Pelt Bottoms	7	0	0	0
+22	888	Warrior Plate	5	0	0	0
+23	3351	Auto-Atk Stealth	3	60	2	10
+24	3216	Paralysis Resist	3	20	2	15
+25	3132	Ether Def Up	3	49	2	15
+26	286	Rayon Pike	2	0	0	0
+27	3298	Back Atk Plus	3	42	2	15
+28	3200	Bleed Defence	3	85	3	10
+29	3256	Recovery Up	3	22	2	10
+30	3325	Topple Up	3	74	2	20
+31	3127	Muscle Up	3	81	2	15
+32	988	Panther Top	5	0	0	0
+33	962	Nopol Gear	4	0	0	0
+34	971	Jungle Shoes	8	0	0	0
+35	3176	Lock-On Resist	3	51	2	15
+36	964	Nopol Gauntlets	6	0	0	0
+37	3105	Strength Up	3	1	2	15
+38	3239	Haste	3	70	2	15
+39	440	Ironwall Gnasher	2	0	0	0
+40	3161	Sleep Resist	3	3	3	20
+41	724	Sky Gloves	6	0	0	0
+42	3172	Blaze Defence	3	50	3	10
+43	726	Sky Shoes	8	0	0	0
+44	3275	Slow	3	55	3	0
+45	3251	Debuff Plus	3	89	2	30
+46	361	Half-Bloom Striker	2	0	0	0
+47	3106	Strength Up	3	1	3	25
+48	3230	Weapon Power	3	7	2	10
+49	3118	Agility Up	3	65	3	15
+50	823	Shell Armour	5	0	0	0
+51	3112	Ether Up	3	33	3	25
+52	3296	Electric Plus	3	41	3	25
+53	3133	Ether Def Up	3	49	3	25
+54	1023	Heavy Armour	5	0	0	0
+55	3139	Critical Up	3	84	2	6
+56	993	Mithril Armour	5	0	0	0
+57	3376	Aerial Cloak	3	79	2	20
+58	995	Mithril Leggings	7	0	0	0
+59	3112	Ether Up	3	33	3	25
+60	401	Gust Shot	2	0	0	0
+61	3306	Blaze Plus	3	9	3	25
+62	3128	Muscle Up	3	81	3	25
+63	3217	Paralysis Resist	3	20	3	20
+64	1103	Ledios Plate	5	0	0	0
+65	3407	Break	3	76	5	0
+66	3406	Good Footing	3	67	5	50
+67	3120	Agility Up	3	65	5	30
+68	3108	Strength Up	3	1	5	45
+69	1105	Ledios Cuisses	7	0	0	0
+70	3114	Ether Up	3	33	5	45
+71	373	Cerasus Cutlass	2	0	0	0
+72	1026	Heavy Boots	8	0	0	0
+73	3156	Chill Defence	3	2	3	10
+74	3181	Confuse Resist	3	52	3	20
+75	3259	Aura Heal	3	23	2	30
+76	1022	Heavy Gear	4	0	0	0
+77	3315	Chill Plus	3	58	3	25
+78	443	Cosmic Nibbler	2	0	0	0
+79	3193	Good Footing	3	67	3	20
+80	3290	HP Steal	3	26	3	50
+81	3385	Auto-Heal Up	3	30	3	10
+82	3301	First Atk Plus	3	43	3	50
+83	3197	Arts Seal Resist	3	68	3	20
+84	285	Arkose Pike	2	0	0	0
+85	3387	Terrain Defence	3	31	2	20
+86	3282	Agility Down	3	75	3	10
+87	3112	Ether Up	3	33	3	25
+88	1056	Taurus Greaves	8	0	0	0
+89	3129	Muscle Up	3	81	4	35
+90	3359	Heat Sink	3	63	3	20
+91	1051	Gemini Boots	8	0	0	0
+92	3173	Blaze Defence	3	50	4	14
+93	3129	Muscle Up	3	81	4	35
+94	3107	Strength Up	3	1	4	35
+95	1052	Taurus Helm	4	0	0	0
+96	1054	Taurus Arms	6	0	0	0
+97	3119	Agility Up	3	65	4	20
+98	3304	Daze Up	3	44	4	35
+99	3301	First Atk Plus	3	43	3	50
+100	3294	Lightning Attack	3	40	4	140
+101	3374	Fall Defence	3	78	4	40
+102	3222	Debuff Resist	3	21	4	30
+103	3385	Auto-Heal Up	3	30	3	10
+104	3190	Topple Resist	3	66	4	30
+105	3134	Ether Def Up	3	49	4	35
+106	3280	Ether Def Down	3	57	4	15
+107	3150	Daze Resist	3	35	4	30
+108	3336	Tension Swing	3	46	3	20
+109	115	Machina Driver III	2	0	0	0
+110	3107	Strength Up	3	1	4	35
+111	3173	Blaze Defence	3	50	4	14
+112	3113	Ether Up	3	33	4	35
+113	3178	Lock-On Resist	3	51	4	30
+114	3357	Talent Boost	3	62	3	5
+115	3266	Arts Heal	3	25	4	40
+116	792	Z Speed Goggles	4	0	0	0
+117	3402	Haste	3	70	5	40
+118	3363	Aggro Down	3	94	4	14
+119	3274	Strength Down	3	8	5	20
+120	3364	Aggro Down	3	94	5	20
+121	3369	AP Up	3	28	5	50
+122	3349	EXP Up	3	15	5	50
+123	3141	Critical Up	3	84	5	18
+124	3928	Valak Top	5	0	0	0
+125	3927	Valak Corsage	4	0	0	0
+126	3929	Valak Bracelets	6	0	0	0
+127	3930	Valak Skirt	7	0	0	0
+128	3931	Valak Sandals	8	0	0	0
+129	3856	Trendy Hoodie	5	0	0	0
+130	3855	Trendy Goggles	4	0	0	0
+131	3857	Trendy Gloves	6	0	0	0
+132	3858	Trendy Leggings	7	0	0	0
+133	3859	Trendy Fins	8	0	0	0
