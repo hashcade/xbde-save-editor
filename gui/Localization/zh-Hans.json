@@ -1,4 +1,5 @@
 {
+  "Equipment": "装备", "Weapon": "武器", "Head": "头部", "Torso": "身体", "Arms": "手臂", "Legs": "腿部", "Feet": "脚部", "GemSocket": "宝石插槽", "FixedGem": "自带宝石", "NoGemSockets": "无宝石插槽", "None": "无", "InvalidGem": "请选择未被使用的有效宝石。",
   "Skills": "技能", "Locked": "未解锁", "LearnedSkills": "已学会技能数", "SkillProgress": "剩余 SP", "SkillCost": "{0} SP", "MaxTree": "分支学满", "MaxCharacterSkills": "当前角色技能全满", "MaxAllSkills": "全员技能全满",
   "Arts": "战技", "ArtStatus": "状态", "NotLearned": "未学会", "FixedTalent": "天赋战技（固定等级）", "Upgradeable": "可升级", "Unavailable": "不可用", "MaximumLevel": "最高等级", "MaxArt": "满级", "MaxCharacterArts": "全部战技满级",
   "ApplyChanges": "应用修改", "HighestLevel": "最高到达等级", "RecordedExperience": "记录经验",

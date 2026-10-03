@@ -1,4 +1,5 @@
 {
+  "Equipment": "Équipement", "Weapon": "Arme", "Head": "Tête", "Torso": "Torse", "Arms": "Bras", "Legs": "Jambes", "Feet": "Pieds", "GemSocket": "Emplacement de gemme", "FixedGem": "Gemme fixe", "NoGemSockets": "Aucun emplacement de gemme", "None": "Aucune", "InvalidGem": "Choisissez une gemme valide et inutilisée.",
   "Skills": "Compétences", "Locked": "Verrouillé", "LearnedSkills": "Compétences apprises", "SkillProgress": "PC restants", "SkillCost": "{0} PC", "MaxTree": "Maximiser la branche", "MaxCharacterSkills": "Maximiser les compétences du personnage", "MaxAllSkills": "Maximiser toutes les compétences",
   "Arts": "Arts", "ArtStatus": "État", "NotLearned": "Non appris", "FixedTalent": "Art spécial (niveau fixe)", "Upgradeable": "Améliorable", "Unavailable": "Indisponible", "MaximumLevel": "Niveau maximum", "MaxArt": "Niveau maximum", "MaxCharacterArts": "Maximiser tous les arts",
   "ApplyChanges": "Appliquer", "HighestLevel": "Niveau maximal atteint", "RecordedExperience": "EXP enregistrée",

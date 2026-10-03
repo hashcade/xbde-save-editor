@@ -45,6 +45,7 @@ void VerifyPageSpacing()
     {
         1 => window.FindControl<Grid>("ArtsPanel")!,
         2 => window.FindControl<Grid>("SkillsPanel")!,
+        3 => window.FindControl<ScrollViewer>("EquipmentPanel")!,
         _ => window.FindControl<ScrollViewer>("GeneralCharacterScroll")!
     };
     Check(tabs.Margin == new Thickness(0) && Math.Abs(body.Bounds.Top - tabs.Bounds.Bottom - 16) < 0.1,
@@ -356,6 +357,58 @@ try
     Check(!maxAllSkills.IsVisible, "Max All Skills remains visible outside Skills.");
     Check(File.ReadAllBytes(skillsPath).AsSpan().SequenceEqual(skillsFixture), "GUI skill editing overwrote its source.");
     window.SetLanguage("en");
+    byte[] equipmentFixture = EquipmentTests.Fixture((byte[])original.Clone());
+    string equipmentPath = Path.Combine(temporary, "equipment.sav");
+    File.WriteAllBytes(equipmentPath, equipmentFixture);
+    Check(window.LoadSave(equipmentPath), "Could not open the equipment fixture.");
+    window.ShowEquipment();
+    VerifyPageSpacing();
+    Check(window.FindControl<ItemsControl>("EquipmentList")!.ItemCount == 6
+        && !window.Session!.HasChanges && !maxAllSkills.IsVisible,
+        "Equipment navigation mutated the save or omitted a slot.");
+    ComboBox GemInput(int index = 0)
+    {
+        Dispatcher.UIThread.RunJobs();
+        return window.FindControl<ItemsControl>("EquipmentList")!.GetVisualDescendants()
+            .OfType<ComboBox>().Where(input => input.Name == "EquipmentGemInput").ElementAt(index);
+    }
+    int? ChoiceIndex(object choice) => (int?)choice.GetType().GetProperty("Index")!.GetValue(choice);
+    Check(GemInput().IsVisible && !GemInput(1).IsVisible && GemInput(2).IsVisible,
+        "Fixed gem is displayed as an editable input.");
+    var gemInput = GemInput();
+    Check(gemInput.Items.Cast<object>().Select(ChoiceIndex).SequenceEqual(new int?[] { null, 0, 3, 4 }),
+        "Gem choices include an occupied gem or cylinder.");
+    gemInput.SelectedItem = gemInput.Items.Cast<object>().Single(choice => ChoiceIndex(choice) == 3);
+    Check(window.Session.Document.GetCharacter(1).GetEquipment(EquipmentSlot.Weapon).GemSockets[0].GemIndex == 3,
+        "Selecting a gem did not apply its reference.");
+    string equipmentOutput = Path.Combine(temporary, "equipment-edited.sav");
+    Check(window.SaveTo(equipmentOutput), "Could not save GUI equipment edits.");
+    byte[] expectedEquipment = (byte[])equipmentFixture.Clone();
+    BinaryPrimitives.WriteUInt32LittleEndian(expectedEquipment.AsSpan(EquipmentTests.Weapon + 0x18), 3u | (3u << 16));
+    Check(File.ReadAllBytes(equipmentOutput).AsSpan().SequenceEqual(expectedEquipment),
+        "GUI gem fitting changed more than one socket.");
+    foreach (string language in UiLanguage.Languages.Keys)
+    {
+        window.SetLanguage(language);
+        VerifyPageSpacing();
+        Check(window.FindControl<TabStrip>("CharacterNavigation")!.Items.OfType<TabStripItem>().ElementAt(3)
+            .Content?.ToString() == UiLanguage.Get("Equipment"), "Equipment tab translation is stale.");
+        Check(window.FindControl<ItemsControl>("EquipmentList")!.GetVisualDescendants().OfType<TextBlock>()
+            .Any(text => text.Text == UiLanguage.Get("FixedGem")), "Fixed gem translation is stale.");
+        Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(expectedEquipment),
+            "Language switching altered equipment.");
+    }
+    GemInput().SelectedItem = GemInput().Items.Cast<object>().Single(choice => ChoiceIndex(choice) is null);
+    Check(window.Session.Document.GetCharacter(1).GetEquipment(EquipmentSlot.Weapon).GemSockets[0].IsEmpty,
+        "None did not remove the normal gem.");
+    Check(GemInput(2).Items.Cast<object>().Select(ChoiceIndex).Contains(3), "Removed gem was not released for another socket.");
+    window.Width = 860;
+    window.Height = 600;
+    VerifyPageSpacing();
+    window.Width = 1120;
+    window.Height = 780;
+    Check(File.ReadAllBytes(equipmentPath).AsSpan().SequenceEqual(equipmentFixture), "GUI equipment edit overwrote its source.");
+    window.SetLanguage("en");
     byte[] ambiguous = (byte[])original.Clone();
     ambiguous[0x152330] = 1;
     string ambiguousPath = Path.Combine(temporary, "ambiguous.sav");
@@ -399,6 +452,7 @@ try
                 && window.FindControl<Button>("MaxCharacterSkillsButton")!.IsEnabled,
                 "Real main-story save cannot maximize skills.");
         }
+        else if (page.Length > 0 && page[0] == "equipment") window.ShowEquipment();
         else if (page.Length > 0 && page[0] == "characters")
         {
             window.ShowCharacters();

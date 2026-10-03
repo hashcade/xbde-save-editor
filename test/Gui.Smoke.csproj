@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="GuiProgram.cs" />
+    <Compile Include="EquipmentTests.cs" />
     <ProjectReference Include="../gui/XbdeEditor.Gui.csproj" />
     <PackageReference Include="Avalonia.Headless" Version="12.1.3" />
   </ItemGroup>

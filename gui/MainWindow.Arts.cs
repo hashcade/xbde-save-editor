@@ -22,10 +22,11 @@ public partial class MainWindow
 
     private void CharacterNavigation_Changed(object? sender, SelectionChangedEventArgs e)
     {
-        if (GeneralCharacterScroll is null || ArtsPanel is null || SkillsPanel is null || MaxAllSkillsButton is null) return;
+        if (GeneralCharacterScroll is null || ArtsPanel is null || SkillsPanel is null || MaxAllSkillsButton is null || EquipmentPanel is null) return;
         GeneralCharacterScroll.IsVisible = CharacterNavigation.SelectedIndex == 0;
         ArtsPanel.IsVisible = CharacterNavigation.SelectedIndex == 1;
         SkillsPanel.IsVisible = MaxAllSkillsButton.IsVisible = CharacterNavigation.SelectedIndex == 2;
+        EquipmentPanel.IsVisible = CharacterNavigation.SelectedIndex == 3;
     }
 
     private void RefreshArts()
