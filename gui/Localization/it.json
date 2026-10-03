@@ -1,4 +1,11 @@
 {
+  "Affinity": "Affinità",
+  "AffinityPoints": "Punti affinità (0–5.000)",
+  "AffinitySlots": "Slot collegamenti (entrambe le direzioni)",
+  "AffinitySlotHint": "Ridurre l’affinità non blocca nuovamente gli slot dei collegamenti già sbloccati.",
+  "MaxAffinity": "Affinità massima",
+  "MaxAllAffinity": "Massimizza tutte le affinità",
+  "AffinityUnavailable": "L’affinità tra personaggi non è disponibile per questa campagna o formato di salvataggio.",
   "SkillLinks": "Legami abilità",
   "SkillLinkCoins": "Abilità collegate: {0} / {1} monete affinità",
   "SkillLinkCost": "{0} monete",

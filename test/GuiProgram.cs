@@ -39,6 +39,7 @@ void VerifyPageSpacing()
     Control page = main;
     if (characters.IsVisible) page = characters;
     else if (items.IsVisible) page = items;
+    else if (window.FindControl<Grid>("AffinityPanel")!.IsVisible) page = window.FindControl<Grid>("AffinityPanel")!;
     else if (window.FindControl<Grid>("AchievementsPanel")!.IsVisible) page = window.FindControl<Grid>("AchievementsPanel")!;
     double gap = page.Bounds.Top - header.Bounds.Bottom;
     Check(Math.Abs(gap - (main.IsVisible ? 20 : 16)) < 0.1,
@@ -326,6 +327,70 @@ try
     Check(window.Session.Document.GetCharacter(1).GetSkillLink(2, 1).SkillId == 0
         && window.Session.Document.Serialize().AsSpan().SequenceEqual(linksFixture), "GUI link removal changed unrelated data.");
     Check(File.ReadAllBytes(linksPath).AsSpan().SequenceEqual(linksFixture), "GUI link editing overwrote its source.");
+
+    byte[] affinityFixture = AffinityTests.Fixture((byte[])original.Clone());
+    string affinityPath = Path.Combine(temporary, "affinity.sav");
+    File.WriteAllBytes(affinityPath, affinityFixture);
+    Check(window.LoadSave(affinityPath), "Could not open the affinity fixture.");
+    window.ShowAffinity();
+    VerifyPageSpacing();
+    var affinityList = window.FindControl<ListBox>("AffinityList")!;
+    var affinityPoints = window.FindControl<NumericUpDown>("AffinityPointsInput")!;
+    var affinitySearch = window.FindControl<TextBox>("AffinitySearch")!;
+    var maxAffinity = window.FindControl<Button>("MaxAffinityButton")!;
+    var maxAllAffinity = window.FindControl<Button>("MaxAllAffinityButton")!;
+    Check(affinityList.ItemCount == 21 && !window.Session!.HasChanges && affinityPoints.Value == 0,
+        "Affinity inspection changes bytes or duplicates Fiora pairs.");
+    affinityPoints.Value = 2_000;
+    var affinityPair = window.Session!.Document.GetAffinity(1, 2);
+    Check(affinityPair.Points == 2_000 && affinityPair.FirstUnlockedSlots == 3 && affinityPair.SecondUnlockedSlots == 3,
+        "GUI affinity editing does not update both directed skill-link unlocks.");
+    byte[] affinityEdited = window.Session.Document.Serialize();
+    affinityPoints.Value = 1.5m;
+    Check(!window.SaveTo(Path.Combine(temporary, "invalid-affinity.sav"))
+        && window.Session.Document.Serialize().AsSpan().SequenceEqual(affinityEdited), "Fractional affinity was saved or mutated the document.");
+    window.SetLanguage("ja");
+    Check(UiLanguage.Current == "en", "Language switching discarded an invalid affinity draft.");
+    affinityPoints.Value = 2_000;
+    maxAffinity.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(affinityPair.IsMaximum, "Single-pair maximum is disconnected.");
+    affinityPoints.Value = 0;
+    Check(affinityPair.Points == 0 && affinityPair.FirstUnlockedSlots == 5, "GUI lowering relocked skill links.");
+    affinitySearch.Text = "Shulk — Reyn";
+    Dispatcher.UIThread.RunJobs();
+    Check(affinityList.ItemCount == 1, "Affinity search did not filter pair names.");
+    maxAllAffinity.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.Affinities.All(pair => pair.IsMaximum) && !maxAllAffinity.IsEnabled,
+        "Bulk affinity maximum was limited to search results.");
+    affinitySearch.Text = "";
+    Dispatcher.UIThread.RunJobs();
+    byte[] affinityMaximum = window.Session.Document.Serialize();
+    foreach (var language in UiLanguage.Languages)
+    {
+        window.SetLanguage(language.Key);
+        Check(affinityList.ItemCount == 21 && window.FindControl<Grid>("AffinityPanel")!.IsVisible
+            && window.Session.Document.Serialize().AsSpan().SequenceEqual(affinityMaximum), "Language switching changed affinity or lost pairs.");
+        VerifyPageSpacing();
+    }
+    window.Width = 860;
+    window.Height = 600;
+    VerifyPageSpacing();
+    window.Width = 1120;
+    window.Height = 780;
+    VerifyPageSpacing();
+    window.SetLanguage("en");
+    string affinityOutput = Path.Combine(temporary, "affinity-edited.sav");
+    Check(window.SaveTo(affinityOutput) && File.ReadAllBytes(affinityOutput).AsSpan().SequenceEqual(affinityMaximum),
+        "GUI affinity changes were not persisted.");
+    Check(File.ReadAllBytes(affinityPath).AsSpan().SequenceEqual(affinityFixture), "GUI affinity changed its source save.");
+    byte[] protectedAffinity = (byte[])affinityFixture.Clone();
+    BinaryPrimitives.WriteUInt32LittleEndian(protectedAffinity, 8);
+    string protectedAffinityPath = Path.Combine(temporary, "affinity-version8.sav");
+    File.WriteAllBytes(protectedAffinityPath, protectedAffinity);
+    Check(window.LoadSave(protectedAffinityPath) && !affinityPoints.IsVisible
+        && window.FindControl<TextBlock>("AffinityPointsValue")!.IsVisible
+        && !maxAffinity.IsEnabled && !maxAllAffinity.IsEnabled && !window.Session!.HasChanges,
+        "An unverified format shows editable affinity fields or changes bytes.");
 
     byte[] skillsFixture = (byte[])original.Clone();
     BinaryPrimitives.WriteUInt32LittleEndian(skillsFixture.AsSpan(0x152368 + 0x90), 1);
@@ -831,6 +896,7 @@ try
                 "Real main-story save cannot maximize skills.");
         }
         else if (page.Length > 0 && page[0] == "skill-links") window.ShowSkillLinks();
+        else if (page.Length > 0 && page[0] == "affinity") window.ShowAffinity();
         else if (page.Length > 0 && page[0] == "equipment")
         {
             window.ShowEquipment();

@@ -1,4 +1,11 @@
 {
+  "Affinity": "Afinidad",
+  "AffinityPoints": "Puntos de afinidad (0–5.000)",
+  "AffinitySlots": "Espacios de enlaces (ambas direcciones)",
+  "AffinitySlotHint": "Reducir la afinidad no vuelve a bloquear los espacios de enlaces ya desbloqueados.",
+  "MaxAffinity": "Afinidad máxima",
+  "MaxAllAffinity": "Maximizar toda la afinidad",
+  "AffinityUnavailable": "La afinidad entre personajes no está disponible para esta campaña o formato.",
   "SkillLinks": "Vínculos de habilidades",
   "SkillLinkCoins": "Habilidades vinculadas: {0} / {1} monedas de afinidad",
   "SkillLinkCost": "{0} monedas",

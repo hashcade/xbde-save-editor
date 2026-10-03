@@ -1,4 +1,11 @@
 {
+  "Affinity": "인연",
+  "AffinityPoints": "인연 수치 (0–5,000)",
+  "AffinitySlots": "스킬 링크 슬롯 (양방향)",
+  "AffinitySlotHint": "인연을 낮춰도 이미 해제한 스킬 링크 슬롯은 다시 잠기지 않습니다.",
+  "MaxAffinity": "인연 최대",
+  "MaxAllAffinity": "모든 인연 최대",
+  "AffinityUnavailable": "이 시나리오 또는 저장 형식에서는 캐릭터 인연을 편집할 수 없습니다.",
   "SkillLinks": "스킬 링크",
   "SkillLinkCoins": "링크한 스킬: {0} / {1} 인연 코인",
   "SkillLinkCost": "{0} 코인",

@@ -23,6 +23,7 @@ public partial class MainWindow : Window
             LanguageMenu.Items.Add(item);
         }
         RefreshAchievements();
+        RefreshAffinity();
     }
 
     public bool LoadSave(string path)
@@ -35,11 +36,14 @@ public partial class MainWindow : Window
             _inventoryItem = null;
             _inventorySelections.Clear();
             _selectedAchievement = null;
+            _selectedAffinity = null;
+            _affinity = null;
             RefreshMain();
             RefreshCharacters();
             RefreshGems();
             RefreshInventory();
             RefreshAchievements();
+            RefreshAffinity();
             ShowStatus(null);
             return true;
         }
@@ -69,6 +73,7 @@ public partial class MainWindow : Window
             if (!CommitProgressionDraft()) return false;
             if (!CommitGemDraft()) return false;
             if (!CommitInventoryDraft()) return false;
+            if (!CommitAffinityDraft()) return false;
             Session.Save(path);
             RefreshCharacters();
             RefreshGems();
@@ -88,12 +93,14 @@ public partial class MainWindow : Window
         if (!CommitProgressionDraft()) return;
         if (!CommitGemDraft()) return;
         if (!CommitInventoryDraft()) return;
+        if (!CommitAffinityDraft()) return;
         UiLanguage.Apply(language);
         RefreshMain();
         RefreshCharacters();
         RefreshGems();
         RefreshInventory();
         RefreshAchievements();
+        RefreshAffinity();
         ShowStatus(null);
     }
 

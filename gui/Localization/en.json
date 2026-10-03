@@ -1,4 +1,11 @@
 {
+  "Affinity": "Affinity",
+  "AffinityPoints": "Affinity points (0–5,000)",
+  "AffinitySlots": "Skill-link slots (both directions)",
+  "AffinitySlotHint": "Lowering affinity does not relock previously unlocked skill-link slots.",
+  "MaxAffinity": "Max Affinity",
+  "MaxAllAffinity": "Max All Affinity",
+  "AffinityUnavailable": "Character affinity is unavailable for this campaign or save format.",
   "SkillLinks": "Skill Links",
   "SkillLinkCoins": "Linked skills: {0} / {1} Affinity Coins",
   "SkillLinkCost": "{0} coins",

@@ -64,6 +64,29 @@ def main() -> None:
         assert output.read_bytes() == inconsistent and inconsistent_path.read_bytes() == inconsistent
         assert run("--version").strip()
         assert json.loads(run("inspect", source))["PartyIds"] == [1, 2]
+        affinity = json.loads(run("affinities", source))
+        assert affinity["Supported"] and affinity["MaximumPoints"] == 5000 and len(affinity["Pairs"]) == 1
+        assert affinity["Pairs"][0]["Index"] == 1 and affinity["Pairs"][0]["Points"] == 0
+        run("affinity", source, output, "2", "1", "--points", "2000")
+        pair_edit = bytearray(original)
+        struct.pack_into("<H", pair_edit, 0xE02, 2000)
+        struct.pack_into("<I", pair_edit, 0x152410, 2)
+        struct.pack_into("<I", pair_edit, 0x152544, 2)
+        assert output.read_bytes() == pair_edit
+        for first, second, points in [(1, 1, 5), (3, 8, 5), (1, 14, 5), (1, 2, 5001), (1, 2, -1)]:
+            run("affinity", source, output, first, second, "--points", points, success=False)
+            assert output.read_bytes() == pair_edit
+        run("max-affinity", source, output, "1", "2")
+        struct.pack_into("<H", pair_edit, 0xE02, 5000)
+        struct.pack_into("<I", pair_edit, 0x152410, 4)
+        struct.pack_into("<I", pair_edit, 0x152544, 4)
+        assert output.read_bytes() == pair_edit
+        run("affinity", output, output, "1", "2", "--points", "0")
+        struct.pack_into("<H", pair_edit, 0xE02, 0)
+        assert output.read_bytes() == pair_edit
+        run("max-all-affinity", output, output)
+        struct.pack_into("<H", pair_edit, 0xE02, 5000)
+        assert output.read_bytes() == pair_edit and source.read_bytes() == original
         run("copy", source, output)
         assert output.read_bytes() == original
         run("resources", source, output, "--money", "123", "--noponstones", "456")
@@ -281,6 +304,10 @@ def main() -> None:
             struct.pack_into("<I", future, 0x152368 + (character_id - 1) * 0x138, 60)
         future_source = root / "future-skills.sav"
         future_source.write_bytes(future)
+        assert json.loads(run("affinities", future_source)) == {"Supported": False, "MaximumPoints": 5000, "Pairs": []}
+        run("max-all-affinity", future_source, output, success=False)
+        run("affinity", future_source, output, "1", "7", "--points", "5000", success=False)
+        assert output.read_bytes() == skill_bytes and future_source.read_bytes() == future
         for character_id in (1, 7, 14, 15):
             future_skills = json.loads(run("skills", future_source, character_id))
             if character_id in (1, 7):

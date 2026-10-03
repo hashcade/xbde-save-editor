@@ -11,7 +11,7 @@ public partial class MainWindow
     private int? _selectedAchievement;
     private bool _refreshingAchievements;
 
-    public void ShowAchievements() => MainNavigation.SelectedIndex = 3;
+    public void ShowAchievements() => MainNavigation.SelectedIndex = 4;
 
     private void RefreshAchievements()
     {

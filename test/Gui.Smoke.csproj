@@ -9,6 +9,7 @@
     <Compile Include="EquipmentSwitchTests.cs" />
     <Compile Include="InventoryTests.cs" />
     <Compile Include="SkillLinksTests.cs" />
+    <Compile Include="AffinityTests.cs" />
     <ProjectReference Include="../gui/XbdeEditor.Gui.csproj" />
     <PackageReference Include="Avalonia.Headless" Version="12.1.3" />
   </ItemGroup>

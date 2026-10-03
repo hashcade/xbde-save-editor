@@ -60,6 +60,34 @@ public sealed class SaveDocument
     public byte[] Serialize() => (byte[])_data.Clone();
     public bool CanEditAchievements => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
     public bool CanEditSkillLinks => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
+    public bool CanEditAffinity => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
+    public IReadOnlyList<AffinityRecord> Affinities
+    {
+        get
+        {
+            if (Campaign != Campaign.MainStory) return [];
+            var ids = PartyIds.Where(id => id is >= 1 and <= 8)
+                .GroupBy(AffinityCatalog.CanonicalCharacterId)
+                .ToDictionary(group => group.Key, group => group.Contains(8) ? 8 : group.First());
+            return AffinityCatalog.All.Where(pair => ids.ContainsKey(pair.FirstCharacterId) && ids.ContainsKey(pair.SecondCharacterId))
+                .Select(pair => new AffinityRecord(this, ids[pair.FirstCharacterId], ids[pair.SecondCharacterId])).ToArray();
+        }
+    }
+
+    public AffinityRecord GetAffinity(int firstId, int secondId)
+    {
+        if (!PartyIds.Contains(firstId) || !PartyIds.Contains(secondId))
+            throw new ArgumentException("Only affinity between joined characters can be edited.");
+        int index = AffinityCatalog.Get(firstId, secondId).Index;
+        return Affinities.FirstOrDefault(pair => pair.Index == index)
+            ?? throw new ArgumentException("This campaign does not have character affinity.");
+    }
+
+    public void MaxAllAffinity()
+    {
+        if (!CanEditAffinity) throw new ArgumentException("Affinity requires an identified main-story save with format version 7.");
+        foreach (var pair in Affinities) pair.SetPoints(AffinityCatalog.MaximumPoints);
+    }
     internal bool IsSkillLinkSourceAvailable(int id)
     {
         if (id is < 1 or > 8) return false;

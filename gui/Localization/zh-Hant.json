@@ -1,4 +1,11 @@
 {
+  "Affinity": "牽絆",
+  "AffinityPoints": "牽絆值（0–5,000）",
+  "AffinitySlots": "技能連結欄位（雙方）",
+  "AffinitySlotHint": "降低牽絆值不會重新鎖定已解鎖的技能連結欄位。",
+  "MaxAffinity": "牽絆全滿",
+  "MaxAllAffinity": "全部牽絆全滿",
+  "AffinityUnavailable": "此篇章或存檔格式不支援角色牽絆。",
   "SkillLinks": "技能連結",
   "SkillLinkCoins": "已連結技能：{0} / {1} 技能硬幣",
   "SkillLinkCost": "{0} 硬幣",

@@ -1,4 +1,11 @@
 {
+  "Affinity": "Entente",
+  "AffinityPoints": "Points d’entente (0–5 000)",
+  "AffinitySlots": "Emplacements de liens (dans les deux sens)",
+  "AffinitySlotHint": "Réduire l’entente ne reverrouille pas les emplacements de liens déjà débloqués.",
+  "MaxAffinity": "Entente maximale",
+  "MaxAllAffinity": "Maximiser toutes les ententes",
+  "AffinityUnavailable": "L’entente entre personnages est indisponible pour ce scénario ou ce format de sauvegarde.",
   "SkillLinks": "Liens de compétences",
   "SkillLinkCoins": "Compétences liées : {0} / {1} pièces d'entente",
   "SkillLinkCost": "{0} pièces",

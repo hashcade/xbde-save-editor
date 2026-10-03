@@ -1,4 +1,11 @@
 {
+  "Affinity": "牵绊",
+  "AffinityPoints": "牵绊值（0–5,000）",
+  "AffinitySlots": "技能链接槽位（双方）",
+  "AffinitySlotHint": "降低牵绊值不会重新锁定已经解锁的技能链接槽位。",
+  "MaxAffinity": "牵绊全满",
+  "MaxAllAffinity": "全部牵绊全满",
+  "AffinityUnavailable": "此篇章或存档格式不支持角色牵绊。",
   "SkillLinks": "技能链接",
   "SkillLinkCoins": "已链接技能：{0} / {1} 技能硬币",
   "SkillLinkCost": "{0} 硬币",

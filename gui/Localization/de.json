@@ -1,4 +1,11 @@
 {
+  "Affinity": "Harmonie",
+  "AffinityPoints": "Harmoniewert (0–5.000)",
+  "AffinitySlots": "Talentverbindungsslots (beide Richtungen)",
+  "AffinitySlotHint": "Ein niedrigerer Harmoniewert sperrt freigeschaltete Talentverbindungsslots nicht erneut.",
+  "MaxAffinity": "Harmonie maximieren",
+  "MaxAllAffinity": "Alle Harmoniewerte maximieren",
+  "AffinityUnavailable": "Charakterharmonie ist für dieses Kapitel oder Speicherformat nicht verfügbar.",
   "SkillLinks": "Talentverknüpfungen",
   "SkillLinkCoins": "Verknüpfungen: {0} / {1} Harmoniemünzen",
   "SkillLinkCost": "{0} Münzen",

@@ -1,4 +1,11 @@
 {
+  "Affinity": "キズナ",
+  "AffinityPoints": "キズナ値（0–5,000）",
+  "AffinitySlots": "スキルリンク枠（双方）",
+  "AffinitySlotHint": "キズナ値を下げても、解放済みのスキルリンク枠は再びロックされません。",
+  "MaxAffinity": "キズナ最大",
+  "MaxAllAffinity": "全キズナ最大",
+  "AffinityUnavailable": "このシナリオまたはセーブ形式ではキズナを編集できません。",
   "SkillLinks": "スキルリンク",
   "SkillLinkCoins": "リンク中：{0} / {1} キズナコイン",
   "SkillLinkCost": "{0} コイン",

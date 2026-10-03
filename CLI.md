@@ -156,3 +156,22 @@ exceeding 99; duplicate stacks reject that operation. `max-items` maximizes all
 existing editable stacks in the selected category, regardless of GUI filters.
 Key items remain read-only. New records update acquisition serial counters;
 deleted records do not shift indices. See [inventory validation](docs/inventory.md).
+
+## Character affinity
+
+```sh
+xbde-save-editor affinities input.sav
+xbde-save-editor affinity input.sav output.sav 1 2 --points 3000
+xbde-save-editor max-affinity input.sav output.sav 1 8
+xbde-save-editor max-all-affinity input.sav output.sav
+```
+
+`affinities` lists joined canonical pairs, points, directed slot counts and
+editability as JSON. Character IDs are the joined IDs shown by `inspect`.
+Fiora's IDs 3/8 share one pair; self/alternate-form pairs are rejected.
+Points accept 0–5,000. Raising points also raises the saved skill-link slot
+indices in both directions, including Fiora's inactive alias; lowering points
+never relocks them. `max-all-affinity` targets all joined pairs, not a subset.
+Future Connected, ambiguous campaigns and unverified formats reject writes.
+No command changes coins, equipped links, world affinity or achievement state.
+See [affinity validation](docs/affinity.md).

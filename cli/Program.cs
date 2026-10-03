@@ -16,6 +16,43 @@ try
         Console.WriteLine("achievements <save>\nunlock-achievement <save> <output> <id>\nunlock-all-achievements <save> <output>");
         Console.WriteLine("learn-art <save> <output> <character-id> <art-id>\nlearn-max-arts <save> <output> <character-id>\nlearn-max-all-arts <save> <output>");
         Console.WriteLine("skill-links <save> <character-id>\nskill-link <save> <output> <character-id> <source-character-id> <slot> <skill-id|none>");
+        Console.WriteLine("affinities <save>\naffinity <save> <output> <first-character-id> <second-character-id> --points N\nmax-affinity <save> <output> <first-character-id> <second-character-id>\nmax-all-affinity <save> <output>");
+        return 0;
+    }
+    if (args is ["affinities", var affinitySource])
+    {
+        var document = SaveSession.Open(affinitySource).Document;
+        Console.WriteLine(JsonSerializer.Serialize(new
+        {
+            Supported = document.CanEditAffinity,
+            MaximumPoints = AffinityCatalog.MaximumPoints,
+            Pairs = document.Affinities.Select(pair => new
+            {
+                pair.Index, pair.FirstCharacterId, pair.SecondCharacterId, pair.Points,
+                pair.FirstUnlockedSlots, pair.SecondUnlockedSlots, pair.CanEdit, pair.IsMaximum
+            })
+        }, new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["affinity", var affinityInput, var affinityOutput, var firstId, var secondId, "--points", var affinityPoints])
+    {
+        var session = SaveSession.Open(affinityInput);
+        session.Document.GetAffinity(ParseId(firstId), ParseId(secondId)).SetPoints(ParseId(affinityPoints));
+        session.Save(affinityOutput);
+        return 0;
+    }
+    if (args is ["max-affinity", var maxAffinityInput, var maxAffinityOutput, var maxFirstId, var maxSecondId])
+    {
+        var session = SaveSession.Open(maxAffinityInput);
+        session.Document.GetAffinity(ParseId(maxFirstId), ParseId(maxSecondId)).SetPoints(AffinityCatalog.MaximumPoints);
+        session.Save(maxAffinityOutput);
+        return 0;
+    }
+    if (args is ["max-all-affinity", var allAffinityInput, var allAffinityOutput])
+    {
+        var session = SaveSession.Open(allAffinityInput);
+        session.Document.MaxAllAffinity();
+        session.Save(allAffinityOutput);
         return 0;
     }
     if (args is ["skill-links", var linksSource, var linkCharacterId])
