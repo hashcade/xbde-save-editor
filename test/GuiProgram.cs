@@ -23,6 +23,24 @@ Check(UiLanguage.Read("zh-Hans")["ExpertMode"] == "进阶玩家设定", "Simplif
 Check(UiLanguage.Read("zh-Hant")["ExpertMode"] == "進階玩家設定", "Traditional Chinese Expert Mode terminology differs.");
 Check(!window.FindControl<StackPanel>("ResourceInputs")!.IsEnabled, "Empty form is editable.");
 Check(window.FindControl<ScrollViewer>("MainScroll") is not null, "Main page has no shared scroll container.");
+VerifyPageSpacing();
+void VerifyPageSpacing()
+{
+    Dispatcher.UIThread.RunJobs();
+    var header = window.FindControl<Grid>("Header")!;
+    var main = window.FindControl<ScrollViewer>("MainScroll")!;
+    var characters = window.FindControl<Grid>("CharactersPanel")!;
+    var page = main.IsVisible ? (Control)main : characters;
+    double gap = page.Bounds.Top - header.Bounds.Bottom;
+    Check(Math.Abs(gap - (main.IsVisible ? 20 : 16)) < 0.1,
+        $"Header-to-page spacing changed: {gap}.");
+    if (!characters.IsVisible) return;
+    var tabs = window.FindControl<TabStrip>("CharacterNavigation")!;
+    var arts = window.FindControl<Grid>("ArtsPanel")!;
+    var body = arts.IsVisible ? (Control)arts : window.FindControl<ScrollViewer>("GeneralCharacterScroll")!;
+    Check(tabs.Margin == new Thickness(0) && Math.Abs(body.Bounds.Top - tabs.Bounds.Bottom - 16) < 0.1,
+        "Character tabs have duplicated vertical spacing.");
+}
 Check(!MainWindow.WholeNumber(1.5m, out _), "Fractional amount is accepted.");
 Check(!MainWindow.WholeNumber(-1, out _), "Negative amount is accepted.");
 Check(!MainWindow.WholeNumber((decimal)uint.MaxValue + 1, out _), "Overflow is accepted.");
@@ -91,6 +109,7 @@ try
         window.SetLanguage("zh-Hans");
         window.SetLanguage(language);
         Dispatcher.UIThread.RunJobs();
+        VerifyPageSpacing();
         Check(window.FindControl<MenuItem>("SaveMenu")!.Header?.ToString() == UiLanguage.Get("Save"), "Menu translation is stale.");
         Check(window.FindControl<TextBlock>("CampaignValue")!.Text == UiLanguage.Get("MainStory"), "Campaign translation is stale.");
         Check(window.Session.Document.Money == 123, "Language switch changed edits.");
@@ -202,7 +221,14 @@ try
         Dispatcher.UIThread.RunJobs();
         Check(maxArts.Content?.ToString() == UiLanguage.Get("MaxCharacterArts"), "Art button translation is stale.");
         Check(window.FindControl<TextBlock>("ArtStatusValue")!.Text == UiLanguage.Get("FixedTalent"), "Art status translation is stale.");
+        VerifyPageSpacing();
     }
+    window.Width = 860;
+    window.Height = 600;
+    VerifyPageSpacing();
+    window.Width = 1120;
+    window.Height = 780;
+    VerifyPageSpacing();
     window.SetLanguage("en");
     Check(window.SaveTo(Path.Combine(temporary, "arts-edited.sav")), "Could not save GUI art edits.");
     var artsSaved = SaveDocument.Parse(File.ReadAllBytes(Path.Combine(temporary, "arts-edited.sav")));
@@ -239,18 +265,20 @@ try
     if (args is ["--screenshot", var realSave, var screenshot, .. var page])
     {
         Check(window.LoadSave(realSave), "Could not open the screenshot save.");
-        if (page is ["arts"])
+        if (page.Length > 0 && page[0] == "arts")
         {
             window.ShowArts();
             window.FindControl<ListBox>("ArtList")!.SelectedIndex = 2;
         }
-        else if (page is ["characters"])
+        else if (page.Length > 0 && page[0] == "characters")
         {
             window.ShowCharacters();
             window.FindControl<TabStrip>("CharacterNavigation")!.SelectedIndex = 0;
         }
         else window.FindControl<TabStrip>("MainNavigation")!.SelectedIndex = 0;
+        if (page.Length > 1) window.SetLanguage(page[1]);
         Dispatcher.UIThread.RunJobs();
+        VerifyPageSpacing();
         using var frame = window.CaptureRenderedFrame()!;
         frame.Save(screenshot, Avalonia.Media.Imaging.PngBitmapEncoderOptions.Default);
         Console.WriteLine($"Screenshot: {screenshot}");

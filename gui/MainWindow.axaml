@@ -4,11 +4,19 @@
         x:Class="XbdeEditor.Gui.MainWindow"
         Title="XBDE Save Editor" Width="1120" Height="780" MinWidth="860" MinHeight="600">
   <Window.Styles>
+    <Style Selector="TabStrip.page-tabs">
+      <Setter Property="Margin" Value="0" />
+    </Style>
+    <Style Selector="TabStrip.page-tabs > TabStripItem">
+      <Setter Property="Padding" Value="12,6" />
+      <Setter Property="MinHeight" Value="32" />
+      <Setter Property="Margin" Value="0" />
+    </Style>
     <Style Selector="ListBox">
       <Setter Property="ItemsPanel"><ItemsPanelTemplate><VirtualizingStackPanel CacheLength="1" /></ItemsPanelTemplate></Setter>
     </Style>
   </Window.Styles>
-  <Grid RowDefinitions="Auto,*,Auto" Margin="0,0,0,24" RowSpacing="24">
+  <Grid Name="WindowLayout" RowDefinitions="Auto,*,Auto" Margin="0,0,0,24" RowSpacing="16">
     <Grid Name="Header" ColumnDefinitions="Auto,*">
       <Menu FontSize="13" VerticalAlignment="Center">
         <MenuItem Header="{DynamicResource File}">
@@ -26,7 +34,7 @@
         <TabStripItem Content="{DynamicResource Characters}" />
       </TabStrip>
     </Grid>
-    <ScrollViewer Name="MainScroll" Grid.Row="1" Margin="24,0" HorizontalScrollBarVisibility="Disabled">
+    <ScrollViewer Name="MainScroll" Grid.Row="1" Margin="24,4,24,0" HorizontalScrollBarVisibility="Disabled">
       <Grid ColumnDefinitions="*,*" ColumnSpacing="24" VerticalAlignment="Top">
         <suki:GlassCard Padding="20" VerticalAlignment="Top">
           <StackPanel Spacing="16">
@@ -70,8 +78,8 @@
         </Grid>
       </suki:GlassCard>
       <suki:GlassCard Grid.Column="1" Padding="20">
-        <Grid RowDefinitions="Auto,*" RowSpacing="20">
-          <TabStrip Name="CharacterNavigation" FontSize="13" SelectedIndex="0" SelectionChanged="CharacterNavigation_Changed">
+        <Grid RowDefinitions="Auto,*" RowSpacing="16">
+          <TabStrip Name="CharacterNavigation" Classes="page-tabs" FontSize="13" SelectedIndex="0" SelectionChanged="CharacterNavigation_Changed">
             <TabStripItem Content="{DynamicResource General}" />
             <TabStripItem Content="{DynamicResource Arts}" />
           </TabStrip>
