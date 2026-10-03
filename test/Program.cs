@@ -23,7 +23,7 @@ byte[] Fixture(bool future = false)
     for (int index = 0; index < ids.Length; index++)
     {
         BinaryPrimitives.WriteUInt16LittleEndian(data.AsSpan(0x152318 + index * 2), (ushort)ids[index]);
-        BinaryPrimitives.WriteUInt32LittleEndian(data.AsSpan(0x152368 + ids[index] * 0x138), 99);
+        BinaryPrimitives.WriteUInt32LittleEndian(data.AsSpan(0x152368 + (ids[index] - 1) * 0x138), 99);
     }
     return data;
 }
@@ -55,6 +55,12 @@ Reject(() => SaveDocument.Parse(bad), "Oversized party was accepted.");
 bad = Fixture();
 BinaryPrimitives.WriteUInt16LittleEndian(bad.AsSpan(0x15231a), 1);
 Reject(() => SaveDocument.Parse(bad), "Duplicate party IDs were accepted.");
+bad = Fixture();
+BinaryPrimitives.WriteUInt32LittleEndian(bad.AsSpan(0x152368), 0);
+Reject(() => SaveDocument.Parse(bad), "Character ID 1 did not map to record 0.");
+bad = Fixture(true);
+BinaryPrimitives.WriteUInt32LittleEndian(bad.AsSpan(0x152368 + 13 * 0x138), 0);
+Reject(() => SaveDocument.Parse(bad), "Character ID 14 did not map to record 13.");
 
 string temporary = Path.Combine(Path.GetTempPath(), $"xbde-test-{Guid.NewGuid():N}");
 Directory.CreateDirectory(temporary);

@@ -29,7 +29,7 @@ try
     byte[] original = new byte[SaveDocument.FileSize];
     BinaryPrimitives.WriteUInt16LittleEndian(original.AsSpan(0x152318), 1);
     original[0x152330] = 1;
-    BinaryPrimitives.WriteUInt32LittleEndian(original.AsSpan(0x1524a0), 20);
+    BinaryPrimitives.WriteUInt32LittleEndian(original.AsSpan(0x152368), 20);
     BinaryPrimitives.WriteUInt32LittleEndian(original.AsSpan(0x151b40), 999999999);
     string source = Path.Combine(temporary, "bfsgame00.sav");
     File.WriteAllBytes(source, original);

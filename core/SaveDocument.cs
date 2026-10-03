@@ -58,7 +58,7 @@ public sealed class SaveDocument
             throw new InvalidDataException("Unrecognized character IDs in the saved party.");
         foreach (int id in ids.Where(id => id <= 15))
         {
-            uint level = ReadUInt32(CharacterOffset + id * CharacterSize);
+            uint level = ReadUInt32(CharacterOffset + (id - 1) * CharacterSize);
             if (level is < 1 or > 99)
                 throw new InvalidDataException($"Character {id} has an unsupported level or record layout.");
         }

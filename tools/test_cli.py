@@ -26,7 +26,7 @@ def main() -> None:
         original = bytearray(0x153860)
         struct.pack_into("<H", original, 0x152318, 1)
         original[0x152330] = 1
-        struct.pack_into("<I", original, 0x1524A0, 20)
+        struct.pack_into("<I", original, 0x152368, 20)
         source = root / "bfsgame00.sav"
         output = root / "output.sav"
         source.write_bytes(original)
