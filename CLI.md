@@ -16,6 +16,12 @@ XbdeEditor.Cli arts bfsgame00.sav 1
 XbdeEditor.Cli art bfsgame00.sav edited.sav 1 12 --level 10
 XbdeEditor.Cli max-art bfsgame00.sav edited.sav 1 12
 XbdeEditor.Cli max-arts bfsgame00.sav edited.sav 1
+XbdeEditor.Cli skills bfsgame00.sav 1
+XbdeEditor.Cli skill-tree bfsgame00.sav edited.sav 1 1 --learned 3
+XbdeEditor.Cli skill-tree bfsgame00.sav edited.sav 1 1 --sp 500
+XbdeEditor.Cli max-skill-tree bfsgame00.sav edited.sav 1 1
+XbdeEditor.Cli max-skills bfsgame00.sav edited.sav 1
+XbdeEditor.Cli max-all-skills bfsgame00.sav edited.sav
 ```
 
 `inspect` prints JSON containing campaign, resources and joined characters,
@@ -52,3 +58,15 @@ of GUI search filters. Ordinary arts grant the required manual permission withou
 spending AP. Monado arts retain their story permission, and missing/talent arts
 are never upgraded. Melia's discharge levels follow their summon arts. See the
 [validated limits](docs/arts.md); art IDs are returned by `arts`, not list positions.
+
+`skills` lists five trees and their nodes, learned counts, remaining SP and unlock
+state as JSON. Tree indices are one-based, as returned by that command. Selecting
+`--learned` resets the tree's remaining SP to zero. Each tree contains five skills;
+the first tree's free initial skill cannot be removed. `--sp` must be below the
+next skill's learning cost and is unavailable once all five skills are learned.
+
+Maximum commands learn all five skills and reset remaining SP. Character-wide
+and party-wide operations skip locked hidden trees and do not alter task unlocks
+or skill links. Future Connected and unconfirmed campaigns reject skill edits.
+Existing unusual values remain intact unless explicitly normalized. See
+[skill validation](docs/skills.md).
