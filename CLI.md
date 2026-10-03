@@ -29,6 +29,13 @@ XbdeEditor.Cli equipment-gem bfsgame00.sav edited.sav 1 Weapon 1 none
 XbdeEditor.Cli gems bfsgame00.sav
 XbdeEditor.Cli gem bfsgame00.sav edited.sav 3 --effect 26 --rank 6 --value 200
 XbdeEditor.Cli max-gem bfsgame00.sav edited.sav 3
+XbdeEditor.Cli add-gem bfsgame00.sav edited.sav --effect 26 --rank 6 --value 200
+XbdeEditor.Cli delete-gem bfsgame00.sav edited.sav 3
+XbdeEditor.Cli inventory bfsgame00.sav Materials
+XbdeEditor.Cli add-item bfsgame00.sav edited.sav 1852 --quantity 5
+XbdeEditor.Cli item bfsgame00.sav edited.sav Materials 0 --quantity 99
+XbdeEditor.Cli max-items bfsgame00.sav edited.sav Materials
+XbdeEditor.Cli delete-item bfsgame00.sav edited.sav Materials 0
 ```
 
 `inspect` prints JSON containing campaign, resources and joined characters,
@@ -109,5 +116,16 @@ editable. `max-gem` maximizes the current effect/rank, without raising rank.
 
 Edits reject invalid records, unused effects, invalid ranks, incompatible fitted
 effects and strengths outside the game-data range. Equipment ownership includes
-unequipped items. No gem or cylinder is created, deleted, duplicated or moved.
+unequipped items. `add-gem` creates a normal gem in a free, unreferenced slot;
+all three options are required. `delete-gem` marks an unfitted normal gem absent
+without reindexing any other gem. Cylinders are not edited by these commands.
 See [gem validation](docs/gems.md).
+
+`inventory` accepts `Collectables`, `Materials`, `ArtManuals` or `KeyItems` and
+returns existing records plus a catalog. Use catalog IDs with `add-item`, but
+zero-based inventory indices with `item` and `delete-item`. Quantities accept
+whole numbers from 1 to 99. Adding an existing item increases its stack without
+exceeding 99; duplicate stacks reject that operation. `max-items` maximizes all
+existing editable stacks in the selected category, regardless of GUI filters.
+Key items remain read-only. New records update acquisition serial counters;
+deleted records do not shift indices. See [inventory validation](docs/inventory.md).

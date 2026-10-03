@@ -3,7 +3,9 @@
 Items lists owned normal gems, independently of the selected character. Search
 matches the effect name, rank and decoded values. The selected gem's effect,
 rank and strength are editable; Max Value applies the current effect/rank's
-upper strength bound, not rank VI. File → Save persists edits.
+upper strength bound, not rank VI. Add creates a normal gem with linked effect,
+rank and strength limits; Delete removes an unfitted gem without shifting indices.
+File → Save persists edits.
 
 ![Gem editor](gems-zh.png)
 
@@ -66,6 +68,8 @@ Inventory index/type, quantity, acquisition ordering, favorite flags, socket
 references and unknown bytes remain unchanged. Editing an equipped gem updates
 its existing record; no duplicate is added and no equipment reference is moved.
 Built-in gems and cylinders are not editable here.
+Creation initializes a new record and advances the acquisition serial counter;
+deletion marks an unreferenced record absent. See [inventory validation](inventory.md).
 
 ## Verification
 
