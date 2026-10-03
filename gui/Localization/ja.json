@@ -1,4 +1,7 @@
 {
+  "PartyOrder": "パーティの順序",
+  "MoveUp": "上へ移動",
+  "MoveDown": "下へ移動",
 "Collectables": "コレクション",
 "Materials": "素材",
 "ArtManuals": "アーツ書",

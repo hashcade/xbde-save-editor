@@ -99,6 +99,7 @@ public partial class MainWindow : Window
         try
         {
             ResourceInputs.IsEnabled = SaveMenu.IsEnabled = SaveAsMenu.IsEnabled = Session is not null;
+            RefreshParty();
             if (Session is null) return;
             MoneyInput.Value = Session.Document.Money;
             NoponstonesInput.Value = Session.Document.Noponstones;

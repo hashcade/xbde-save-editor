@@ -91,6 +91,18 @@ try
     File.WriteAllBytes(source, original);
     Check(window.LoadSave(source), "Could not load a game save.");
     Check(!window.Session!.HasChanges, "GUI load changes a save.");
+    var partyList = window.FindControl<ItemsControl>("PartyOrderList")!;
+    Dispatcher.UIThread.RunJobs();
+    var partyUp = partyList.GetVisualDescendants().OfType<Button>().Where(button => button.Name == "MovePartyUpButton").ToArray();
+    var partyDown = partyList.GetVisualDescendants().OfType<Button>().Where(button => button.Name == "MovePartyDownButton").ToArray();
+    Check(partyUp.Length == 2 && !partyUp[0].IsEnabled && !partyDown[1].IsEnabled,
+        "Party controls allow moving beyond the saved order.");
+    partyDown[0].RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.PartyIds.SequenceEqual(new[] { 2, 1 }), "Party down button does not change the saved order.");
+    Dispatcher.UIThread.RunJobs();
+    partyList.GetVisualDescendants().OfType<Button>().First(button => button.Name == "MovePartyDownButton")
+        .RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(original), "Restoring party order changed unrelated fields.");
     var money = window.FindControl<NumericUpDown>("MoneyInput")!;
     Check(money.Value == 999999999, "Existing resource amount was clamped.");
     money.Value = 123;

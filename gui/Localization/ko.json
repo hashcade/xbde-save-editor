@@ -1,4 +1,7 @@
 {
+  "PartyOrder": "파티 순서",
+  "MoveUp": "위로 이동",
+  "MoveDown": "아래로 이동",
 "Collectables": "수집품",
 "Materials": "소재",
 "ArtManuals": "아츠 서적",

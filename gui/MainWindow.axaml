@@ -37,6 +37,7 @@
     </Grid>
     <ScrollViewer Name="MainScroll" Grid.Row="1" Margin="24,4,24,0" HorizontalScrollBarVisibility="Disabled">
       <Grid ColumnDefinitions="*,*" ColumnSpacing="24" VerticalAlignment="Top">
+        <StackPanel Spacing="24">
         <suki:GlassCard Padding="20" VerticalAlignment="Top">
           <StackPanel Spacing="16">
             <TextBlock Text="{DynamicResource Resources}" FontWeight="SemiBold" />
@@ -50,6 +51,23 @@
             </StackPanel>
           </StackPanel>
         </suki:GlassCard>
+        <suki:GlassCard Name="PartyOrderCard" Padding="20" VerticalAlignment="Top">
+          <StackPanel Spacing="16">
+            <TextBlock Text="{DynamicResource PartyOrder}" FontWeight="SemiBold" />
+            <ItemsControl Name="PartyOrderList">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="x:Object" x:CompileBindings="False">
+                  <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12" Margin="0,0,0,12">
+                    <TextBlock Text="{Binding Label}" VerticalAlignment="Center" TextWrapping="Wrap" />
+                    <Button Name="MovePartyUpButton" Grid.Column="1" Content="↑" Tag="{Binding Id}" IsEnabled="{Binding CanMoveUp}" ToolTip.Tip="{DynamicResource MoveUp}" Click="MovePartyUp_Click" />
+                    <Button Name="MovePartyDownButton" Grid.Column="2" Content="↓" Tag="{Binding Id}" IsEnabled="{Binding CanMoveDown}" ToolTip.Tip="{DynamicResource MoveDown}" Click="MovePartyDown_Click" />
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </suki:GlassCard>
+        </StackPanel>
         <suki:GlassCard Grid.Column="1" Padding="20" VerticalAlignment="Top">
           <StackPanel Spacing="16">
             <TextBlock Text="{DynamicResource SaveFile}" FontWeight="SemiBold" />
