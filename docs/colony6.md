@@ -48,7 +48,7 @@ The inspected NSO build is `7E1DF8E08D60544BBDCA1E333C153C97`.
 For a nonzero effect flag, the saved bit is `0x1D6A + rev_effflag1`, starting
 at offset `0x50`. Self flags are bytes at `0xC94 + rev_selflag`; linked quest
 flags are bytes at `0x5F0 + rev_qstflag`. Only rows for still-missing levels
-are applied. Existing past-level flags, invitations at `0xD00` onward, the
+are applied. Existing past-level flags, neighboring event states at `0xD00` onward, the
 reserved byte at `0xCFF`, unrelated quest/story flags, inventory, EXP, money,
 affinity and achievement records remain untouched.
 

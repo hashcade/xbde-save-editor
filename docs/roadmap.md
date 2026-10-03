@@ -38,12 +38,16 @@ editing remain available for progression changes without grinding.
 
 ## Remaining priorities
 
-1. Reduce remaining NPC affinity and Colony 6 recruitment grinding where all linked state can be validated.
+1. Reduce Colony 6 recruitment grinding only where all linked state can be validated. NPC relationship states are discrete quest conditions, not a monotonic affinity meter; do not offer a blanket maximum.
 2. Assess protected Art unlocks only where they remove a concrete progression obstacle and preserve linked quest state.
 3. Assess Time Attack rewards and Ponspectors against the same usefulness and write-safety criteria before committing to implementation. An unverified or low-value candidate is deferred, not added merely to expand feature coverage.
 
 NPC affinity, quests, Colony 6 initial quest/recruitment, Time Attack, Ponspectors and system-save
 unlocks need further format validation. They are not promised or exposed as editable fields.
+Native NPC quest checks compare relationship states for equality. Raising every
+relationship to the largest number can therefore make a required state unavailable.
+Time Attack reward acquisition already overlaps with equipment/gem creation and
+Noponstone editing; record editing alone does not justify another panel.
 Crystals/cylinders and story-weapon switching are not completion requirements; implement them only if they solve a concrete progression or grinding problem safely.
 
 ## Deferred game-data localization
