@@ -48,5 +48,8 @@
   "AchievementProgress": "Progressi",
   "UnlockAchievement": "Sblocca obiettivo",
   "UnlockAllAchievements": "Sblocca tutti",
-  "AchievementsUnavailable": "Gli obiettivi non sono modificabili per questa campagna o formato di salvataggio."
+  "AchievementsUnavailable": "Gli obiettivi non sono modificabili per questa campagna o formato di salvataggio.",
+  "AchievementUnmetCounterFilter": "Sbloccati, contatore insufficiente",
+  "AchievementUnmetCounter": "Sbloccato (contatore insufficiente)",
+  "AchievementCountHint": "Numero di indicatori di completamento attivi; i contatori vengono verificati separatamente."
 }

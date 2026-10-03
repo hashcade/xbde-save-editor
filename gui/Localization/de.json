@@ -48,5 +48,8 @@
   "AchievementProgress": "Fortschritt",
   "UnlockAchievement": "Erfolg freischalten",
   "UnlockAllAchievements": "Alle freischalten",
-  "AchievementsUnavailable": "Für diese Kampagne oder dieses Speicherformat können Erfolge nicht bearbeitet werden."
+  "AchievementsUnavailable": "Für diese Kampagne oder dieses Speicherformat können Erfolge nicht bearbeitet werden.",
+  "AchievementUnmetCounterFilter": "Freigeschaltet, Zähler nicht erfüllt",
+  "AchievementUnmetCounter": "Freigeschaltet (Zähler nicht erfüllt)",
+  "AchievementCountHint": "Anzahl gesetzter Abschlussmarkierungen; Zähler werden separat geprüft."
 }

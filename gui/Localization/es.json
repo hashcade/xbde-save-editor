@@ -48,5 +48,8 @@
   "AchievementProgress": "Progreso",
   "UnlockAchievement": "Desbloquear logro",
   "UnlockAllAchievements": "Desbloquear todos",
-  "AchievementsUnavailable": "No se pueden editar logros en esta campaña o formato de guardado."
+  "AchievementsUnavailable": "No se pueden editar logros en esta campaña o formato de guardado.",
+  "AchievementUnmetCounterFilter": "Desbloqueados, contador insuficiente",
+  "AchievementUnmetCounter": "Desbloqueado (contador insuficiente)",
+  "AchievementCountHint": "Número de indicadores de logro activados; los contadores se comprueban por separado."
 }

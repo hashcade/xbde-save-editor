@@ -48,5 +48,8 @@
   "AchievementProgress": "진행도",
   "UnlockAchievement": "업적 해금",
   "UnlockAllAchievements": "모두 해금",
-  "AchievementsUnavailable": "이 스토리 또는 저장 형식에서는 업적을 편집할 수 없습니다."
+  "AchievementsUnavailable": "이 스토리 또는 저장 형식에서는 업적을 편집할 수 없습니다.",
+  "AchievementUnmetCounterFilter": "해금됨, 횟수 미달",
+  "AchievementUnmetCounter": "해금됨 (횟수 미달)",
+  "AchievementCountHint": "완료 표시가 설정된 수입니다. 누적 횟수는 별도로 확인합니다."
 }

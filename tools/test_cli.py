@@ -52,6 +52,16 @@ def main() -> None:
                    for index, (before, after) in enumerate(zip(original, full)))
         run("unlock-all-achievements", output, output)
         assert output.read_bytes() == full and source.read_bytes() == original
+        inconsistent = bytearray(original)
+        inconsistent[0x557] = 128
+        struct.pack_into("<H", inconsistent, 0xE3E, 4256)
+        inconsistent_path = root / "unmet-counter.sav"
+        inconsistent_path.write_bytes(inconsistent)
+        item = json.loads(run("achievements", inconsistent_path))["Items"][6]
+        assert item["Progress"] == 4256 and item["Completed"] and item["HasUnmetCompletedCounter"]
+        assert item["CounterMeetsRequirement"] is False and not item["CanUnlock"]
+        run("unlock-achievement", inconsistent_path, output, "7")
+        assert output.read_bytes() == inconsistent and inconsistent_path.read_bytes() == inconsistent
         assert run("--version").strip()
         assert json.loads(run("inspect", source))["PartyIds"] == [1, 2]
         run("copy", source, output)

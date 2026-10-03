@@ -22,7 +22,8 @@ public partial class MainWindow
             int category = Math.Max(0, AchievementCategoryFilter.SelectedIndex);
             int status = Math.Max(0, AchievementStatusFilter.SelectedIndex);
             AchievementCategoryFilter.ItemsSource = new[] { UiLanguage.Get("AllCategories"), UiLanguage.Get("Trials"), UiLanguage.Get("Records") };
-            AchievementStatusFilter.ItemsSource = new[] { UiLanguage.Get("AllStatuses"), UiLanguage.Get("AchievementIncomplete"), UiLanguage.Get("AchievementComplete") };
+            AchievementStatusFilter.ItemsSource = new[] { UiLanguage.Get("AllStatuses"), UiLanguage.Get("AchievementIncomplete"),
+                UiLanguage.Get("AchievementComplete"), UiLanguage.Get("AchievementUnmetCounterFilter") };
             AchievementCategoryFilter.SelectedIndex = category;
             AchievementStatusFilter.SelectedIndex = status;
             bool supported = Session?.Document.CanEditAchievements == true;
@@ -33,7 +34,7 @@ public partial class MainWindow
             UnlockAllAchievementsButton.IsEnabled = supported && achievements.Any(item => !item.Completed);
             string search = AchievementSearch.Text?.Trim() ?? "";
             var rows = achievements.Where(item => (category == 0 || (int)item.Definition.Category == category)
-                && (status == 0 || item.Completed == (status == 2))
+                && MatchesAchievementStatus(item, status)
                 && (item.Definition.Name.Contains(search, StringComparison.OrdinalIgnoreCase)
                     || item.Definition.Condition.Contains(search, StringComparison.OrdinalIgnoreCase)))
                 .OrderBy(item => item.Definition.Category).ThenBy(item => item.Definition.Order)
@@ -54,12 +55,22 @@ public partial class MainWindow
         var item = Session.Document.GetAchievement(id);
         AchievementConditionValue.Text = item.Definition.Condition;
         AchievementCategoryValue.Text = UiLanguage.Get(item.Definition.Category.ToString());
-        AchievementStatusValue.Text = UiLanguage.Get(item.Completed ? "AchievementComplete" : "AchievementIncomplete");
+        string status = item.Completed ? "AchievementComplete" : "AchievementIncomplete";
+        if (item.HasUnmetCompletedCounter) status = "AchievementUnmetCounter";
+        AchievementStatusValue.Text = UiLanguage.Get(status);
         AchievementRewardValue.Text = item.Definition.RewardExperience.ToString("N0");
         AchievementProgressTitle.IsVisible = AchievementProgressValue.IsVisible = item.Progress is not null;
         AchievementProgressValue.Text = item.Progress is int progress ? $"{progress:N0} / {item.Definition.Required:N0}" : null;
         UnlockAchievementButton.IsEnabled = item.CanUnlock;
     }
+
+    private static bool MatchesAchievementStatus(AchievementRecord item, int status) => status switch
+    {
+        1 => !item.Completed,
+        2 => item.Completed,
+        3 => item.HasUnmetCompletedCounter,
+        _ => true
+    };
 
     private void AchievementList_Changed(object? sender, SelectionChangedEventArgs e)
     {

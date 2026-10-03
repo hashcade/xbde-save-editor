@@ -48,5 +48,8 @@
   "AchievementProgress": "進度",
   "UnlockAchievement": "解鎖成就",
   "UnlockAllAchievements": "全部解鎖",
-  "AchievementsUnavailable": "此篇章或存檔格式不支援成就編輯。"
+  "AchievementsUnavailable": "此篇章或存檔格式不支援成就編輯。",
+  "AchievementUnmetCounterFilter": "已解鎖但計數未達標",
+  "AchievementUnmetCounter": "已解鎖（計數未達標）",
+  "AchievementCountHint": "已設定完成標記的數量；累計計數另外核對。"
 }

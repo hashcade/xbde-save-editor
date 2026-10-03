@@ -16,6 +16,15 @@ public sealed class AchievementRecord
     private int CounterOffset => 0xe30 + 2 * (Id % 200);
     public bool Completed => (_save.ReadByte(FlagOffset) & (1 << (Bit & 7))) != 0;
     public int? Progress => Definition.HasCounter ? _save.ReadUInt16(CounterOffset) : null;
+    public bool? CounterMeetsRequirement
+    {
+        get
+        {
+            if (Progress is not int progress) return null;
+            return Definition.ConditionType == 3 ? progress == Definition.Required : progress >= Definition.Required;
+        }
+    }
+    public bool HasUnmetCompletedCounter => Completed && CounterMeetsRequirement == false;
     public bool CanUnlock => _save.CanEditAchievements && !Completed;
 
     public void Unlock()

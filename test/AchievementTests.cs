@@ -73,6 +73,16 @@ internal static class AchievementTests
         byte[] completed = Fresh();
         completed.AsSpan(0x557, 25).Fill(255);
         var completedSave = SaveDocument.Parse(completed);
+        check(completedSave.GetAchievement(7).Completed && completedSave.GetAchievement(7).HasUnmetCompletedCounter
+            && completedSave.GetAchievement(7).CounterMeetsRequirement == false,
+            "A completion bit concealed an unmet counter.");
+        check(completedSave.GetAchievement(1).CounterMeetsRequirement is null
+            && !completedSave.GetAchievement(1).HasUnmetCompletedCounter,
+            "An event achievement was assigned an unverified counter.");
+        BinaryPrimitives.WriteUInt16LittleEndian(completed.AsSpan(0xe3e), 4256);
+        completedSave = SaveDocument.Parse(completed);
+        check(completedSave.GetAchievement(7).Progress == 4256 && completedSave.GetAchievement(7).HasUnmetCompletedCounter,
+            "The reported below-threshold completed record was misclassified.");
         completedSave.UnlockAllAchievements();
         check(completedSave.Serialize().AsSpan().SequenceEqual(completed), "Completed records were silently normalized.");
     }

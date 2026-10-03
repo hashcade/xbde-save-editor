@@ -48,5 +48,8 @@
   "AchievementProgress": "Progression",
   "UnlockAchievement": "Débloquer le succès",
   "UnlockAllAchievements": "Tout débloquer",
-  "AchievementsUnavailable": "Les succès ne sont pas modifiables pour cette campagne ou ce format de sauvegarde."
+  "AchievementsUnavailable": "Les succès ne sont pas modifiables pour cette campagne ou ce format de sauvegarde.",
+  "AchievementUnmetCounterFilter": "Débloqués, compteur insuffisant",
+  "AchievementUnmetCounter": "Débloqué (compteur insuffisant)",
+  "AchievementCountHint": "Nombre d’indicateurs de réussite activés ; les compteurs sont vérifiés séparément."
 }

@@ -48,5 +48,8 @@
   "AchievementProgress": "Progress",
   "UnlockAchievement": "Unlock Achievement",
   "UnlockAllAchievements": "Unlock All",
-  "AchievementsUnavailable": "Achievements are unavailable for this campaign or save format."
+  "AchievementsUnavailable": "Achievements are unavailable for this campaign or save format.",
+  "AchievementUnmetCounterFilter": "Unlocked, counter unmet",
+  "AchievementUnmetCounter": "Unlocked (counter unmet)",
+  "AchievementCountHint": "Number of completion flags set; counters are checked separately."
 }

@@ -28,7 +28,8 @@ try
             {
                 item.Id, item.Definition.Name, Category = item.Definition.Category.ToString(),
                 item.Definition.Condition, item.Definition.RewardExperience,
-                item.Definition.Required, item.Progress, item.Completed, item.CanUnlock
+                item.Definition.Required, item.Progress, item.Completed, item.CanUnlock,
+                item.CounterMeetsRequirement, item.HasUnmetCompletedCounter
             })
         }, new JsonSerializerOptions { WriteIndented = true }));
         return 0;

@@ -48,5 +48,8 @@
   "AchievementProgress": "進捗",
   "UnlockAchievement": "実績を解除",
   "UnlockAllAchievements": "すべて解除",
-  "AchievementsUnavailable": "このストーリーまたはセーブ形式では実績を編集できません。"
+  "AchievementsUnavailable": "このストーリーまたはセーブ形式では実績を編集できません。",
+  "AchievementUnmetCounterFilter": "解除済み・回数未達",
+  "AchievementUnmetCounter": "解除済み（回数未達）",
+  "AchievementCountHint": "達成フラグが設定された数です。累計回数は別に確認します。"
 }

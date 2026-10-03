@@ -317,7 +317,7 @@
         <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" RowSpacing="16">
           <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
             <TextBlock Text="{DynamicResource Achievements}" FontWeight="SemiBold" />
-            <TextBlock Name="AchievementCountValue" Grid.Column="1" />
+            <TextBlock Name="AchievementCountValue" Grid.Column="1" ToolTip.Tip="{DynamicResource AchievementCountHint}" />
           </Grid>
           <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="12">
             <ComboBox Name="AchievementCategoryFilter" HorizontalAlignment="Stretch" Margin="0" Padding="8,6" FontSize="12" SelectionChanged="AchievementFilter_Changed" />

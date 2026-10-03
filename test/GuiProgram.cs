@@ -715,6 +715,26 @@ try
     for (int offset = 0; offset < achievementEdited.Length; offset++)
         if (offset is not (>= 0x557 and < 0x570) and not (>= 0xe30 and < 0xfc0))
             Check(achievementEdited[offset] == achievementFixture[offset], "Achievement GUI changed unrelated data.");
+    byte[] inconsistentFixture = (byte[])achievementFixture.Clone();
+    inconsistentFixture[0x557] = 128;
+    BinaryPrimitives.WriteUInt16LittleEndian(inconsistentFixture.AsSpan(0xe3e), 4256);
+    string inconsistentPath = Path.Combine(temporary, "unmet-counter.sav");
+    File.WriteAllBytes(inconsistentPath, inconsistentFixture);
+    Check(window.LoadSave(inconsistentPath), "Below-threshold completed fixture did not load.");
+    statusFilter.SelectedIndex = 3;
+    Check(achievementList.ItemCount == 1 && !singleAchievement.IsEnabled,
+        "Unmet completed counter filter differs or permits redundant unlock.");
+    foreach (var language in UiLanguage.Languages)
+    {
+        window.SetLanguage(language.Key);
+        Check(window.FindControl<TextBlock>("AchievementStatusValue")!.Text == UiLanguage.Get("AchievementUnmetCounter")
+            && window.FindControl<TextBlock>("AchievementProgressValue")!.Text == "4,256 / 5,000"
+            && statusFilter.SelectedIndex == 3, "An unmet completed counter was hidden by language switching.");
+    }
+    Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(inconsistentFixture),
+        "Inspecting inconsistent achievement state normalized the save.");
+    window.SetLanguage("en");
+    statusFilter.SelectedIndex = 0;
     BinaryPrimitives.WriteUInt16LittleEndian(achievementFixture.AsSpan(0x15231a), 14);
     BinaryPrimitives.WriteUInt32LittleEndian(achievementFixture.AsSpan(0x152368 + 13 * 0x138), 20);
     File.WriteAllBytes(achievementPath, achievementFixture);

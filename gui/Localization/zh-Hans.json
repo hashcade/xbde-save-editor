@@ -48,5 +48,8 @@
   "AchievementProgress": "进度",
   "UnlockAchievement": "解锁成就",
   "UnlockAllAchievements": "全部解锁",
-  "AchievementsUnavailable": "此篇章或存档格式不支持成就编辑。"
+  "AchievementsUnavailable": "此篇章或存档格式不支持成就编辑。",
+  "AchievementUnmetCounterFilter": "已解锁但计数未达标",
+  "AchievementUnmetCounter": "已解锁（计数未达标）",
+  "AchievementCountHint": "已设置完成标记的数量；累计计数单独核对。"
 }
