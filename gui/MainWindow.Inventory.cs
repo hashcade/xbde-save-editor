@@ -31,7 +31,7 @@ public partial class MainWindow
 
     private void ItemNavigation_Changed(object? sender, SelectionChangedEventArgs e)
     {
-        if (GemsPanel is null || StackItemsPanel is null || _refreshingInventory) return;
+        if (GemsPanel is null || StackItemsPanel is null || EquipmentInventoryPanel is null || _refreshingInventory) return;
         if (!CommitInventoryDraft() || !CommitGemDraft())
         {
             _refreshingInventory = true;
@@ -41,7 +41,10 @@ public partial class MainWindow
         }
         _itemTab = ItemNavigation.SelectedIndex;
         GemsPanel.IsVisible = _itemTab == 0;
-        StackItemsPanel.IsVisible = _itemTab != 0;
+        StackItemsPanel.IsVisible = _itemTab is >= 1 and <= 4;
+        EquipmentInventoryPanel.IsVisible = _itemTab is 5 or 6;
+        if (_itemTab == 5) _equipmentInventorySlot = EquipmentSlot.Weapon;
+        else if (_itemTab == 6 && _equipmentInventorySlot == EquipmentSlot.Weapon) _equipmentInventorySlot = EquipmentSlot.Head;
         _inventoryKind = _itemTab switch
         {
             2 => InventoryKind.Materials, 3 => InventoryKind.ArtManuals,
@@ -50,6 +53,7 @@ public partial class MainWindow
         _inventoryItem = null;
         RefreshInventory();
         RefreshGems();
+        RefreshEquipmentInventory();
     }
 
     private void RefreshInventory()

@@ -9,4 +9,5 @@
   <ItemGroup><Compile Include="SkillLinksTests.cs" /></ItemGroup>
   <ItemGroup><Compile Include="AffinityTests.cs" /></ItemGroup>
   <ItemGroup><Compile Include="RegionAffinityTests.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="EquipmentInventoryTests.cs" /></ItemGroup>
 </Project>

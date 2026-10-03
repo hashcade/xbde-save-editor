@@ -5,7 +5,7 @@ namespace XbdeEditor.Core;
 
 public enum Campaign { MainStory, FutureConnected, Unknown }
 
-public sealed class SaveDocument
+public sealed partial class SaveDocument
 {
     public const int FileSize = 0x153860;
     internal const int PartyOffset = 0x152318;

@@ -1,4 +1,10 @@
 {
+  "EquipmentTarget": "目标角色",
+  "Weapons": "武器",
+  "Armor": "防具",
+  "AddEquipment": "添加装备",
+  "FillMissingEquipment": "补齐当前类别装备",
+  "EquippedBy": "装备角色",
   "Regions": "地区",
   "RegionStars": "星级",
   "RegionPoints": "牵绊值（0–10,000）",

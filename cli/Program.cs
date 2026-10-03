@@ -18,6 +18,54 @@ try
         Console.WriteLine("skill-links <save> <character-id>\nskill-link <save> <output> <character-id> <source-character-id> <slot> <skill-id|none>");
         Console.WriteLine("affinities <save>\naffinity <save> <output> <first-character-id> <second-character-id> --points N\nmax-affinity <save> <output> <first-character-id> <second-character-id>\nmax-all-affinity <save> <output>");
         Console.WriteLine("region-affinities <save>\nregion-affinity <save> <output> <region-id> --points N\nregion-affinity <save> <output> <region-id> --stars N\nmax-region-affinity <save> <output> <region-id>\nmax-all-region-affinity <save> <output>");
+        Console.WriteLine("equipment-inventory <save> <Weapon|Head|Torso|Arms|Legs|Feet>\nadd-equipment <save> <output> <item-id>\nfill-missing-equipment <save> <output> <slot> <character-id>\nequipment-favorite <save> <output> <slot> <index> <true|false>\ndelete-equipment <save> <output> <slot> <index>");
+        return 0;
+    }
+    if (args is ["equipment-inventory", var equipmentInventorySource, var equipmentInventorySlot])
+    {
+        var document = SaveSession.Open(equipmentInventorySource).Document;
+        var slot = ParseEquipmentSlot(equipmentInventorySlot);
+        var items = document.InventoryEquipment(slot);
+        Console.WriteLine(JsonSerializer.Serialize(new
+        {
+            Slot = slot.ToString(), Capacity = InventoryCatalog.Capacity, Count = items.Count,
+            Supported = document.CanEditInventoryEquipment,
+            Items = items.Select(item => new
+            {
+                item.Index, item.ItemId, item.Name, item.GemSlotCount, item.ArmorClass,
+                item.Favorite, item.IsValid, item.FixedGemIds, item.EquippedBy, item.CanDelete, item.CanEditFavorite
+            }),
+            Catalog = document.CreatableEquipment(slot)
+        }, new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["add-equipment", var equipmentAddSource, var equipmentAddOutput, var equipmentAddId])
+    {
+        var session = SaveSession.Open(equipmentAddSource);
+        session.Document.AddEquipment(ParseId(equipmentAddId));
+        session.Save(equipmentAddOutput);
+        return 0;
+    }
+    if (args is ["fill-missing-equipment", var equipmentFillSource, var equipmentFillOutput, var equipmentFillSlot, var equipmentFillCharacter])
+    {
+        var session = SaveSession.Open(equipmentFillSource);
+        session.Document.FillMissingEquipment(ParseEquipmentSlot(equipmentFillSlot), ParseId(equipmentFillCharacter));
+        session.Save(equipmentFillOutput);
+        return 0;
+    }
+    if (args is ["equipment-favorite", var equipmentFavoriteSource, var equipmentFavoriteOutput, var equipmentFavoriteSlot, var equipmentFavoriteIndex, var equipmentFavorite])
+    {
+        if (!bool.TryParse(equipmentFavorite, out bool favorite)) throw new ArgumentException("Choose true or false.");
+        var session = SaveSession.Open(equipmentFavoriteSource);
+        session.Document.GetInventoryEquipment(ParseEquipmentSlot(equipmentFavoriteSlot), ParseId(equipmentFavoriteIndex)).SetFavorite(favorite);
+        session.Save(equipmentFavoriteOutput);
+        return 0;
+    }
+    if (args is ["delete-equipment", var equipmentDeleteSource, var equipmentDeleteOutput, var equipmentDeleteSlot, var equipmentDeleteIndex])
+    {
+        var session = SaveSession.Open(equipmentDeleteSource);
+        session.Document.GetInventoryEquipment(ParseEquipmentSlot(equipmentDeleteSlot), ParseId(equipmentDeleteIndex)).Delete();
+        session.Save(equipmentDeleteOutput);
         return 0;
     }
     if (args is ["region-affinities", var regionSource])
@@ -478,6 +526,9 @@ static int ParseId(string value) => int.TryParse(value, out int id) ? id
 
 static InventoryKind ParseInventoryKind(string value) => Enum.TryParse<InventoryKind>(value, true, out var kind) && Enum.IsDefined(kind)
     ? kind : throw new ArgumentException("Choose Collectables, Materials, KeyItems or ArtManuals.");
+
+static EquipmentSlot ParseEquipmentSlot(string value) => Enum.TryParse<EquipmentSlot>(value, true, out var slot) && Enum.IsDefined(slot)
+    ? slot : throw new ArgumentException("Choose Weapon, Head, Torso, Arms, Legs or Feet.");
 
 static IReadOnlyDictionary<string, uint> ParseOptions(string[] options, params string[] allowed)
 {

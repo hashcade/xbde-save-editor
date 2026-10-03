@@ -1,4 +1,10 @@
 {
+  "EquipmentTarget": "Personaggio di destinazione",
+  "Weapons": "Armi",
+  "Armor": "Armature",
+  "AddEquipment": "Aggiungi equipaggiamento",
+  "FillMissingEquipment": "Completa questa categoria",
+  "EquippedBy": "Equipaggiato da",
   "Regions": "Regioni",
   "RegionStars": "Stelle",
   "RegionPoints": "Punti (0–10.000)",

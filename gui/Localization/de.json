@@ -1,4 +1,10 @@
 {
+  "EquipmentTarget": "Zielcharakter",
+  "Weapons": "Waffen",
+  "Armor": "Rüstungen",
+  "AddEquipment": "Ausrüstung hinzufügen",
+  "FillMissingEquipment": "Fehlende Ausrüstung ergänzen",
+  "EquippedBy": "Ausgerüstet von",
   "Regions": "Regionen",
   "RegionStars": "Sterne",
   "RegionPoints": "Punkte (0–10.000)",

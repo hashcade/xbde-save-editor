@@ -1,4 +1,10 @@
 {
+  "EquipmentTarget": "대상 캐릭터",
+  "Weapons": "무기",
+  "Armor": "방어구",
+  "AddEquipment": "장비 추가",
+  "FillMissingEquipment": "현재 종류 장비 채우기",
+  "EquippedBy": "장착 캐릭터",
   "Regions": "지역",
   "RegionStars": "별 등급",
   "RegionPoints": "인연 포인트 (0–10,000)",

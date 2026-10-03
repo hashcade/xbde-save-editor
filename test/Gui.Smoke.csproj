@@ -7,6 +7,8 @@
     <Compile Include="GuiProgram.cs" />
     <Compile Include="EquipmentTests.cs" />
     <Compile Include="EquipmentSwitchTests.cs" />
+    <Compile Include="EquipmentInventoryTests.cs" />
+    <Compile Include="EquipmentInventoryGuiTests.cs" />
     <Compile Include="InventoryTests.cs" />
     <Compile Include="SkillLinksTests.cs" />
     <Compile Include="AffinityTests.cs" />

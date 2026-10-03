@@ -9,10 +9,33 @@ public sealed class InventoryEquipmentRecord
     public EquipmentSlot Slot { get; }
     public int Index { get; }
     private int Offset => EquipmentCatalog.InventoryOffset(Slot) + Index * EquipmentRecord.InventorySize;
+    public bool Exists => _document.ReadByte(Offset + 0x10) != 0;
     public int ItemId => _document.ReadUInt16(Offset + 4);
     public string Name => EquipmentCatalog.ItemName(ItemId);
     public int GemSlotCount => _document.ReadByte(Offset + 0x15);
     public int ArmorClass => _document.ReadByte(Offset + 0x14);
+    public bool Favorite => _document.ReadByte(Offset + 0x11) == 1;
+    public EquipmentDefinition? Definition => EquipmentDefinitions.Find(ItemId);
+    public IReadOnlyList<int> FixedGemIds => Enumerable.Range(0, Math.Min(GemSlotCount, 3))
+        .Where(socket => _document.ReadUInt32(Offset + 0x1c + socket * 8) != 0)
+        .Select(socket => (int)_document.ReadUInt16(Offset + 0x1c + socket * 8)).ToArray();
+    public IReadOnlyList<int> EquippedBy => _document.Characters.Where(character => character.GetEquipment(Slot).Index == Index)
+        .Select(character => character.Id).ToArray();
+    public bool CanEditFavorite => _document.CanEditInventoryEquipment && IsValid;
+    public bool CanDelete => CanEditFavorite && Definition?.IsOrdinary == true
+        && !_document.ReferencedEquipmentIndices(Slot).Contains(Index);
+
+    public void SetFavorite(bool favorite)
+    {
+        if (!CanEditFavorite) throw new ArgumentException("This equipment record cannot be edited.");
+        _document.WriteByte(Offset + 0x11, favorite ? (byte)1 : (byte)0);
+    }
+
+    public void Delete()
+    {
+        if (!CanDelete) throw new ArgumentException("Referenced, protected or malformed equipment cannot be deleted.");
+        _document.WriteByte(Offset + 0x10, 0);
+    }
     public bool IsValid => _document.ReadByte(Offset + 0x10) == 1
         && _document.ReadUInt16(Offset) == Index && _document.ReadUInt16(Offset + 2) == EquipmentCatalog.Type(Slot)
         && _document.ReadUInt16(Offset + 6) == EquipmentCatalog.Type(Slot) && _document.ReadUInt16(Offset + 8) == 1

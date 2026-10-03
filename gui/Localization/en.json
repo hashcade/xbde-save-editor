@@ -1,4 +1,10 @@
 {
+  "EquipmentTarget": "Target Character",
+  "Weapons": "Weapons",
+  "Armor": "Armor",
+  "AddEquipment": "Add Equipment",
+  "FillMissingEquipment": "Fill Missing Equipment",
+  "EquippedBy": "Equipped By",
   "Regions": "Regions",
   "RegionStars": "Stars",
   "RegionPoints": "Points (0–10,000)",

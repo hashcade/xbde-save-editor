@@ -112,6 +112,7 @@ AffinityTests.Run(Fixture, Check, Reject);
 RegionAffinityTests.Run(Fixture, Check, Reject);
 EquipmentTests.Run(Fixture, Check, Reject);
 EquipmentSwitchTests.Run(Fixture, Check, Reject);
+EquipmentInventoryTests.Run(Fixture, Check, Reject);
 GemTests.Run(Fixture, Check, Reject);
 InventoryTests.Run(Fixture, Check, Reject);
 Reject(() => SaveDocument.Parse(new byte[1688]), "System save was accepted.");
@@ -236,6 +237,7 @@ try
             RegionAffinityTests.VerifyRealSave(before, Check);
             EquipmentTests.VerifyRealSave(before, Check);
             EquipmentSwitchTests.VerifyRealSave(before, Check);
+            EquipmentInventoryTests.VerifyRealSave(before, Check);
             GemTests.VerifyRealSave(before, Check);
             InventoryTests.VerifyRealSave(before, Check);
             foreach (var actualCharacter in realSession.Document.Characters)

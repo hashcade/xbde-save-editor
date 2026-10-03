@@ -35,6 +35,8 @@ public partial class MainWindow : Window
             _gem = null;
             _inventoryItem = null;
             _inventorySelections.Clear();
+            _equipmentInventorySelections.Clear();
+            _equipmentRecipient = null;
             _selectedAchievement = null;
             _selectedAffinity = null;
             _affinity = null;
@@ -42,6 +44,7 @@ public partial class MainWindow : Window
             RefreshCharacters();
             RefreshGems();
             RefreshInventory();
+            RefreshEquipmentInventory();
             RefreshAchievements();
             RefreshAffinity();
             ShowStatus(null);
@@ -79,6 +82,7 @@ public partial class MainWindow : Window
             RefreshCharacters();
             RefreshGems();
             RefreshInventory();
+            RefreshEquipmentInventory();
             RefreshRegionAffinity();
             ShowStatus(UiLanguage.Get("Saved") + " " + Path.GetFileName(path));
             return true;
@@ -102,6 +106,7 @@ public partial class MainWindow : Window
         RefreshCharacters();
         RefreshGems();
         RefreshInventory();
+        RefreshEquipmentInventory();
         RefreshAchievements();
         RefreshAffinity();
         ShowStatus(null);

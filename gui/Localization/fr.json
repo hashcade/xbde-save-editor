@@ -1,4 +1,10 @@
 {
+  "EquipmentTarget": "Personnage cible",
+  "Weapons": "Armes",
+  "Armor": "Armures",
+  "AddEquipment": "Ajouter un équipement",
+  "FillMissingEquipment": "Compléter cette catégorie",
+  "EquippedBy": "Équipé par",
   "Regions": "Régions",
   "RegionStars": "Étoiles",
   "RegionPoints": "Points (0–10 000)",

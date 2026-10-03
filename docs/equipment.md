@@ -74,6 +74,51 @@ The new item's fixed/normal gems, damage values and other inventory bytes are
 preserved. The old item and its gems remain in inventory. File → Save persists
 the edit; no equipment is created, deleted or moved between inventory records.
 
+## Inventory creation and bulk filling
+
+Items → Weapons and Armor keep inventory operations in the left card. The right
+side separates the selected record from the creation catalog; choosing a catalog
+definition alone does not change the save. Armor banks remain independent.
+The joined-character selector scopes the creation catalog and the missing-item
+batch to that character and the current bank, not the inventory search results.
+Ownership does not bypass medium/heavy armor skills when equipping an item.
+
+Creation requires an identified campaign and format version 7. Each new record
+stores its index/type, global item ID, quantity one, presence one and a unique
+acquisition serial. Its armor class, declared socket count and built-in gems come
+from the original weapon/armor tables. Normal gem references start empty; neither
+the normal gem bank nor character equipment fields are modified. The per-type
+counter at `0x46900 + type * 4` advances past both its saved value and every
+occupied record's serial. Record positions referenced by joined or inactive
+characters are never reused, even when their presence byte is zero.
+
+The catalog excludes placeholders, dummy records and protected story weapons.
+It is not filtered by current story stage or shop availability. A batch creates
+one copy of each missing eligible definition in the selected 500-slot bank and
+preflights all free slots and serials. Failure leaves every byte unchanged;
+existing copies, sockets and favorite flags are preserved. Repeating a successful
+batch adds nothing. Explicit additions may create multiple independent copies.
+
+Favorite editing changes only `+0x11`. Deletion changes only presence `+0x10`,
+without compacting records, rewinding serial counters or erasing gem data.
+Malformed, referenced and story-protected records reject deletion.
+
+The supplied executable's dispatcher at `0xBF600` calls the weapon initializer
+at `0xBD790` and armor initializer at `0xBDAC0`. They read `jwl_slot` and fixed
+`jwl_skill` entries from the weapon/armor definitions. Fixed entries use a global
+gem item ID in the low halfword and a presence flag in the upper halfword at
+record `+0x1C`, `+0x24` and `+0x2C`. Weapons support three fixed entries; armor
+initializes only the first. The 1,572 initializer rows can be regenerated with
+`uv run --with beautifulsoup4 python tools/fetch_equipment_initializers.py` (TSV
+on standard output). Both catalogs map through global item references.
+
+Tests create every offered definition in both campaigns and compare the complete
+file against independently constructed records. They cover fixed sockets,
+duplicates, full banks, unknown presence flags, dangling/inactive references,
+serial overflow, idempotent batches and exact favorite/deletion boundaries.
+Real-save creation tests operate on copies in memory. CLI and GUI tests cover
+bulk filling, saving, invalid writes and nine-language/minimum-window layouts.
+
 ## Evidence and limits
 
 Field layouts were checked against the documented
@@ -109,6 +154,6 @@ records, rejected edits and exact restoration when switching back. Every offered
 equipment choice in all supplied saves is exercised on an in-memory copy, with
 all bytes outside the character reference required to remain identical.
 
-Story-weapon switching, appearance editing and gem creation
-are not implemented. In-game loading still needs user verification; lossless
+Story-weapon switching and appearance editing are not implemented.
+In-game loading of newly created equipment still needs user verification; lossless
 round trips and isolated byte changes are not proof of every gameplay rule.

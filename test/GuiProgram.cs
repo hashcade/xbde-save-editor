@@ -80,6 +80,7 @@ string temporary = Path.Combine(Path.GetTempPath(), $"xbde-gui-{Guid.NewGuid():N
 Directory.CreateDirectory(temporary);
 try
 {
+    EquipmentInventoryGuiTests.Run(window, temporary, Check);
     byte[] regionFixture = new byte[SaveDocument.FileSize];
     BinaryPrimitives.WriteUInt32LittleEndian(regionFixture, 7);
     BinaryPrimitives.WriteUInt16LittleEndian(regionFixture.AsSpan(0x152318), 1);
@@ -980,6 +981,8 @@ try
         Check(window.LoadSave(realSave), "Could not open the screenshot save.");
         if (page.Length > 0 && page[0] == "inventory")
             window.ShowInventory(page.Length > 2 ? Enum.Parse<InventoryKind>(page[2]) : InventoryKind.Collectables);
+        else if (page.Length > 0 && page[0] == "equipment-inventory")
+            window.ShowInventoryEquipment(page.Length > 2 ? Enum.Parse<EquipmentSlot>(page[2]) : EquipmentSlot.Weapon);
         else if (page.Length > 0 && page[0] == "gems")
         {
             window.ShowGems();

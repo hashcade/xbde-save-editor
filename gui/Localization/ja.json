@@ -1,4 +1,10 @@
 {
+  "EquipmentTarget": "対象キャラクター",
+  "Weapons": "武器",
+  "Armor": "防具",
+  "AddEquipment": "装備を追加",
+  "FillMissingEquipment": "現在の種類の装備を補完",
+  "EquippedBy": "装備中のキャラクター",
   "Regions": "地域",
   "RegionStars": "星の数",
   "RegionPoints": "キズナ値（0–10,000）",

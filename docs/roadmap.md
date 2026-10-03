@@ -19,7 +19,8 @@ Each feature is committed separately with core tests and matching CLI support.
 - [ ] Equipment: story-weapon switching, appearance and localized game names.
 - [x] Items: normal gem effect/rank/strength editing, decoded labels, validated ranges and CLI support.
 - [x] Items: normal gem creation/deletion and collectable/material/manual quantity, favorite, add/delete and bulk maximum editing, with CLI support.
-- [ ] Items: weapon/armor inventory creation, crystals/cylinders and localized game catalogs.
+- [x] Items: weapon/armor inventory creation, per-character/per-bank missing-equipment filling, favorite flags and protected deletion, with matching CLI support.
+- [ ] Items: crystals/cylinders and localized game catalogs.
 - [x] Achievements: validated main-story completion bits/counters, single/bulk unlock, filters and CLI support.
 - [ ] Achievements: localized game text and in-game verification of newly completed records.
 - [x] Character affinity: single/bulk maximum, direct points editing and monotonic skill-link slot synchronization, with matching CLI support.
@@ -33,6 +34,8 @@ editing remain available for progression changes without grinding.
 
 NPC affinity, quests, Colony 6, Time Attack, Ponspectors and system-save
 unlocks need further format validation. They are not promised or exposed as editable fields.
+Localized game catalogs are deferred until genuine game text is available.
+Do not synthesize official translations or block verified features on missing text.
 
 ## Verification
 

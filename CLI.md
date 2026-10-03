@@ -41,6 +41,11 @@ XbdeEditor.Cli equipment bfsgame00.sav 1
 XbdeEditor.Cli equip bfsgame00.sav edited.sav 2 Weapon 7
 XbdeEditor.Cli equipment-gem bfsgame00.sav edited.sav 1 Weapon 1 3
 XbdeEditor.Cli equipment-gem bfsgame00.sav edited.sav 1 Weapon 1 none
+XbdeEditor.Cli equipment-inventory bfsgame00.sav Weapon
+XbdeEditor.Cli add-equipment bfsgame00.sav edited.sav 2
+XbdeEditor.Cli fill-missing-equipment bfsgame00.sav edited.sav Weapon 2
+XbdeEditor.Cli equipment-favorite bfsgame00.sav edited.sav Weapon 0 true
+XbdeEditor.Cli delete-equipment bfsgame00.sav edited.sav Weapon 0
 XbdeEditor.Cli gems bfsgame00.sav
 XbdeEditor.Cli gem bfsgame00.sav edited.sav 3 --effect 26 --rank 6 --value 200
 XbdeEditor.Cli max-gem bfsgame00.sav edited.sav 3
@@ -156,6 +161,24 @@ exceeding 99; duplicate stacks reject that operation. `max-items` maximizes all
 existing editable stacks in the selected category, regardless of GUI filters.
 Key items remain read-only. New records update acquisition serial counters;
 deleted records do not shift indices. See [inventory validation](docs/inventory.md).
+
+## Equipment inventory
+
+`equipment-inventory` lists the specified 500-slot bank and its creation catalog.
+Use global catalog IDs with `add-equipment`, but zero-based inventory indices
+with `equipment-favorite` and `delete-equipment`. Equipment is never stacked;
+each addition creates one independent record with the original socket count and
+built-in gems, without equipping it or consuming a normal gem.
+
+`fill-missing-equipment` creates one copy of each missing ordinary definition for
+the joined character in the specified bank. It does not grant armor skills or
+promise that every added item can be worn immediately. Existing records and
+character references remain untouched. Insufficient space or serial overflow
+rejects the whole batch before writing. Repeating the command adds nothing.
+Dummy and story-protected weapons are excluded. Deletion rejects malformed or
+referenced records, including inactive-character references, and never shifts
+indices. Both campaigns require format version 7; unconfirmed campaigns reject
+mutations. See [equipment validation](docs/equipment.md).
 
 ## Character affinity
 

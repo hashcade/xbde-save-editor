@@ -1,4 +1,10 @@
 {
+  "EquipmentTarget": "目標角色",
+  "Weapons": "武器",
+  "Armor": "防具",
+  "AddEquipment": "新增裝備",
+  "FillMissingEquipment": "補齊目前類別裝備",
+  "EquippedBy": "裝備角色",
   "Regions": "地區",
   "RegionStars": "星級",
   "RegionPoints": "牽絆值（0–10,000）",

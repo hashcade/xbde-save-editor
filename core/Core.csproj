@@ -12,6 +12,7 @@
     <EmbeddedResource Include="Data/skill-link-shapes.tsv" />
     <EmbeddedResource Include="Data/equipment.tsv" />
     <EmbeddedResource Include="Data/equipment-rules.tsv" />
+    <EmbeddedResource Include="Data/equipment-initializers.tsv" />
     <EmbeddedResource Include="Data/gem-effects.tsv" />
     <EmbeddedResource Include="Data/gem-rules.tsv" />
   </ItemGroup>

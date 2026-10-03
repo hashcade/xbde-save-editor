@@ -267,6 +267,8 @@
         <TabStripItem Content="{DynamicResource Materials}" />
         <TabStripItem Content="{DynamicResource ArtManuals}" />
         <TabStripItem Content="{DynamicResource KeyItems}" />
+        <TabStripItem Content="{DynamicResource Weapons}" />
+        <TabStripItem Content="{DynamicResource Armor}" />
       </TabStrip>
       <Grid Name="GemsPanel" Grid.Row="1" ColumnDefinitions="280,*" ColumnSpacing="24">
       <suki:GlassCard Padding="20">
@@ -349,6 +351,55 @@
             </StackPanel>
           </ScrollViewer>
         </suki:GlassCard>
+      </Grid>
+      <Grid Name="EquipmentInventoryPanel" Grid.Row="1" ColumnDefinitions="280,*" ColumnSpacing="24" IsVisible="False">
+        <suki:GlassCard Padding="20">
+          <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" RowSpacing="16">
+            <Grid ColumnDefinitions="*,Auto"><TextBlock Name="EquipmentInventoryTitle" FontWeight="SemiBold" /><TextBlock Name="EquipmentInventoryCount" Grid.Column="1" /></Grid>
+            <ComboBox Name="EquipmentBankInput" Grid.Row="1" HorizontalAlignment="Stretch" SelectionChanged="EquipmentBank_Changed" />
+            <TextBox Name="EquipmentInventorySearch" Grid.Row="2" PlaceholderText="{DynamicResource Search}" TextChanged="EquipmentInventorySearch_Changed" />
+            <ListBox Name="EquipmentInventoryList" Grid.Row="3" SelectionChanged="EquipmentInventoryList_Changed">
+              <ListBox.ItemTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate></ListBox.ItemTemplate>
+            </ListBox>
+            <StackPanel Grid.Row="4" Spacing="12">
+              <TextBlock Text="{DynamicResource EquipmentTarget}" />
+              <ComboBox Name="EquipmentRecipientInput" HorizontalAlignment="Stretch" SelectionChanged="EquipmentRecipient_Changed" />
+              <Button Name="FillEquipmentButton" Content="{DynamicResource FillMissingEquipment}" HorizontalAlignment="Stretch" Click="FillEquipment_Click" IsEnabled="False" />
+              <Button Name="DeleteEquipmentButton" Content="{DynamicResource Delete}" HorizontalAlignment="Stretch" Click="DeleteEquipment_Click" IsEnabled="False" />
+            </StackPanel>
+          </Grid>
+        </suki:GlassCard>
+        <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Disabled">
+          <StackPanel Spacing="24">
+            <suki:GlassCard Name="OwnedEquipmentCard" Padding="20" VerticalAlignment="Top" HorizontalContentAlignment="Stretch">
+              <StackPanel Spacing="16">
+                <TextBlock Text="{DynamicResource Equipment}" FontWeight="SemiBold" />
+                <StackPanel Name="OwnedEquipmentDetails" Spacing="16" IsVisible="False">
+                  <Grid ColumnDefinitions="*,*" ColumnSpacing="24">
+                    <StackPanel Spacing="8"><TextBlock Text="{DynamicResource GemSocket}" /><TextBlock Name="OwnedEquipmentSockets" /></StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="8"><TextBlock Text="{DynamicResource EquippedBy}" /><TextBlock Name="OwnedEquipmentUsers" TextWrapping="Wrap" /></StackPanel>
+                  </Grid>
+                  <StackPanel Spacing="8"><TextBlock Text="{DynamicResource FixedGem}" /><TextBlock Name="OwnedEquipmentFixedGems" TextWrapping="Wrap" /></StackPanel>
+                  <CheckBox Name="EquipmentFavoriteInput" Content="{DynamicResource Favorite}" IsCheckedChanged="EquipmentFavorite_Changed" />
+                </StackPanel>
+              </StackPanel>
+            </suki:GlassCard>
+            <suki:GlassCard Name="CreateEquipmentCard" Padding="20" VerticalAlignment="Top" HorizontalContentAlignment="Stretch">
+              <StackPanel Spacing="16">
+                <TextBlock Text="{DynamicResource AddEquipment}" FontWeight="SemiBold" />
+                <TextBox Name="EquipmentDefinitionSearch" PlaceholderText="{DynamicResource Search}" TextChanged="EquipmentDefinitionSearch_Changed" />
+                <ComboBox Name="EquipmentDefinitionInput" HorizontalAlignment="Stretch" SelectionChanged="EquipmentDefinition_Changed">
+                  <ComboBox.ItemTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate></ComboBox.ItemTemplate>
+                </ComboBox>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="24">
+                  <StackPanel Spacing="8"><TextBlock Text="{DynamicResource GemSocket}" /><TextBlock Name="NewEquipmentSockets" /></StackPanel>
+                  <StackPanel Grid.Column="1" Spacing="8"><TextBlock Text="{DynamicResource FixedGem}" /><TextBlock Name="NewEquipmentFixedGems" TextWrapping="Wrap" /></StackPanel>
+                </Grid>
+                <Button Name="CreateEquipmentButton" Content="{DynamicResource Add}" HorizontalAlignment="Stretch" Click="CreateEquipment_Click" IsEnabled="False" />
+              </StackPanel>
+            </suki:GlassCard>
+          </StackPanel>
+        </ScrollViewer>
       </Grid>
     </Grid>
     <Grid Name="AchievementsPanel" Grid.Row="1" Margin="24,0" ColumnDefinitions="320,*" ColumnSpacing="24" IsVisible="False">

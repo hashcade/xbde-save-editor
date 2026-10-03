@@ -36,6 +36,67 @@ def main() -> None:
         source = root / "bfsgame00.sav"
         output = root / "output.sav"
         source.write_bytes(original)
+        equipment_bytes = bytearray(original)
+        slots = ["Weapon", "Head", "Torso", "Arms", "Legs", "Feet"]
+        starts = [0x3B10, 0x98D0, 0xF690, 0x15450, 0x1B210, 0x20FD0]
+        for character in range(1, 16):
+            for slot in range(6):
+                field = 0x28 if slot == 0 else 0x10 + slot * 4
+                struct.pack_into("<I", equipment_bytes, 0x152368 + (character - 1) * 0x138 + field, 0xFFFF)
+        equipment_source = root / "equipment-inventory.sav"
+        equipment_source.write_bytes(equipment_bytes)
+        assert "fill-missing-equipment" in run("--help")
+        for slot_index, slot in enumerate(slots):
+            info = json.loads(run("equipment-inventory", equipment_source, slot))
+            assert info["Supported"] and info["Capacity"] == 500 and info["Count"] == 0
+            assert info["Items"] == [] and info["Catalog"]
+            definition = info["Catalog"][0]
+            run("add-equipment", equipment_source, output, definition["Id"])
+            expected = bytearray(equipment_bytes)
+            start = starts[slot_index]
+            item_type = 2 if slot_index == 0 else slot_index + 3
+            struct.pack_into("<HHHHH", expected, start, 0, item_type, definition["Id"], item_type, 1)
+            struct.pack_into("<I", expected, start + 0xC, 1)
+            expected[start + 0x10] = 1
+            expected[start + 0x14] = definition["ArmorClass"]
+            expected[start + 0x15] = definition["GemSlotCount"]
+            for socket in range(1, 4):
+                fixed = definition[f"FixedGem{socket}"]
+                if fixed:
+                    struct.pack_into("<I", expected, start + 0x1C + (socket - 1) * 8, fixed | (1 << 16))
+            struct.pack_into("<I", expected, 0x46900 + item_type * 4, 1)
+            assert output.read_bytes() == expected
+            row = json.loads(run("equipment-inventory", output, slot))["Items"][0]
+            assert row["IsValid"] and row["CanDelete"] and row["EquippedBy"] == []
+            run("equipment-favorite", output, output, slot, "0", "true")
+            expected[start + 0x11] = 1
+            assert output.read_bytes() == expected
+            run("equipment-favorite", output, output, slot, "0", "yes", success=False)
+            assert output.read_bytes() == expected
+            run("delete-equipment", output, output, slot, "0")
+            expected[start + 0x10] = 0
+            assert output.read_bytes() == expected
+        run("fill-missing-equipment", equipment_source, output, "Weapon", "2")
+        filled = output.read_bytes()
+        info = json.loads(run("equipment-inventory", output, "Weapon"))
+        targets = [row for row in info["Catalog"] if 2 in row["Characters"]]
+        assert {row["ItemId"] for row in info["Items"]} == {row["Id"] for row in targets}
+        assert len(info["Items"]) == len(targets) > 5
+        assert all(before == after or 0x3B10 <= index < 0x98D0 or 0x46908 <= index < 0x4690C
+                   for index, (before, after) in enumerate(zip(equipment_bytes, filled)))
+        run("fill-missing-equipment", output, output, "Weapon", "2")
+        assert output.read_bytes() == filled
+        for command in [("add-equipment", "5"), ("fill-missing-equipment", "Weapon", "14"),
+                        ("delete-equipment", "Weapon", "500"), ("equipment-favorite", "bad", "0", "false")]:
+            run(command[0], equipment_source, output, *command[1:], success=False)
+            assert output.read_bytes() == filled
+        full_equipment = bytearray(equipment_bytes)
+        for index in range(499):
+            full_equipment[0x3B10 + index * 0x30 + 0x10] = 2
+        equipment_source.write_bytes(full_equipment)
+        run("fill-missing-equipment", equipment_source, output, "Weapon", "2", success=False)
+        assert output.read_bytes() == filled and equipment_source.read_bytes() == full_equipment
+        equipment_source.write_bytes(equipment_bytes)
         assert "region-affinities" in run("--help")
         regions = json.loads(run("region-affinities", source))
         assert regions["Supported"] and regions["MaximumPoints"] == 10000 and regions["FiveStarPoints"] == 8000
