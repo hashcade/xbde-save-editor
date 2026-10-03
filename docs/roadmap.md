@@ -5,6 +5,7 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Independent lossless parser and atomic file saving.
 - [x] Inspect/copy CLI and cross-platform CI.
 - [x] Main panel: money and Noponstones, nine UI languages and shared save actions.
+- [x] Main currencies: native 999,999,999 caps, unchanged high-value preservation and atomic GUI/CLI validation.
 - [x] Characters: AP/Affinity Coin editing and general/Expert Mode inspection.
 - [x] Characters: verified AP cap, single/bulk AP maximum and reserve EXP editing.
 - [x] Characters: linked current level/EXP editing with verified highest-level bookkeeping.
@@ -40,7 +41,10 @@ editing remain available for progression changes without grinding.
 
 1. Reduce Colony 6 recruitment grinding only where all linked state can be validated. NPC relationship states are discrete quest conditions, not a monotonic affinity meter; do not offer a blanket maximum.
 2. Assess protected Art unlocks only where they remove a concrete progression obstacle and preserve linked quest state.
-3. Assess Time Attack rewards and Ponspectors against the same usefulness and write-safety criteria before committing to implementation. An unverified or low-value candidate is deferred, not added merely to expand feature coverage.
+An unverified or low-value candidate is deferred, not added merely to expand
+feature coverage. Time Attack rewards are already obtainable through existing
+item operations. Ponspector recruitment is deferred with quest-linked editing,
+not planned as a standalone bulk-add panel.
 
 NPC affinity, quests, Colony 6 initial quest/recruitment, Time Attack, Ponspectors and system-save
 unlocks need further format validation. They are not promised or exposed as editable fields.
@@ -48,6 +52,11 @@ Native NPC quest checks compare relationship states for equality. Raising every
 relationship to the largest number can therefore make a required state unavailable.
 Time Attack reward acquisition already overlaps with equipment/gem creation and
 Noponstone editing; record editing alone does not justify another panel.
+Future Connected Arts Coins buy Arts Manuals, whose learning/level permissions
+are already covered by Art editing. Ponspectors are recruited by resolving
+individual quests, rather than raising a separate affection meter. Both systems
+are described in the extracted [game tutorial table](https://xenobladedata.github.io/xb1de/bdat/bdat_menu_ttrl/MNU_ttrl_page.html),
+rows 2 and 8. Do not add duplicate currency/reward panels or quest-blind recruitment.
 Crystals/cylinders and story-weapon switching are not completion requirements; implement them only if they solve a concrete progression or grinding problem safely.
 
 ## Deferred game-data localization
