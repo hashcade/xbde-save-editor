@@ -9,7 +9,9 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Characters: verified AP cap, single/bulk AP maximum and reserve EXP editing.
 - [x] Characters: linked current level/EXP editing with verified highest-level bookkeeping.
 - [ ] Expert Mode: simulate spending/refunding reserve EXP and edit its enabled state.
-- [ ] Arts and skills: limits, unlock state and learned progress.
+- [x] Arts: verified levels, single/character-wide maximum and CLI support.
+- [ ] Arts: localized game names and explicit unlock editing.
+- [ ] Skills: unlock state and learned progress.
 - [ ] Equipment: inventory references, gems and appearance.
 - [ ] Items: localized catalogs and validated editing.
 - [ ] Party: reorder existing members without altering recruitment.
@@ -30,3 +32,4 @@ Round-trip and byte-diff tests do not replace loading an edited copy in-game.
 
 See [progression validation](progression.md) for the verified resource limits and
 the verified level/EXP linkage and the remaining Expert Mode operations.
+See [Arts validation](arts.md) for campaign limits, manual flags and linked records.

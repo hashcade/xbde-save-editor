@@ -9,11 +9,14 @@ Edit Xenoblade Chronicles: Definitive Edition saves, including Future Connected.
 - **Save files:** Open compatible `bfsgame*.sav` and `bfsmeria*.sav` game saves, inspect the saved party and create byte-identical copies. System saves and thumbnails are not editable.
 - **Main:** Edit money and Noponstones. Save and Save As are available in the File menu; unrecognized layouts are rejected and unknown bytes remain untouched.
 - **Characters:** Search joined characters, select a level and edit linked EXP, AP, main-story Affinity Coins and Expert Mode reserve EXP. Maximize AP for one character or everyone already joined, or fill a character's reserve EXP. The highest attained level is available for inspection. Character names switch with the interface language. Future Connected does not expose Affinity Coin editing.
+- **Arts:** In Characters → Arts, inspect learned and missing arts, select a level or maximize one art or all learned arts for the current character. Limits account for the campaign, Master books and Monado story permissions; fixed Talent Arts remain read-only. Melia's discharge levels stay linked to their summon arts. The same operations are available in the CLI.
 - **CLI:** Inspect saves as JSON, copy them or edit resources without changing unknown data.
 
 English is the default language. The interface also supports Simplified Chinese,
 Traditional Chinese, Japanese, Korean, German, French, Spanish and Italian.
 Help → About shows the version and repository link.
+Art names currently use the verified English catalog; other game-language names
+are not yet available.
 
 ## Get started
 
