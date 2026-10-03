@@ -60,6 +60,7 @@ public sealed partial class SaveDocument
     public byte[] Serialize() => (byte[])_data.Clone();
     public bool CanEditAchievements => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
     public bool CanEditSkillLinks => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
+    public bool CanEditSkills => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
     public bool CanEditAffinity => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
     public bool CanEditRegionAffinity => Campaign == Campaign.MainStory && ReadUInt32(0) == 7;
     public IReadOnlyList<RegionAffinityRecord> RegionAffinities => Campaign == Campaign.MainStory
@@ -277,9 +278,18 @@ public sealed partial class SaveDocument
 
     public void MaxAllSkills()
     {
-        if (Campaign != Campaign.MainStory || Characters.Any(character => character.Id is < 1 or > 8))
+        if (!CanUnlockAndMaxAllSkills)
             throw new ArgumentException("Skill learning requires an identified main-story party.");
         foreach (var character in Characters) character.MaxSkills();
+    }
+
+    public bool CanUnlockAndMaxAllSkills => CanEditSkills && PartyIds.All(id => id is >= 1 and <= 8);
+
+    public void UnlockAndMaxAllSkills()
+    {
+        if (!CanUnlockAndMaxAllSkills)
+            throw new ArgumentException("Skill unlocking requires a supported main-story party and save format 7.");
+        foreach (var character in Characters) character.UnlockAndMaxSkills();
     }
 
     internal byte ReadByte(int offset) => _data[offset];
@@ -289,6 +299,14 @@ public sealed partial class SaveDocument
             throw new ArgumentOutOfRangeException(nameof(flag));
         int bit = 0x2cdd + flag;
         return (ReadByte(0x50 + (bit >> 3)) & (1 << (bit & 7))) != 0;
+    }
+    internal void UnlockSkillTree(int flag)
+    {
+        if (!CanEditSkills || flag is < 1 or > 14)
+            throw new ArgumentException("Hidden skill branches require a main-story save with format version 7.");
+        int bit = 0x2cdd + flag;
+        int offset = 0x50 + (bit >> 3);
+        WriteByte(offset, (byte)(ReadByte(offset) | (1 << (bit & 7))));
     }
     internal void WriteByte(int offset, byte value) => _data[offset] = value;
     internal void WriteUInt16(int offset, ushort value) => BinaryPrimitives.WriteUInt16LittleEndian(_data.AsSpan(offset, 2), value);

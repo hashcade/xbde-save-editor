@@ -95,6 +95,9 @@ XbdeEditor.Cli skill-tree bfsgame00.sav edited.sav 1 1 --sp 500
 XbdeEditor.Cli max-skill-tree bfsgame00.sav edited.sav 1 1
 XbdeEditor.Cli max-skills bfsgame00.sav edited.sav 1
 XbdeEditor.Cli max-all-skills bfsgame00.sav edited.sav
+XbdeEditor.Cli unlock-skill-tree bfsgame00.sav edited.sav 1 4
+XbdeEditor.Cli unlock-max-skills bfsgame00.sav edited.sav 1
+XbdeEditor.Cli unlock-max-all-skills bfsgame00.sav edited.sav
 XbdeEditor.Cli skill-links bfsgame00.sav 1
 XbdeEditor.Cli skill-link bfsgame00.sav edited.sav 1 2 1 37
 XbdeEditor.Cli skill-link bfsgame00.sav edited.sav 1 2 1 none
@@ -160,9 +163,13 @@ state as JSON. Tree indices are one-based, as returned by that command. Selectin
 the first tree's free initial skill cannot be removed. `--sp` must be below the
 next skill's learning cost and is unavailable once all five skills are learned.
 
-Maximum commands learn all five skills and reset remaining SP. Character-wide
-and party-wide operations skip locked hidden trees and do not alter task unlocks
-or skill links. Future Connected and unconfirmed campaigns reject skill edits.
+The `max-skills` and `max-all-skills` commands learn all five skills and reset
+remaining SP in already-unlocked trees, skipping locked hidden trees.
+`unlock-skill-tree` unlocks one branch without changing its learned count or SP.
+`unlock-max-skills` and `unlock-max-all-skills` also unlock hidden branches before
+learning all five skills and resetting SP. None of these commands completes the
+associated quests or changes skill links. Skill edits require main-story format
+version 7; Future Connected and unconfirmed formats are rejected.
 Existing unusual values remain intact unless explicitly normalized. See
 [skill validation](docs/skills.md).
 

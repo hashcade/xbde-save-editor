@@ -5,14 +5,56 @@
 Characters → Skills displays all five branches as cards. The learned count and
 remaining SP are separate save fields. Choosing a count resets remaining SP;
 maximum operations write five learned skills and zero remaining SP. Tree-learning operations never
-select a different active tree, change skill links or grant hidden-tree task
-unlocks. Party-wide maximum applies to joined characters, not search results.
+select a different active tree or change skill links. The GUI's character/party-wide
+actions explicitly unlock hidden branches before learning all five skills; the
+single-branch maximum only learns an already unlocked branch. Party-wide actions
+apply to joined characters, not search results.
 
 The first branch contains an innate zero-cost skill, so its count accepts 1–5.
 Other branches accept 0–5. Remaining SP must be below the next skill's cost and
 cannot be edited on a completed branch. Existing higher SP is retained on load
 and unrelated edits. Invalid drafts prevent saving instead of being silently
 clamped. Future Connected does not have skill trees; its records are read-only.
+All skill edits require an identified main-story format-7 save.
+
+## Hidden-branch unlocking
+
+A locked branch offers Unlock Branch. This sets only its availability bit and
+leaves learned count, remaining SP, selected branch and skill links untouched.
+Unlock & Learn All Branches performs both operations for the selected character;
+Unlock & Learn All Skills does so for every joined character, independently of
+search filters. They set each joined branch's learned count to five and SP to zero.
+They do not complete the corresponding quests, grant quest rewards, add EXP/AP
+or change regional/NPC affinity. Only the hidden-branch bits and, for combined
+learning, the selected characters' learned/SP fields can change.
+
+The availability bit is `0x2CDD + flag`, based at saved offset `0x50`.
+Flags 1–14 map to the fourth/fifth branches of the seven main-story characters.
+Fiora's early and later forms share flags 5/6 natively, but their learned/SP fields
+remain separate. Editing one form does not learn skills in the other form.
+Already-unlocked branches are no-ops when explicitly unlocked again.
+
+Native getter `0x85570–0x855A0` loads the branch's `BTL_PSVlink.flag` and reads
+descriptor `0x36FD000F` through `0xB2620`. The generic flag writer at
+`0xAEBAC–0xAEC28` writes that same packed bit without changing quest state.
+The corresponding event observer at `0x1B9EE0–0x1B9FBC` only calls the menu NEW
+marker helper `0x7F650`; that helper sets a long-term notification bit and issues
+a runtime notification. The editor does not reproduce NEW markers or runtime
+notifications. It does not claim that a branch's associated quest was completed.
+
+CLI commands are `unlock-skill-tree`, `unlock-max-skills` and
+`unlock-max-all-skills`. Existing `max-skill-tree`, `max-skills` and
+`max-all-skills` retain their learning-only behavior and do not unlock branches.
+Unknown campaigns, Future Connected, unverified formats and unsupported guests
+are rejected before combined batch writes. Existing malformed learned/SP values
+remain inspectable; an explicit combined maximum replaces those progression
+values with five/zero, not arbitrary values.
+
+Tests compare the whole file for every branch/owner and combined operation,
+cover shared Fiora flags, absent characters, neighboring bits, malformed progress,
+version/campaign/guest rejection, idempotence, GUI refresh and matching CLI writes.
+Supplied real saves are checked using in-memory copies only. Loading a newly
+unlocked branch in-game has not yet been verified.
 
 ## Catalog and native checks
 

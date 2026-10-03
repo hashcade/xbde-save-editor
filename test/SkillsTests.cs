@@ -11,6 +11,7 @@ internal static class SkillsTests
         check(SkillCatalog.All.Count == 40 && SkillCatalog.All.Sum(tree => tree.Skills.Count) == 200,
             "Skill catalog is incomplete.");
         byte[] original = fixture(false);
+        BinaryPrimitives.WriteUInt32LittleEndian(original, 7);
         original[0x152330] = 8;
         for (int id = 1; id <= 8; id++)
         {
@@ -86,6 +87,7 @@ internal static class SkillsTests
             "All-character skills modified selected trees, quest unlocks or skill links.");
         save.MaxAllSkills();
         check(save.Serialize().AsSpan().SequenceEqual(afterAll), "Skill maximum is not idempotent.");
+        VerifyUnlocks(original, check, reject);
         reject(() => save.GetCharacter(1).GetSkillTree(0), "Zero tree index was accepted.");
         reject(() => save.GetCharacter(1).GetSkillTree(6), "Sixth tree index was accepted.");
 
@@ -108,10 +110,104 @@ internal static class SkillsTests
             reject(() => unsupported.MaxAllSkills(), "Unsupported campaign exposed skill maximum.");
             reject(() => unsupported.GetCharacter(1).MaxSkills(), "Unsupported character exposed skill maximum.");
             reject(() => unsupported.GetCharacter(1).GetSkillTree(1).Maximize(), "Unsupported campaign exposed tree editing.");
+            reject(() => unsupported.GetCharacter(1).GetSkillTree(4).Unlock(), "Unsupported campaign exposed hidden branch unlocking.");
+            reject(() => unsupported.GetCharacter(1).UnlockAndMaxSkills(), "Unsupported campaign exposed combined skill learning.");
+            reject(() => unsupported.UnlockAndMaxAllSkills(), "Unsupported campaign exposed party-wide unlocking.");
             check(unsupported.Serialize().AsSpan().SequenceEqual(bytes), "Unsupported campaign changed bytes.");
             if (future) check(unsupported.GetCharacter(14).SkillTrees.Count == 0
                 && unsupported.GetCharacter(15).SkillTrees.Count == 0, "Kino or Nene received another character's tree.");
         }
+    }
+
+    private static void VerifyUnlocks(byte[] original, Action<bool, string> check, Action<Action, string> reject)
+    {
+        foreach (var definition in SkillCatalog.All)
+        {
+            var document = SaveDocument.Parse(original);
+            var tree = document.GetCharacter(definition.CharacterId).GetSkillTree(definition.Index);
+            check(tree.CanUnlock == (definition.Index > 3), "Hidden branch unlock eligibility differs.");
+            tree.Unlock();
+            byte[] expected = (byte[])original.Clone();
+            if (definition.UnlockFlag != 0) Unlock(expected, definition.UnlockFlag, true);
+            check(document.Serialize().AsSpan().SequenceEqual(expected),
+                "Single unlock changed progress, quests, links, NEW markers or neighboring bits.");
+            check(tree.IsUnlocked && tree.CanEdit && !tree.CanUnlock, "Unlocked branch did not become editable.");
+            tree.Unlock();
+            check(document.Serialize().AsSpan().SequenceEqual(expected), "Repeated branch unlock changed bytes.");
+            if (definition.CharacterId is 3 or 8)
+            {
+                int otherId = definition.CharacterId == 3 ? 8 : 3;
+                check(document.GetCharacter(otherId).GetSkillTree(definition.Index).IsUnlocked,
+                    "Fiora's native shared unlock was not visible to her other form.");
+            }
+        }
+        foreach (var characterId in Enumerable.Range(1, 8))
+        {
+            var document = SaveDocument.Parse(original);
+            document.GetCharacter(characterId).UnlockAndMaxSkills();
+            byte[] expectedFlags = (byte[])original.Clone();
+            foreach (var tree in SkillCatalog.All.Where(tree => tree.CharacterId == characterId && tree.UnlockFlag != 0))
+                Unlock(expectedFlags, tree.UnlockFlag, true);
+            check(OnlySkillFields(expectedFlags, document.Serialize(), [characterId], Enumerable.Range(1, 5)),
+                "Character unlock/max changed another form's learned skills, links or task states.");
+            check(document.GetCharacter(characterId).SkillTrees.All(tree => tree.IsUnlocked && tree.LearnedCount == 5 && tree.Progress == 0),
+                "Character unlock/max missed a branch.");
+            byte[] maximized = document.Serialize();
+            document.GetCharacter(characterId).UnlockAndMaxSkills();
+            check(document.Serialize().AsSpan().SequenceEqual(maximized), "Combined character maximum is not idempotent.");
+        }
+        var all = SaveDocument.Parse(original);
+        all.UnlockAndMaxAllSkills();
+        byte[] allFlags = (byte[])original.Clone();
+        for (int flag = 1; flag <= 14; flag++) Unlock(allFlags, flag, true);
+        check(OnlySkillFields(allFlags, all.Serialize(), Enumerable.Range(1, 8), Enumerable.Range(1, 5)),
+            "Party-wide unlocking changed unrelated bytes.");
+        check(all.Characters.SelectMany(character => character.SkillTrees)
+            .All(tree => tree.IsUnlocked && tree.LearnedCount == 5 && tree.Progress == 0),
+            "Party-wide unlocking missed a joined branch.");
+        byte[] complete = all.Serialize();
+        all.UnlockAndMaxAllSkills();
+        check(all.Serialize().AsSpan().SequenceEqual(complete), "Party-wide unlocking is not idempotent.");
+        byte[] unusualBytes = (byte[])original.Clone();
+        Set(unusualBytes, 1, 0x7c, 4, uint.MaxValue);
+        Set(unusualBytes, 1, 0x90, 4, uint.MaxValue);
+        var unusual = SaveDocument.Parse(unusualBytes);
+        unusual.GetCharacter(1).GetSkillTree(4).Unlock();
+        byte[] unusualFlags = (byte[])unusualBytes.Clone();
+        Unlock(unusualFlags, 1, true);
+        check(unusual.Serialize().AsSpan().SequenceEqual(unusualFlags),
+            "Single unlocking normalized malformed stored learning data.");
+        unusual.GetCharacter(1).UnlockAndMaxSkills();
+        check(unusual.GetCharacter(1).SkillTrees.All(tree => tree.LearnedCount == 5 && tree.Progress == 0),
+            "Explicit combined maximum failed to replace malformed learning data.");
+        byte[] unsupportedVersion = (byte[])original.Clone();
+        BinaryPrimitives.WriteUInt32LittleEndian(unsupportedVersion, 8);
+        var unsupported = SaveDocument.Parse(unsupportedVersion);
+        check(!unsupported.CanEditSkills && !unsupported.CanUnlockAndMaxAllSkills,
+            "An unverified format exposes skill edits.");
+        reject(() => unsupported.GetCharacter(1).GetSkillTree(4).Unlock(), "An unverified format permits unlocking.");
+        reject(() => unsupported.GetCharacter(1).GetSkillTree(1).Maximize(), "An unverified format permits learning.");
+        reject(() => unsupported.GetCharacter(1).MaxSkills(), "An unverified format permits character maximum.");
+        reject(() => unsupported.MaxAllSkills(), "An unverified format permits party maximum.");
+        reject(() => unsupported.UnlockAndMaxAllSkills(), "An unverified format permits combined maximum.");
+        check(unsupported.Serialize().AsSpan().SequenceEqual(unsupportedVersion), "Rejected version edits changed bytes.");
+        foreach (int guestId in new[] { 9, 16 })
+        {
+            byte[] guestBytes = (byte[])original.Clone();
+            BinaryPrimitives.WriteUInt16LittleEndian(guestBytes.AsSpan(0x152318 + 14), (ushort)guestId);
+            if (guestId <= 15) BinaryPrimitives.WriteUInt32LittleEndian(guestBytes.AsSpan(Offset(guestId)), 20);
+            var guest = SaveDocument.Parse(guestBytes);
+            reject(() => guest.UnlockAndMaxAllSkills(), "An unsupported guest was omitted during batch validation.");
+            check(guest.Serialize().AsSpan().SequenceEqual(guestBytes), "Guest rejection partially unlocked the party.");
+        }
+        byte[] joinedOnly = (byte[])original.Clone();
+        joinedOnly[0x152330] = 2;
+        var joined = SaveDocument.Parse(joinedOnly);
+        joined.UnlockAndMaxAllSkills();
+        byte[] joinedFlags = (byte[])joinedOnly.Clone();
+        for (int flag = 1; flag <= 4; flag++) Unlock(joinedFlags, flag, true);
+        check(OnlySkillFields(joinedFlags, joined.Serialize(), [1, 2], Enumerable.Range(1, 5)),
+            "A joined-only batch modified absent characters or their hidden unlock flags.");
     }
 
     internal static void VerifyRealSave(byte[] bytes, Action<bool, string> check)
@@ -125,6 +221,13 @@ internal static class SkillsTests
             "Real-save skill maximum changed unrelated fields.");
         check(save.Characters.SelectMany(character => character.SkillTrees).Where(tree => tree.CanEdit)
             .All(tree => tree.LearnedCount == 5 && tree.Progress == 0), "Real-save maximum missed a tree.");
+        var unlocked = SaveDocument.Parse(bytes);
+        byte[] expectedFlags = (byte[])bytes.Clone();
+        foreach (var tree in SkillCatalog.All.Where(tree => save.PartyIds.Contains(tree.CharacterId) && tree.UnlockFlag != 0))
+            Unlock(expectedFlags, tree.UnlockFlag, true);
+        unlocked.UnlockAndMaxAllSkills();
+        check(OnlySkillFields(expectedFlags, unlocked.Serialize(), save.PartyIds, Enumerable.Range(1, 5)),
+            "Real-save hidden unlocking modified unrelated task/link/character fields.");
     }
 
     private static int Offset(int id) => CharacterBase + (id - 1) * CharacterSize;

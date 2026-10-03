@@ -16,6 +16,8 @@ public partial class MainWindow
         public string Name => Tree.Name;
         public bool CanEdit => CanEditSkillTree(Tree);
         public bool IsBlocked => !CanEdit;
+        public bool CanUnlock => Tree.CanUnlock;
+        public bool ShowMaximize => !CanUnlock;
         public string Status => UiLanguage.Get(Tree.IsUnlocked ? "Unavailable" : "Locked");
         public bool CanEditProgress => CanEdit && Tree.LearnedCount < 5;
         public bool ShowProgressValue => !CanEditProgress;
@@ -65,9 +67,8 @@ public partial class MainWindow
             int characterId = _character?.Id ?? 0;
             SkillTreeList.ItemsSource = trees.Select(tree => new SkillTreeRow(characterId, tree,
                 _skillProgressDrafts.GetValueOrDefault((characterId, tree.Index)))).ToArray();
-            MaxCharacterSkillsButton.IsEnabled = trees.Any(CanEditSkillTree);
-            MaxAllSkillsButton.IsEnabled = Session?.Document.Characters
-                .Any(character => character.SkillTrees.Any(CanEditSkillTree)) ?? false;
+            MaxCharacterSkillsButton.IsEnabled = _character?.CanUnlockAndMaxSkills ?? false;
+            MaxAllSkillsButton.IsEnabled = Session?.Document.CanUnlockAndMaxAllSkills ?? false;
         }
         finally { _refreshingSkills = false; }
     }
@@ -183,7 +184,7 @@ public partial class MainWindow
         if (_character is not { } character) return;
         EditSkills(() =>
         {
-            character.MaxSkills();
+            character.UnlockAndMaxSkills();
             foreach (var tree in character.SkillTrees.Where(CanEditSkillTree))
                 _skillProgressDrafts.Remove((character.Id, tree.Index));
         });
@@ -194,11 +195,17 @@ public partial class MainWindow
         if (Session is not { } session) return;
         EditSkills(() =>
         {
-            session.Document.MaxAllSkills();
+            session.Document.UnlockAndMaxAllSkills();
             foreach (var character in session.Document.Characters)
                 foreach (var tree in character.SkillTrees.Where(CanEditSkillTree))
                     _skillProgressDrafts.Remove((character.Id, tree.Index));
         });
+    }
+
+    private void UnlockTree_Click(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { Tag: SkillTreeRow row } || !row.CanUnlock) return;
+        EditSkills(row.Tree.Unlock);
     }
 
     private void EditSkills(Action edit)

@@ -23,6 +23,7 @@ try
         Console.WriteLine("collectopaedia <save>");
         Console.WriteLine("collectopaedia-plan <save> [--page <map-id>|--entry <entry-id>]");
         Console.WriteLine("complete-collectopaedia <save> <output> [--page <map-id>|--entry <entry-id>]");
+        Console.WriteLine("unlock-skill-tree <save> <output> <character-id> <tree-index>\nunlock-max-skills <save> <output> <character-id>\nunlock-max-all-skills <save> <output>");
         return 0;
     }
     if (args is ["collectopaedia-plan", var planSource, .. var planArguments])
@@ -339,7 +340,7 @@ try
         var character = SaveSession.Open(skillsSource).Document.GetCharacter(ParseId(skillsCharacter));
         Console.WriteLine(JsonSerializer.Serialize(character.SkillTrees.Select(tree => new
         {
-            tree.Index, tree.Name, tree.IsUnlocked, tree.CanEdit, tree.LearnedCount,
+            tree.Index, tree.Name, tree.IsUnlocked, tree.CanEdit, tree.CanUnlock, tree.LearnedCount,
             tree.Progress, tree.MaximumProgress, tree.Skills
         }), new JsonSerializerOptions { WriteIndented = true }));
         return 0;
@@ -411,6 +412,27 @@ try
         int? gem = gemChoice == "none" ? null : ParseId(gemChoice);
         equipment.SetGems(equipment.GemSockets.Select(record => record.Index == socket ? gem : record.GemIndex).ToArray());
         session.Save(gemOutput);
+        return 0;
+    }
+    if (args is ["unlock-skill-tree", var unlockTreeSource, var unlockTreeOutput, var unlockTreeCharacter, var unlockTreeIndex])
+    {
+        var session = SaveSession.Open(unlockTreeSource);
+        session.Document.GetCharacter(ParseId(unlockTreeCharacter)).GetSkillTree(ParseId(unlockTreeIndex)).Unlock();
+        session.Save(unlockTreeOutput);
+        return 0;
+    }
+    if (args is ["unlock-max-skills", var unlockSkillsSource, var unlockSkillsOutput, var unlockSkillsCharacter])
+    {
+        var session = SaveSession.Open(unlockSkillsSource);
+        session.Document.GetCharacter(ParseId(unlockSkillsCharacter)).UnlockAndMaxSkills();
+        session.Save(unlockSkillsOutput);
+        return 0;
+    }
+    if (args is ["unlock-max-all-skills", var unlockAllSkillsSource, var unlockAllSkillsOutput])
+    {
+        var session = SaveSession.Open(unlockAllSkillsSource);
+        session.Document.UnlockAndMaxAllSkills();
+        session.Save(unlockAllSkillsOutput);
         return 0;
     }
     if (args is ["max-all-skills", var allSkillsSource, var allSkillsOutput])

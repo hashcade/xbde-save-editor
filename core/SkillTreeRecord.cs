@@ -22,7 +22,8 @@ public sealed class SkillTreeRecord
     public int LearnedCount => unchecked((int)_document.ReadUInt32(CountOffset));
     public int MinimumLearnedCount => Skills.TakeWhile(skill => skill.RequiredSP == 0).Count();
     public bool IsUnlocked => _definition.UnlockFlag == 0 || _document.IsSkillTreeUnlocked(_definition.UnlockFlag);
-    public bool CanEdit => _document.Campaign == Campaign.MainStory && IsUnlocked;
+    public bool CanEdit => _document.CanEditSkills && IsUnlocked;
+    public bool CanUnlock => _document.CanEditSkills && _definition.UnlockFlag != 0 && !IsUnlocked;
     public uint MaximumProgress => LearnedCount is >= 0 and < 5 && Skills[LearnedCount].RequiredSP > 0
         ? Skills[LearnedCount].RequiredSP - 1 : 0;
 
@@ -46,6 +47,13 @@ public sealed class SkillTreeRecord
     }
 
     public void Maximize() => SetLearnedCount(5);
+
+    public void Unlock()
+    {
+        if (!_document.CanEditSkills)
+            throw new ArgumentException("Skill branches require an identified main-story save with format version 7.");
+        if (_definition.UnlockFlag != 0) _document.UnlockSkillTree(_definition.UnlockFlag);
+    }
 
     private void EnsureEditable()
     {

@@ -78,9 +78,22 @@ public sealed class CharacterRecord
 
     public void MaxSkills()
     {
-        if (_document.Campaign != Campaign.MainStory || Id is < 1 or > 8)
+        if (!CanUnlockAndMaxSkills)
             throw new ArgumentException("Skill learning requires an identified main-story character.");
         foreach (var tree in SkillTrees.Where(tree => tree.CanEdit)) tree.Maximize();
+    }
+
+    public bool CanUnlockAndMaxSkills => _document.CanEditSkills && Id is >= 1 and <= 8;
+
+    public void UnlockAndMaxSkills()
+    {
+        if (!CanUnlockAndMaxSkills)
+            throw new ArgumentException("Skill unlocking requires a supported main-story character and save format 7.");
+        foreach (var tree in SkillTrees)
+        {
+            tree.Unlock();
+            tree.Maximize();
+        }
     }
 
     public void MaxArts()

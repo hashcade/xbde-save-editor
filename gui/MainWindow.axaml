@@ -15,6 +15,9 @@
     <Style Selector="ListBox">
       <Setter Property="ItemsPanel"><ItemsPanelTemplate><VirtualizingStackPanel CacheLength="1" /></ItemsPanelTemplate></Setter>
     </Style>
+    <Style Selector="Button.wrap-label /template/ StackPanel">
+      <Setter Property="Orientation" Value="Vertical" />
+    </Style>
   </Window.Styles>
   <Grid Name="WindowLayout" RowDefinitions="Auto,*,Auto" Margin="0,0,0,24" RowSpacing="16">
     <Grid Name="Header" ColumnDefinitions="Auto,*">
@@ -108,7 +111,9 @@
           </ListBox>
           <StackPanel Grid.Row="3" Spacing="16">
             <Button Name="MaxAllAPButton" Content="{DynamicResource MaxAllAP}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxAllAP_Click" />
-            <Button Name="MaxAllSkillsButton" Content="{DynamicResource MaxAllSkills}" HorizontalAlignment="Stretch" IsEnabled="False" IsVisible="False" Click="MaxAllSkills_Click" />
+            <Button Name="MaxAllSkillsButton" Classes="wrap-label" Content="{DynamicResource UnlockMaxAllSkills}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" IsEnabled="False" IsVisible="False" Click="MaxAllSkills_Click">
+              <Button.ContentTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" /></DataTemplate></Button.ContentTemplate>
+            </Button>
             <Button Name="LearnMaxAllArtsButton" Content="{DynamicResource LearnMaxAllArts}" HorizontalAlignment="Stretch" IsEnabled="False" IsVisible="False" Click="LearnMaxAllArts_Click">
               <Button.ContentTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" /></DataTemplate></Button.ContentTemplate>
             </Button>
@@ -254,7 +259,9 @@
             </ScrollViewer>
           </Grid>
           <Grid Name="SkillsPanel" Grid.Row="1" RowDefinitions="Auto,*" RowSpacing="16" IsVisible="False">
-            <Button Name="MaxCharacterSkillsButton" Content="{DynamicResource MaxCharacterSkills}" HorizontalAlignment="Stretch" IsEnabled="False" Click="MaxCharacterSkills_Click" />
+            <Button Name="MaxCharacterSkillsButton" Classes="wrap-label" Content="{DynamicResource UnlockMaxCharacterSkills}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" IsEnabled="False" Click="MaxCharacterSkills_Click">
+              <Button.ContentTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" /></DataTemplate></Button.ContentTemplate>
+            </Button>
             <ScrollViewer Name="SkillsScroll" Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
               <ItemsControl Name="SkillTreeList" Margin="-6,0,-6,0">
                 <ItemsControl.ItemsPanel>
@@ -278,7 +285,8 @@
                             <DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" Margin="0,3" /></DataTemplate>
                           </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <Button Name="MaxTreeButton" Tag="{Binding}" Content="{DynamicResource MaxTree}" HorizontalAlignment="Stretch" IsEnabled="{Binding CanEdit}" Click="MaxTree_Click" />
+                        <Button Name="UnlockTreeButton" Tag="{Binding}" Content="{DynamicResource UnlockSkillBranch}" HorizontalAlignment="Stretch" IsVisible="{Binding CanUnlock}" Click="UnlockTree_Click" />
+                        <Button Name="MaxTreeButton" Tag="{Binding}" Content="{DynamicResource MaxTree}" HorizontalAlignment="Stretch" IsVisible="{Binding ShowMaximize}" IsEnabled="{Binding CanEdit}" Click="MaxTree_Click" />
                       </StackPanel>
                     </suki:GlassCard>
                   </DataTemplate>

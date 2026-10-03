@@ -12,6 +12,8 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Arts: ordinary level-based learning and single/character-wide/global learning and maximum, with protected story/quest arts and matching CLI support.
 - [ ] Arts: validated story/quest unlock editing, only where linked progression can be preserved.
 - [x] Skills: inspect hidden-tree unlocks, edit learned count/remaining SP and maximize unlocked trees, with CLI support.
+- [x] Skills: single hidden-branch unlocking and selected-character/party-wide unlock-and-learn operations, with native shared-Fiora flags, format protections and matching CLI support.
+- [ ] Skills: in-game verification of newly unlocked hidden branches.
 - [x] Skills: source-group skill-link editing with verified shapes, saved unlock indices, learned-skill, story-availability and coin-budget validation, plus matching CLI support.
 - [x] Equipment: resolve equipped inventory items, inspect fixed gems and fit/remove owned normal gems, with CLI support.
 - [x] Equipment: validated owned weapon/armor switching with character and armor-skill restrictions, preserving gems and protecting story weapons.
@@ -37,7 +39,7 @@ editing remain available for progression changes without grinding.
 ## Remaining priorities
 
 1. Reduce remaining NPC affinity and Colony 6 recruitment grinding where all linked state can be validated.
-2. Assess protected Art and skill-tree unlocks only where they remove a concrete progression obstacle and preserve linked quest state.
+2. Assess protected Art unlocks only where they remove a concrete progression obstacle and preserve linked quest state.
 3. Assess Time Attack rewards and Ponspectors against the same usefulness and write-safety criteria before committing to implementation. An unverified or low-value candidate is deferred, not added merely to expand feature coverage.
 
 NPC affinity, quests, Colony 6 initial quest/recruitment, Time Attack, Ponspectors and system-save

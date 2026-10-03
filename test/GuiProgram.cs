@@ -502,6 +502,7 @@ try
         "An unverified format shows editable affinity fields or changes bytes.");
 
     byte[] skillsFixture = (byte[])original.Clone();
+    BinaryPrimitives.WriteUInt32LittleEndian(skillsFixture, 7);
     BinaryPrimitives.WriteUInt32LittleEndian(skillsFixture.AsSpan(0x152368 + 0x90), 1);
     BinaryPrimitives.WriteUInt32LittleEndian(skillsFixture.AsSpan(0x1524a0 + 0x90), 1);
     BinaryPrimitives.WriteUInt32LittleEndian(skillsFixture.AsSpan(0x152368 + 0x98), 5);
@@ -529,6 +530,18 @@ try
     Check(!SkillControl<Button>("MaxTreeButton", 4).IsEnabled
         && !SkillControl<ComboBox>("SkillLearnedCountInput", 4).IsVisible,
         "A locked skill tree is editable.");
+    Check(SkillControl<Button>("UnlockTreeButton", 4).IsVisible
+        && !SkillControl<Button>("UnlockTreeButton").IsVisible,
+        "Single unlock is not limited to locked hidden branches.");
+    byte[] beforeTreeUnlock = window.Session.Document.Serialize();
+    SkillControl<Button>("UnlockTreeButton", 4).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    byte[] expectedTreeUnlock = (byte[])beforeTreeUnlock.Clone();
+    int unlockBit = 0x2cdd + 1;
+    expectedTreeUnlock[0x50 + (unlockBit >> 3)] |= (byte)(1 << (unlockBit & 7));
+    Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(expectedTreeUnlock)
+        && SkillControl<ComboBox>("SkillLearnedCountInput", 4).IsVisible
+        && !SkillControl<Button>("UnlockTreeButton", 4).IsVisible,
+        "Single GUI unlock changed quest/progress bytes or failed to refresh the card.");
     var firstTree = window.Session.Document.GetCharacter(1).GetSkillTree(1);
     Check(SkillControl<NumericUpDown>("SkillProgressInput").Maximum == firstTree.MaximumProgress,
         "Skill SP limit differs from the next-node residual cap.");
@@ -585,28 +598,56 @@ try
     Check(window.Session.Document.Characters.SelectMany(character => character.SkillTrees)
         .Where(tree => tree.CanEdit).All(tree => tree.LearnedCount == 5 && tree.Progress == 0)
         && window.SaveTo(skillsOutput), "Max All Skills respected filtering or retained an invalid draft.");
-    Check(window.Session.Document.Characters.All(character => character.GetSkillTree(4).LearnedCount == 0
-        && character.GetSkillTree(5).LearnedCount == 0), "Skill batch actions unlocked blocked trees.");
+    Check(window.Session.Document.Characters.SelectMany(character => character.SkillTrees)
+        .All(tree => tree.IsUnlocked && tree.LearnedCount == 5 && tree.Progress == 0),
+        "Explicit unlock-and-learn batch left hidden branches locked or unlearned.");
     search.Text = "";
     foreach (string language in UiLanguage.Languages.Keys)
     {
         window.SetLanguage(language);
         VerifyPageSpacing();
-        Check(maxAllSkills.Content?.ToString() == UiLanguage.Get("MaxAllSkills")
-            && window.FindControl<Button>("MaxCharacterSkillsButton")!.Content?.ToString() == UiLanguage.Get("MaxCharacterSkills"),
+        Check(maxAllSkills.Content?.ToString() == UiLanguage.Get("UnlockMaxAllSkills")
+            && window.FindControl<Button>("MaxCharacterSkillsButton")!.Content?.ToString() == UiLanguage.Get("UnlockMaxCharacterSkills"),
             "Skill batch button translation is stale.");
         Check(SkillControl<Button>("MaxTreeButton").Content?.ToString() == UiLanguage.Get("MaxTree"),
             "Single-branch button translation is stale.");
+        Check(SkillControl<Button>("UnlockTreeButton", 4).Content?.ToString() == UiLanguage.Get("UnlockSkillBranch"),
+            "Hidden-branch unlock translation is stale.");
+        window.Width = 860;
+        window.Height = 600;
+        VerifyPageSpacing();
+        var label = maxAllSkills.GetVisualDescendants().OfType<TextBlock>()
+            .First(text => text.Text == UiLanguage.Get("UnlockMaxAllSkills"));
+        Check(label.TextWrapping == Avalonia.Media.TextWrapping.Wrap
+            && label.Bounds.Width <= maxAllSkills.Bounds.Width,
+            $"A translated batch label cannot wrap at minimum width: {language}, {label.TextWrapping}, {label.Bounds}, {maxAllSkills.Bounds}.");
+        window.Width = 1120;
+        window.Height = 780;
     }
     window.Width = 860;
     window.Height = 600;
     VerifyPageSpacing();
+    Dispatcher.UIThread.RunJobs();
+    var allSkillsText = maxAllSkills.GetVisualDescendants().OfType<TextBlock>()
+        .First(text => text.Text == UiLanguage.Get("UnlockMaxAllSkills"));
+    Check(allSkillsText.Bounds.Width <= maxAllSkills.Bounds.Width
+        && !string.IsNullOrWhiteSpace(allSkillsText.Text), "Skill batch label is clipped at minimum width.");
     window.Width = 1120;
     window.Height = 780;
     window.ShowArts();
     VerifyPageSpacing();
     Check(!maxAllSkills.IsVisible, "Max All Skills remains visible outside Skills.");
     Check(File.ReadAllBytes(skillsPath).AsSpan().SequenceEqual(skillsFixture), "GUI skill editing overwrote its source.");
+    byte[] protectedSkills = (byte[])skillsFixture.Clone();
+    BinaryPrimitives.WriteUInt32LittleEndian(protectedSkills, 8);
+    string protectedSkillsPath = Path.Combine(temporary, "skills-version8.sav");
+    File.WriteAllBytes(protectedSkillsPath, protectedSkills);
+    Check(window.LoadSave(protectedSkillsPath), "Could not inspect an unsupported skill format.");
+    window.ShowSkills();
+    Check(!maxAllSkills.IsEnabled && !window.FindControl<Button>("MaxCharacterSkillsButton")!.IsEnabled
+        && !SkillControl<Button>("UnlockTreeButton", 4).IsVisible
+        && !SkillControl<ComboBox>("SkillLearnedCountInput").IsVisible && !window.Session!.HasChanges,
+        "An unverified skill format is editable or exposes unlock actions.");
     window.SetLanguage("en");
     byte[] equipmentFixture = EquipmentTests.Fixture((byte[])original.Clone());
     string equipmentPath = Path.Combine(temporary, "equipment.sav");
@@ -1044,7 +1085,8 @@ try
         window = new MainWindow();
         if (page.Length > 0 && page[0] == "regions") window.Height = 960;
         window.Show();
-        Check(window.LoadSave(realSave), "Could not open the screenshot save.");
+        bool lockedSkillsPreview = page.Length > 0 && page[0] == "skills-locked";
+        Check(window.LoadSave(lockedSkillsPreview ? skillsPath : realSave), "Could not open the screenshot save.");
         if (page.Length > 0 && page[0] == "inventory")
             window.ShowInventory(page.Length > 2 ? Enum.Parse<InventoryKind>(page[2]) : InventoryKind.Collectables);
         else if (page.Length > 0 && page[0] == "equipment-inventory")
@@ -1059,7 +1101,7 @@ try
             window.ShowArts();
             window.FindControl<ListBox>("ArtList")!.SelectedIndex = 2;
         }
-        else if (page.Length > 0 && page[0] == "skills")
+        else if (page.Length > 0 && page[0] is "skills" or "skills-locked")
         {
             window.ShowSkills();
             Check(window.FindControl<Button>("MaxAllSkillsButton")!.IsEnabled
@@ -1089,6 +1131,14 @@ try
         if (page.Length > 1) window.SetLanguage(page[1]);
         Dispatcher.UIThread.RunJobs();
         VerifyPageSpacing();
+        if (lockedSkillsPreview)
+        {
+            var scroll = window.FindControl<ScrollViewer>("SkillsScroll")!;
+            var unlockButton = SkillControl<Button>("UnlockTreeButton", 4);
+            Point point = unlockButton.TranslatePoint(new Point(0, 0), scroll)!.Value;
+            scroll.Offset = new Vector(0, Math.Max(0, point.Y - scroll.Viewport.Height + unlockButton.Bounds.Height + 12));
+            Dispatcher.UIThread.RunJobs();
+        }
         AvaloniaHeadlessPlatform.ForceRenderTimerTick(3);
         Thread.Sleep(500); // Let card entrance and enabled-state transitions finish after the initial frame.
         Dispatcher.UIThread.RunJobs();

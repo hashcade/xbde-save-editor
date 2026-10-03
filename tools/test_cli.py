@@ -537,6 +537,43 @@ def main() -> None:
         assert output.read_bytes() == skill_bytes
         assert skills_source.read_bytes() == skills_original
 
+        assert "unlock-max-all-skills" in run("--help")
+        run("unlock-skill-tree", skills_source, output, "1", "5")
+        expected = bytearray(skills_original)
+        bit = 0x2CDD + 2
+        expected[0x50 + (bit >> 3)] |= 1 << (bit & 7)
+        assert output.read_bytes() == expected
+        run("unlock-skill-tree", output, output, "1", "5")
+        assert output.read_bytes() == expected
+        run("unlock-max-skills", skills_source, output, "1")
+        for tree_index in range(1, 6):
+            struct.pack_into("<I", expected, 0x152368 + 0x7C + (tree_index - 1) * 4, 0)
+            struct.pack_into("<I", expected, 0x152368 + 0x90 + (tree_index - 1) * 4, 5)
+        assert output.read_bytes() == expected
+        run("unlock-max-all-skills", skills_source, output)
+        for flag in range(1, 5):
+            bit = 0x2CDD + flag
+            expected[0x50 + (bit >> 3)] |= 1 << (bit & 7)
+        for tree_index in range(1, 6):
+            struct.pack_into("<I", expected, 0x1524A0 + 0x7C + (tree_index - 1) * 4, 0)
+            struct.pack_into("<I", expected, 0x1524A0 + 0x90 + (tree_index - 1) * 4, 5)
+        assert output.read_bytes() == expected
+        skill_bytes = output.read_bytes()
+        run("unlock-max-all-skills", output, output)
+        assert output.read_bytes() == skill_bytes and skills_source.read_bytes() == skills_original
+        version8_source = root / "skills-version8.sav"
+        version8 = bytearray(skills_original)
+        struct.pack_into("<I", version8, 0, 8)
+        version8_source.write_bytes(version8)
+        assert all(not tree["CanEdit"] for tree in json.loads(run("skills", version8_source, "1")))
+        for arguments in (("unlock-skill-tree", "1", "4"), ("unlock-max-skills", "1"),
+                          ("unlock-max-all-skills",), ("max-skills", "1"), ("max-all-skills",)):
+            run(arguments[0], version8_source, output, *arguments[1:], success=False)
+            assert output.read_bytes() == skill_bytes and version8_source.read_bytes() == version8
+        for tree_index in ("0", "6"):
+            run("unlock-skill-tree", skills_source, output, "1", tree_index, success=False)
+            assert output.read_bytes() == skill_bytes
+
         future = bytearray(skills_original)
         struct.pack_into("<4H", future, 0x152318, 1, 7, 14, 15)
         future[0x152330] = 4
@@ -560,6 +597,9 @@ def main() -> None:
                 run(arguments[0], future_source, output, character_id, *arguments[1:], success=False)
                 assert output.read_bytes() == skill_bytes
         run("max-all-skills", future_source, output, success=False)
+        run("unlock-skill-tree", future_source, output, "1", "4", success=False)
+        run("unlock-max-skills", future_source, output, "1", success=False)
+        run("unlock-max-all-skills", future_source, output, success=False)
         assert output.read_bytes() == skill_bytes
         assert future_source.read_bytes() == future
         assert source.read_bytes() == original
@@ -571,6 +611,7 @@ def main() -> None:
         run("max-arts", source, output, "1", success=False)
         run("max-skills", source, output, "1", success=False)
         run("max-all-skills", source, output, success=False)
+        run("unlock-max-all-skills", source, output, success=False)
         assert output.read_bytes() == skill_bytes
         assert source.read_bytes() == ambiguous
         equipment = bytearray(original)
