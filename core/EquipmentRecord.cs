@@ -64,8 +64,8 @@ public sealed class EquipmentRecord
             if (!socket.CanEdit) throw new ArgumentException("Fixed or unrecognized gems cannot be replaced.");
             if (indices[index] is { } gemIndex)
             {
-                if (gemIndex is < 0 or >= 500 || !_document.GetGem(gemIndex).CanEquip)
-                    throw new ArgumentException("Choose an existing, valid gem from inventory.");
+                if (gemIndex is < 0 or >= 500 || !_document.GetGem(gemIndex).CanFit(Slot))
+                    throw new ArgumentException("Choose an existing gem compatible with this equipment.");
                 if (_document.IsGemUsed(gemIndex, this))
                     throw new ArgumentException("This gem is already fitted to another item.");
             }
@@ -108,7 +108,8 @@ public sealed class GemSocketRecord
         get
         {
             var used = _document.UsedGemIndices();
-            return _document.Gems.Where(gem => gem.CanEquip && (gem.Index == GemIndex || !used.Contains(gem.Index))).ToArray();
+            return _document.Gems.Where(gem => gem.CanEquip && (gem.Index == GemIndex
+                || gem.CanFit(_equipment.Slot) && !used.Contains(gem.Index))).ToArray();
         }
     }
 }

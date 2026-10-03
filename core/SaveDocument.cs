@@ -66,6 +66,23 @@ public sealed class SaveDocument
     internal bool IsGemUsed(int index, EquipmentRecord? excluded = null)
         => UsedGemIndices(excluded).Contains(index);
 
+    internal HashSet<EquipmentSlot> GemEquipmentSlots(int index)
+    {
+        var slots = new HashSet<EquipmentSlot>();
+        foreach (var slot in Enum.GetValues<EquipmentSlot>())
+            for (int item = 0; item < 500; item++)
+            {
+                int offset = EquipmentCatalog.InventoryOffset(slot) + item * EquipmentRecord.InventorySize;
+                if (ReadByte(offset + 0x10) != 1) continue;
+                for (int socket = 0; socket < 3; socket++)
+                {
+                    int reference = offset + 0x18 + socket * 8;
+                    if (ReadUInt16(reference + 2) == 3 && ReadUInt16(reference) == index) slots.Add(slot);
+                }
+            }
+        return slots;
+    }
+
     internal HashSet<int> UsedGemIndices(EquipmentRecord? excluded = null)
     {
         var used = new HashSet<int>();
@@ -105,6 +122,7 @@ public sealed class SaveDocument
         return (ReadByte(0x50 + (bit >> 3)) & (1 << (bit & 7))) != 0;
     }
     internal void WriteByte(int offset, byte value) => _data[offset] = value;
+    internal void WriteUInt16(int offset, ushort value) => BinaryPrimitives.WriteUInt16LittleEndian(_data.AsSpan(offset, 2), value);
     internal uint ReadUInt32(int offset) => BinaryPrimitives.ReadUInt32LittleEndian(_data.AsSpan(offset, 4));
     internal ushort ReadUInt16(int offset) => BinaryPrimitives.ReadUInt16LittleEndian(_data.AsSpan(offset, 2));
     internal void WriteUInt32(int offset, uint value) => BinaryPrimitives.WriteUInt32LittleEndian(_data.AsSpan(offset, 4), value);

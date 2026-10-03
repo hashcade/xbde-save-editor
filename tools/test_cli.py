@@ -262,6 +262,30 @@ def main() -> None:
         struct.pack_into("<I", expected_equipment, weapon + 0x18, 0)
         assert output.read_bytes() == expected_equipment
         assert equipment_source.read_bytes() == equipment
+        gems = json.loads(run("gems", equipment_source))
+        assert len(gems) == 5 and all(gem["CanEdit"] for gem in gems)
+        assert gems[0]["Strength"] == 100 and gems[0]["Chance"] == 0
+        run("gem", equipment_source, output, "0", "--effect", "26", "--rank", "6", "--value", "150")
+        expected_gem = bytearray(equipment)
+        expected_gem[0x2C380 + 0x17] = 5
+        struct.pack_into("<2H", expected_gem, 0x2C380 + 0x1C, 26, 150 | (25 << 8))
+        assert output.read_bytes() == expected_gem
+        run("max-gem", output, output, "0")
+        struct.pack_into("<H", expected_gem, 0x2C380 + 0x1E, 6600)
+        assert output.read_bytes() == expected_gem
+        decoded = json.loads(run("gems", output))[0]
+        assert decoded["Strength"] == 200 and decoded["Chance"] == 25 and decoded["HasValidValue"]
+        for field, invalid_value in (("--value", "201"), ("--value", "149"), ("--value", "1.5"),
+                                     ("--value", "-1"), ("--value", "4294967295"), ("--rank", "7"),
+                                     ("--effect", "98"), ("--effect", "0"), ("--unknown", "1")):
+            run("gem", output, output, "0", field, invalid_value, success=False)
+            assert output.read_bytes() == expected_gem
+        for invalid_index in ("5", "499", "500", "-1"):
+            run("max-gem", equipment_source, output, invalid_index, success=False)
+            assert output.read_bytes() == expected_gem
+        run("gem", equipment_source, output, "0", "--value", "99", "--value", "98", success=False)
+        assert output.read_bytes() == expected_gem
+        assert equipment_source.read_bytes() == equipment
         switching = bytearray(equipment)
         struct.pack_into("<H", switching, weapon + 4, 2)
         struct.pack_into("<H", switching, weapon + 2 * 0x30 + 4, 2)

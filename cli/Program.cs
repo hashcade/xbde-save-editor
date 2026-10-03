@@ -11,6 +11,7 @@ try
     if (args is [] or ["--help"])
     {
         Console.WriteLine("XBDE Save Editor\n\ninspect <save>\ncopy <save> <output>\nresources <save> <output> [--money N] [--noponstones N]\ncharacter <save> <output> <id> [--ap N] [--coins N] [--reserve-exp N]\nprogression <save> <output> <id> [--level N] [--exp N]\nmax-ap <save> <output>\narts <save> <character-id>\nart <save> <output> <character-id> <art-id> --level N\nmax-art <save> <output> <character-id> <art-id>\nmax-arts <save> <output> <character-id>\nskills <save> <character-id>\nskill-tree <save> <output> <character-id> <tree-index> --learned N\nskill-tree <save> <output> <character-id> <tree-index> --sp N\nmax-skill-tree <save> <output> <character-id> <tree-index>\nmax-skills <save> <output> <character-id>\nmax-all-skills <save> <output>\nequipment <save> <character-id>\nequip <save> <output> <character-id> <Weapon|Head|Torso|Arms|Legs|Feet> <inventory-index>\nequipment-gem <save> <output> <character-id> <Weapon|Head|Torso|Arms|Legs|Feet> <socket> <gem-index|none>\n--version");
+        Console.WriteLine("gems <save>\ngem <save> <output> <gem-index> [--effect N] [--rank N] [--value N]\nmax-gem <save> <output> <gem-index>");
         return 0;
     }
     if (args is ["inspect", var source])
@@ -55,9 +56,40 @@ try
             Sockets = equipment.GemSockets.Select(socket => new
             {
                 socket.Index, socket.Name, socket.GemIndex, socket.FixedItemId, socket.CanEdit,
-                AvailableGems = socket.CanEdit ? socket.AvailableGems.Select(gem => new { gem.Index, gem.Name, gem.Rank, gem.Value }) : []
+                AvailableGems = socket.CanEdit ? socket.AvailableGems.Select(gem => new { gem.Index, gem.Name, gem.Rank, gem.Value, gem.Strength, gem.Chance, gem.Label }) : []
             })
         }), new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["gems", var gemsSource])
+    {
+        var document = SaveSession.Open(gemsSource).Document;
+        Console.WriteLine(JsonSerializer.Serialize(document.Gems.Where(gem => !gem.IsCylinder).Select(gem => new
+        {
+            gem.Index, gem.Name, gem.EffectId, gem.Rank, gem.Strength, gem.Chance, gem.CanEdit, gem.HasValidValue,
+            Minimum = gem.Definition?.Minimum, Maximum = gem.Definition?.Maximum, gem.Label
+        }), new JsonSerializerOptions { WriteIndented = true }));
+        return 0;
+    }
+    if (args is ["max-gem", var maxGemSource, var maxGemOutput, var maxGemIndex])
+    {
+        var session = SaveSession.Open(maxGemSource);
+        session.Document.GetGem(ParseId(maxGemIndex)).Maximize();
+        session.Save(maxGemOutput);
+        return 0;
+    }
+    if (args is ["gem", var editGemSource, var editGemOutput, var editGemIndex, .. var gemArguments])
+    {
+        var gemOptions = ParseOptions(gemArguments, "--effect", "--rank", "--value");
+        if (gemOptions.Count == 0 || gemOptions.Values.Any(value => value > ushort.MaxValue))
+            throw new ArgumentException("Specify a valid gem effect, rank or value.");
+        var session = SaveSession.Open(editGemSource);
+        var gem = session.Document.GetGem(ParseId(editGemIndex));
+        int effect = (int)gemOptions.GetValueOrDefault("--effect", (uint)gem.EffectId);
+        int rank = (int)gemOptions.GetValueOrDefault("--rank", (uint)gem.Rank);
+        int strength = (int)gemOptions.GetValueOrDefault("--value", (uint)gem.Strength);
+        gem.Set(effect, rank, strength);
+        session.Save(editGemOutput);
         return 0;
     }
     if (args is ["equip", var equipSource, var equipOutput, var equipCharacter, var equipSlot, var itemIndex])
