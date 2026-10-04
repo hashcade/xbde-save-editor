@@ -32,6 +32,7 @@ public partial class MainWindow
             AchievementCategoryFilter.IsEnabled = AchievementStatusFilter.IsEnabled = AchievementSearch.IsEnabled = supported;
             AchievementsUnavailableValue.IsVisible = Session is not null && !supported;
             UnlockAllAchievementsButton.IsEnabled = supported && achievements.Any(item => !item.Completed);
+            RepairAllAchievementCountersButton.IsEnabled = supported && achievements.Any(item => item.CanRepairCounter);
             string search = AchievementSearch.Text?.Trim() ?? "";
             var rows = achievements.Where(item => (category == 0 || (int)item.Definition.Category == category)
                 && MatchesAchievementStatus(item, status)
@@ -51,6 +52,10 @@ public partial class MainWindow
     private void RefreshAchievementDetails()
     {
         AchievementDetails.IsVisible = _selectedAchievement is not null;
+        UnlockAchievementButton.IsEnabled = false;
+        RepairAchievementCounterButton.IsEnabled = false;
+        RepairAchievementCounterButton.IsVisible = false;
+        UnlockAchievementButton.IsVisible = true;
         if (_selectedAchievement is not int id || Session is null) return;
         var item = Session.Document.GetAchievement(id);
         AchievementConditionValue.Text = item.Definition.Condition;
@@ -62,6 +67,9 @@ public partial class MainWindow
         AchievementProgressTitle.IsVisible = AchievementProgressValue.IsVisible = item.Progress is not null;
         AchievementProgressValue.Text = item.Progress is int progress ? $"{progress:N0} / {item.Definition.Required:N0}" : null;
         UnlockAchievementButton.IsEnabled = item.CanUnlock;
+        UnlockAchievementButton.IsVisible = !item.HasUnmetCompletedCounter;
+        RepairAchievementCounterButton.IsVisible = item.HasUnmetCompletedCounter;
+        RepairAchievementCounterButton.IsEnabled = item.CanRepairCounter;
     }
 
     private static bool MatchesAchievementStatus(AchievementRecord item, int status) => status switch
@@ -107,6 +115,30 @@ public partial class MainWindow
         try
         {
             Session.Document.UnlockAllAchievements();
+            RefreshAchievements();
+            ShowStatus(null);
+        }
+        catch (Exception error) when (IsExpected(error)) { ShowStatus(error.Message); }
+    }
+
+    private void RepairAchievementCounter_Click(object? sender, RoutedEventArgs e)
+    {
+        if (_selectedAchievement is not int id || Session is null) return;
+        try
+        {
+            Session.Document.GetAchievement(id).RepairCounter();
+            RefreshAchievements();
+            ShowStatus(null);
+        }
+        catch (Exception error) when (IsExpected(error)) { ShowStatus(error.Message); }
+    }
+
+    private void RepairAllAchievementCounters_Click(object? sender, RoutedEventArgs e)
+    {
+        if (Session is null) return;
+        try
+        {
+            Session.Document.RepairAllAchievementCounters();
             RefreshAchievements();
             ShowStatus(null);
         }

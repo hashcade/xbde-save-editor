@@ -547,7 +547,12 @@
           <ListBox Name="AchievementList" Grid.Row="3" SelectionChanged="AchievementList_Changed">
             <ListBox.ItemTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding Label}" TextWrapping="Wrap" /></DataTemplate></ListBox.ItemTemplate>
           </ListBox>
-          <Button Name="UnlockAllAchievementsButton" Grid.Row="4" Content="{DynamicResource UnlockAllAchievements}" HorizontalAlignment="Stretch" IsEnabled="False" Click="UnlockAllAchievements_Click" />
+          <StackPanel Grid.Row="4" Spacing="12">
+            <Button Name="UnlockAllAchievementsButton" Content="{DynamicResource UnlockAllAchievements}" HorizontalAlignment="Stretch" IsEnabled="False" Click="UnlockAllAchievements_Click" />
+            <Button Name="RepairAllAchievementCountersButton" Content="{DynamicResource RepairAllAchievementCounters}" HorizontalAlignment="Stretch" IsEnabled="False" Click="RepairAllAchievementCounters_Click">
+              <Button.ContentTemplate><DataTemplate x:DataType="x:Object" x:CompileBindings="False"><TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" /></DataTemplate></Button.ContentTemplate>
+            </Button>
+          </StackPanel>
         </Grid>
       </suki:GlassCard>
       <suki:GlassCard Grid.Column="1" Padding="20">
@@ -564,6 +569,7 @@
                 <TextBlock Name="AchievementProgressTitle" Grid.Row="3" Text="{DynamicResource AchievementProgress}" /><TextBlock Name="AchievementProgressValue" Grid.Row="3" Grid.Column="1" />
               </Grid>
               <Button Name="UnlockAchievementButton" Content="{DynamicResource UnlockAchievement}" HorizontalAlignment="Stretch" IsEnabled="False" Click="UnlockAchievement_Click" />
+              <Button Name="RepairAchievementCounterButton" Content="{DynamicResource RepairAchievementCounter}" HorizontalAlignment="Stretch" IsEnabled="False" IsVisible="False" Click="RepairAchievementCounter_Click" />
             </StackPanel>
           </StackPanel>
         </ScrollViewer>

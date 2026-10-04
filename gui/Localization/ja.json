@@ -84,6 +84,8 @@
   "AllStatuses": "全状態",
   "Trials": "トライアル",
   "Records": "レコード",
+  "RepairAchievementCounter": "達成回数を修正",
+  "RepairAllAchievementCounters": "解除済み実績の回数を修正",
   "AchievementCategory": "分類",
   "AchievementIncomplete": "未達成",
   "AchievementComplete": "達成済み",

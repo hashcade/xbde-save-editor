@@ -54,6 +54,14 @@ matching filter. Its total counts completion flags, not independently satisfied
 conditions. CLI inspection includes `CounterMeetsRequirement` (null for events)
 and `HasUnmetCompletedCounter`. No counter is silently repaired on inspection.
 
+Counter repair is an explicit, separate operation. It writes the required value
+only when an achievement's completion flag is already set and its type-3/4
+counter does not satisfy the native condition. Flags, incomplete achievements,
+event records and satisfied counters remain unchanged. Type 3 requires exact
+equality; type 4 requires at least the threshold. Single and bulk GUI/CLI repair
+are idempotent and do not grant EXP or complete quests. The bulk button acts on
+all eligible records, not only the current search/category/status filter.
+
 Unlock All processes every entry, independent of visible filters. No character
 EXP, resources, quest state or story flags are modified. Related world actions
 are not completed by unlocking an achievement.

@@ -1093,8 +1093,12 @@ try
     var statusFilter = window.FindControl<ComboBox>("AchievementStatusFilter")!;
     var allAchievements = window.FindControl<Button>("UnlockAllAchievementsButton")!;
     var singleAchievement = window.FindControl<Button>("UnlockAchievementButton")!;
+    var repairAchievement = window.FindControl<Button>("RepairAchievementCounterButton")!;
+    var repairAllAchievements = window.FindControl<Button>("RepairAllAchievementCountersButton")!;
     Check(achievementList.ItemCount == 200 && allAchievements.IsEnabled && singleAchievement.IsEnabled,
         "Achievement page did not expose all supported entries.");
+    Check(!repairAchievement.IsVisible && !repairAllAchievements.IsEnabled,
+        "Incomplete achievements expose counter repair instead of unlocking.");
     categoryFilter.SelectedIndex = 2;
     Check(achievementList.ItemCount == 50, "Record category filter differs.");
     statusFilter.SelectedIndex = 1;
@@ -1145,21 +1149,63 @@ try
     statusFilter.SelectedIndex = 3;
     Check(achievementList.ItemCount == 1 && !singleAchievement.IsEnabled,
         "Unmet completed counter filter differs or permits redundant unlock.");
+    Check(!singleAchievement.IsVisible && repairAchievement.IsVisible && repairAchievement.IsEnabled
+        && repairAllAchievements.IsEnabled, "Unmet completed counter lacks single or bulk repair.");
     foreach (var language in UiLanguage.Languages)
     {
         window.SetLanguage(language.Key);
         Check(window.FindControl<TextBlock>("AchievementStatusValue")!.Text == UiLanguage.Get("AchievementUnmetCounter")
             && window.FindControl<TextBlock>("AchievementProgressValue")!.Text == "4,256 / 5,000"
             && statusFilter.SelectedIndex == 3, "An unmet completed counter was hidden by language switching.");
+        Check(repairAchievement.Content?.ToString() == UiLanguage.Get("RepairAchievementCounter")
+            && repairAllAchievements.Content?.ToString() == UiLanguage.Get("RepairAllAchievementCounters"),
+            "Achievement counter repair retained stale language labels.");
+        window.Width = 860;
+        window.Height = 600;
+        Dispatcher.UIThread.RunJobs();
+        var label = repairAllAchievements.GetVisualDescendants().OfType<TextBlock>().First(block => block.Text == UiLanguage.Get("RepairAllAchievementCounters"));
+        Check(label.Bounds.Width <= repairAllAchievements.Bounds.Width && label.Bounds.Height <= repairAllAchievements.Bounds.Height,
+            "Bulk counter repair clips its translated label at minimum width.");
     }
+    window.Width = 1120;
+    window.Height = 780;
     Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(inconsistentFixture),
         "Inspecting inconsistent achievement state normalized the save.");
+    repairAchievement.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    byte[] repairedFixture = (byte[])inconsistentFixture.Clone();
+    BinaryPrimitives.WriteUInt16LittleEndian(repairedFixture.AsSpan(0xe3e), 5000);
+    Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(repairedFixture)
+        && achievementList.ItemCount == 0 && !repairAllAchievements.IsEnabled && !repairAchievement.IsEnabled
+        && window.Session.HasChanges, "Single counter repair changed unrelated data or retained stale filtered rows.");
+    Check(File.ReadAllBytes(inconsistentPath).AsSpan().SequenceEqual(inconsistentFixture), "Counter repair overwrote its source before Save.");
+    Check(window.SaveTo(Path.Combine(temporary, "repaired-counter.sav")), "Repaired counter could not save.");
+    byte[] mixedCounters = (byte[])inconsistentFixture.Clone();
+    int dayBit = 0x2838 + 129;
+    mixedCounters[0x50 + (dayBit >> 3)] |= (byte)(1 << (dayBit & 7));
+    BinaryPrimitives.WriteUInt16LittleEndian(mixedCounters.AsSpan(0xe30 + 129 * 2), 320);
+    File.WriteAllBytes(inconsistentPath, mixedCounters);
+    Check(window.LoadSave(inconsistentPath), "Mixed completed counters did not load.");
+    categoryFilter.SelectedIndex = 2;
+    window.FindControl<TextBox>("AchievementSearch")!.Text = "unlikely-to-match-any-achievement";
+    Check(achievementList.ItemCount == 0 && repairAllAchievements.IsEnabled, "Empty filters disable global counter repair.");
+    repairAllAchievements.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    byte[] mixedExpected = (byte[])mixedCounters.Clone();
+    BinaryPrimitives.WriteUInt16LittleEndian(mixedExpected.AsSpan(0xe3e), 5000);
+    BinaryPrimitives.WriteUInt16LittleEndian(mixedExpected.AsSpan(0xe30 + 129 * 2), 366);
+    Check(window.Session.Document.Serialize().AsSpan().SequenceEqual(mixedExpected) && !repairAllAchievements.IsEnabled
+        && window.FindControl<TextBlock>("AchievementCountValue")!.Text == "2/200" && allAchievements.IsEnabled,
+        "Bulk repair followed filters, unlocked other achievements or changed unrelated fields.");
+    Check(File.ReadAllBytes(inconsistentPath).AsSpan().SequenceEqual(mixedCounters), "Bulk counter repair overwrote its source before Save.");
+    Check(window.SaveTo(Path.Combine(temporary, "repaired-all-counters.sav")), "Bulk counter repair could not save.");
     window.SetLanguage("en");
+    categoryFilter.SelectedIndex = 0;
     statusFilter.SelectedIndex = 0;
+    window.FindControl<TextBox>("AchievementSearch")!.Text = "";
     BinaryPrimitives.WriteUInt16LittleEndian(achievementFixture.AsSpan(0x15231a), 14);
     BinaryPrimitives.WriteUInt32LittleEndian(achievementFixture.AsSpan(0x152368 + 13 * 0x138), 20);
     File.WriteAllBytes(achievementPath, achievementFixture);
     Check(window.LoadSave(achievementPath) && achievementList.ItemCount == 0 && !allAchievements.IsEnabled
+        && !repairAllAchievements.IsEnabled && !repairAchievement.IsEnabled
         && window.FindControl<TextBlock>("AchievementsUnavailableValue")!.IsVisible,
         "Future Connected incorrectly exposes missing achievements.");
     if (args is ["--screenshot", var realSave, var screenshot, .. var page])

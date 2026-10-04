@@ -302,6 +302,37 @@ def main() -> None:
         assert item["CounterMeetsRequirement"] is False and not item["CanUnlock"]
         run("unlock-achievement", inconsistent_path, output, "7")
         assert output.read_bytes() == inconsistent and inconsistent_path.read_bytes() == inconsistent
+        assert item["CanRepairCounter"]
+        run("repair-achievement-counter", inconsistent_path, output, "7")
+        repaired = bytearray(inconsistent)
+        struct.pack_into("<H", repaired, 0xE3E, 5000)
+        assert output.read_bytes() == repaired and inconsistent_path.read_bytes() == inconsistent
+        run("repair-achievement-counter", output, output, "7")
+        assert output.read_bytes() == repaired
+        run("repair-achievement-counter", inconsistent_path, output, "201", success=False)
+        assert output.read_bytes() == repaired
+        run("repair-achievement-counter", source, output, "7")
+        assert output.read_bytes() == original
+        mixed = bytearray(inconsistent)
+        for achievement_id, points in [(31, 435), (92, 805), (129, 320), (4, 65000)]:
+            bit = 0x2838 + achievement_id % 200
+            mixed[0x50 + (bit >> 3)] |= 1 << (bit & 7)
+            struct.pack_into("<H", mixed, 0xE30 + achievement_id % 200 * 2, points)
+        mixed_path = root / "mixed-counters.sav"
+        mixed_path.write_bytes(mixed)
+        run("repair-all-achievement-counters", mixed_path, output)
+        mixed_expected = bytearray(mixed)
+        for achievement_id, points in [(7, 5000), (31, 1000), (92, 2000), (129, 366)]:
+            struct.pack_into("<H", mixed_expected, 0xE30 + achievement_id * 2, points)
+        assert output.read_bytes() == mixed_expected and mixed_path.read_bytes() == mixed
+        run("repair-all-achievement-counters", output, output)
+        assert output.read_bytes() == mixed_expected
+        assert json.loads(run("achievements", output))["Completed"] == 5
+        for kind in ("version", "future", "unknown"):
+            protected_path = root / f"region-{kind}.sav"
+            run("repair-achievement-counter", protected_path, output, "7", success=False)
+            run("repair-all-achievement-counters", protected_path, output, success=False)
+            assert output.read_bytes() == mixed_expected
         assert run("--version").strip()
         assert json.loads(run("inspect", source))["PartyIds"] == [1, 2]
         affinity = json.loads(run("affinities", source))

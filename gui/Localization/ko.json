@@ -84,6 +84,8 @@
   "AllStatuses": "모든 상태",
   "Trials": "도전",
   "Records": "기록",
+  "RepairAchievementCounter": "횟수 보정",
+  "RepairAllAchievementCounters": "해금된 업적 횟수 보정",
   "AchievementCategory": "유형",
   "AchievementIncomplete": "미완료",
   "AchievementComplete": "완료",

@@ -257,6 +257,7 @@ try
             SkillsTests.VerifyRealSave(before, Check);
             SkillLinksTests.VerifyRealSave(before, Check);
             AffinityTests.VerifyRealSave(before, Check);
+            AchievementTests.VerifyRealSave(before, Check);
             RegionAffinityTests.VerifyRealSave(before, Check);
             Colony6Tests.VerifyRealSave(before, Check);
             CollectopaediaTests.VerifyRealSave(before, Check);

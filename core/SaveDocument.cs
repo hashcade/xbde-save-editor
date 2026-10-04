@@ -136,6 +136,13 @@ public sealed partial class SaveDocument
         foreach (var achievement in Achievements) achievement.Unlock();
     }
 
+    public void RepairAllAchievementCounters()
+    {
+        if (!CanEditAchievements)
+            throw new ArgumentException("Achievement counter repair requires a confirmed main-story save with format version 7.");
+        foreach (var achievement in Achievements) achievement.RepairCounter();
+    }
+
     public IReadOnlyList<InventoryItemRecord> Inventory(InventoryKind kind) => Enumerable.Range(0, InventoryCatalog.Capacity)
         .Select(index => GetInventoryItem(kind, index)).Where(item => item.Exists).ToArray();
 

@@ -68,6 +68,9 @@ internal static class AchievementTests
             check(!save.CanEditAchievements, "Unverified achievement layout was editable.");
             reject(() => save.GetAchievement(4).Unlock(), "Unsupported single unlock succeeded.");
             reject(save.UnlockAllAchievements, "Unsupported bulk unlock succeeded.");
+            check(!save.GetAchievement(4).CanRepairCounter, "Unsupported counter repair is enabled.");
+            reject(() => save.GetAchievement(4).RepairCounter(), "Unsupported single counter repair succeeded.");
+            reject(save.RepairAllAchievementCounters, "Unsupported bulk counter repair succeeded.");
             check(save.Serialize().AsSpan().SequenceEqual(unsupported), "Rejected unlock changed the save.");
         }
         byte[] completed = Fresh();
@@ -85,5 +88,52 @@ internal static class AchievementTests
             "The reported below-threshold completed record was misclassified.");
         completedSave.UnlockAllAchievements();
         check(completedSave.Serialize().AsSpan().SequenceEqual(completed), "Completed records were silently normalized.");
+        foreach (var definition in AchievementCatalog.All)
+            foreach (bool flagged in new[] { false, true })
+                foreach (int progress in definition.HasCounter
+                    ? new[] { Math.Max(0, definition.Required - 1), definition.Required, Math.Min(ushort.MaxValue, definition.Required + 1), ushort.MaxValue }.Distinct()
+                    : new[] { 65_000 })
+                {
+                    byte[] original = Fresh();
+                    int bit = 0x2838 + definition.Id % 200;
+                    if (flagged) original[0x50 + (bit >> 3)] |= (byte)(1 << (bit & 7));
+                    int offset = 0xe30 + 2 * (definition.Id % 200);
+                    BinaryPrimitives.WriteUInt16LittleEndian(original.AsSpan(offset), (ushort)progress);
+                    var save = SaveDocument.Parse(original);
+                    var item = save.GetAchievement(definition.Id);
+                    bool needsRepair = flagged && definition.HasCounter
+                        && (definition.ConditionType == 3 ? progress != definition.Required : progress < definition.Required);
+                    check(item.CanRepairCounter == needsRepair, "Counter repair availability differs from the flag and native condition.");
+                    byte[] expected = (byte[])original.Clone();
+                    if (needsRepair) BinaryPrimitives.WriteUInt16LittleEndian(expected.AsSpan(offset), (ushort)definition.Required);
+                    item.RepairCounter();
+                    check(save.Serialize().AsSpan().SequenceEqual(expected), "Counter repair changed flags, rewards, events or unrelated fields.");
+                    check(!item.CanRepairCounter && item.Completed == flagged, "Counter repair unlocked an incomplete achievement or left an unmet condition.");
+                    item.RepairCounter();
+                    check(save.Serialize().AsSpan().SequenceEqual(expected), "Counter repair is not idempotent.");
+                }
+        VerifyRealSave(completed, check);
+        VerifyRealSave(Fresh(), check);
+    }
+
+    internal static void VerifyRealSave(byte[] bytes, Action<bool, string> check)
+    {
+        var save = SaveDocument.Parse(bytes);
+        if (!save.CanEditAchievements) return;
+        byte[] expected = (byte[])bytes.Clone();
+        foreach (var definition in AchievementCatalog.All.Where(item => item.HasCounter))
+        {
+            int bit = 0x2838 + definition.Id % 200;
+            if ((bytes[0x50 + (bit >> 3)] & (1 << (bit & 7))) == 0) continue;
+            int offset = 0xe30 + 2 * (definition.Id % 200);
+            int progress = BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(offset));
+            bool unmet = definition.ConditionType == 3 ? progress != definition.Required : progress < definition.Required;
+            if (unmet) BinaryPrimitives.WriteUInt16LittleEndian(expected.AsSpan(offset), (ushort)definition.Required);
+        }
+        save.RepairAllAchievementCounters();
+        check(save.Serialize().AsSpan().SequenceEqual(expected), "Bulk counter repair changed more than unmet completed counters.");
+        check(save.Achievements.All(item => !item.HasUnmetCompletedCounter), "Bulk counter repair missed a flagged record.");
+        save.RepairAllAchievementCounters();
+        check(save.Serialize().AsSpan().SequenceEqual(expected), "Bulk counter repair is not idempotent.");
     }
 }

@@ -26,6 +26,15 @@ public sealed class AchievementRecord
     }
     public bool HasUnmetCompletedCounter => Completed && CounterMeetsRequirement == false;
     public bool CanUnlock => _save.CanEditAchievements && !Completed;
+    public bool CanRepairCounter => _save.CanEditAchievements && HasUnmetCompletedCounter;
+
+    public void RepairCounter()
+    {
+        if (!_save.CanEditAchievements)
+            throw new ArgumentException("Achievement counter repair requires a confirmed main-story save with format version 7.");
+        if (!HasUnmetCompletedCounter) return;
+        _save.WriteUInt16(CounterOffset, checked((ushort)Definition.Required));
+    }
 
     public void Unlock()
     {

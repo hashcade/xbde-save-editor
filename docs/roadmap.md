@@ -23,6 +23,7 @@ Each feature is committed separately with core tests and matching CLI support.
 - [x] Items: normal gem creation/deletion and collectable/material/manual quantity, favorite, add/delete and bulk maximum editing, with CLI support.
 - [x] Items: weapon/armor inventory creation, per-character/per-bank missing-equipment filling, favorite flags and protected deletion, with matching CLI support.
 - [x] Achievements: validated main-story completion bits/counters, single/bulk unlock, filters and CLI support.
+- [x] Achievements: explicit single/bulk repair of unmet completed counters, preserving flags, incomplete entries, EXP and quests, with matching CLI support.
 - [ ] Achievements: in-game verification of newly completed records.
 - [x] Character affinity: single/bulk maximum, direct points editing and monotonic skill-link slot synchronization, with matching CLI support.
 - [x] Region affinity: linked points/stars for all five main-story areas, single/bulk maximum and matching CLI support.

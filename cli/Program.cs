@@ -14,6 +14,7 @@ try
         Console.WriteLine("gems <save>\ngem <save> <output> <gem-index> [--effect N] [--rank N] [--value N]\nmax-gem <save> <output> <gem-index>");
         Console.WriteLine("inventory <save> <Collectables|Materials|KeyItems|ArtManuals>\nitem <save> <output> <kind> <index> --quantity N\nadd-item <save> <output> <item-id> --quantity N\ndelete-item <save> <output> <kind> <index>\nmax-items <save> <output> <kind>\nadd-gem <save> <output> --effect N --rank N --value N\ndelete-gem <save> <output> <gem-index>");
         Console.WriteLine("achievements <save>\nunlock-achievement <save> <output> <id>\nunlock-all-achievements <save> <output>");
+        Console.WriteLine("repair-achievement-counter <save> <output> <id>\nrepair-all-achievement-counters <save> <output>");
         Console.WriteLine("learn-art <save> <output> <character-id> <art-id>\nlearn-max-arts <save> <output> <character-id>\nlearn-max-all-arts <save> <output>");
         Console.WriteLine("skill-links <save> <character-id>\nskill-link <save> <output> <character-id> <source-character-id> <slot> <skill-id|none>");
         Console.WriteLine("affinities <save>\naffinity <save> <output> <first-character-id> <second-character-id> --points N\nmax-affinity <save> <output> <first-character-id> <second-character-id>\nmax-all-affinity <save> <output>");
@@ -238,7 +239,7 @@ try
                 item.Id, item.Definition.Name, Category = item.Definition.Category.ToString(),
                 item.Definition.Condition, item.Definition.RewardExperience,
                 item.Definition.Required, item.Progress, item.Completed, item.CanUnlock,
-                item.CounterMeetsRequirement, item.HasUnmetCompletedCounter
+                item.CounterMeetsRequirement, item.HasUnmetCompletedCounter, item.CanRepairCounter
             })
         }, new JsonSerializerOptions { WriteIndented = true }));
         return 0;
@@ -255,6 +256,20 @@ try
         var session = SaveSession.Open(unlockAllSource);
         session.Document.UnlockAllAchievements();
         session.Save(unlockAllOutput);
+        return 0;
+    }
+    if (args is ["repair-achievement-counter", var repairSource, var repairOutput, var repairId])
+    {
+        var session = SaveSession.Open(repairSource);
+        session.Document.GetAchievement(ParseId(repairId)).RepairCounter();
+        session.Save(repairOutput);
+        return 0;
+    }
+    if (args is ["repair-all-achievement-counters", var repairAllSource, var repairAllOutput])
+    {
+        var session = SaveSession.Open(repairAllSource);
+        session.Document.RepairAllAchievementCounters();
+        session.Save(repairAllOutput);
         return 0;
     }
     if (args is ["inventory", var inventorySource, var inventoryKind])

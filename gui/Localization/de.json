@@ -84,6 +84,8 @@
   "AllStatuses": "Alle Status",
   "Trials": "Prüfungen",
   "Records": "Rekorde",
+  "RepairAchievementCounter": "Zähler korrigieren",
+  "RepairAllAchievementCounters": "Freigeschaltete Zähler korrigieren",
   "AchievementCategory": "Kategorie",
   "AchievementIncomplete": "Offen",
   "AchievementComplete": "Erreicht",
