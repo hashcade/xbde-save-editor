@@ -2,6 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <AssemblyName>XbdeEditor.Cli</AssemblyName>
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
   </PropertyGroup>
   <ItemGroup><ProjectReference Include="../core/Core.csproj" /></ItemGroup>
 </Project>

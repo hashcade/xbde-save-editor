@@ -19,7 +19,7 @@ public static class UiLanguage
         if (!Languages.ContainsKey(language)) throw new ArgumentException("Unsupported UI language.");
         using var stream = typeof(UiLanguage).Assembly.GetManifestResourceStream($"XbdeEditor.Gui.Localization.{language}.json")
             ?? throw new InvalidDataException($"Missing language resource: {language}");
-        return JsonSerializer.Deserialize<Dictionary<string, string>>(stream)
+        return JsonSerializer.Deserialize(stream, UiLocaleJsonContext.Default.DictionaryStringString)
             ?? throw new InvalidDataException($"Invalid language resource: {language}");
     }
 
