@@ -40,7 +40,7 @@ that a particular effect/rank can be obtained at the current story point.
 Future Connected does not automatically upgrade mining ranks or grant gems.
 
 Reproduce the metadata with
-`uv run --with beautifulsoup4 python tools/fetch_gem_rules.py` (JSON output).
+`uv run --with beautifulsoup4 python scripts/fetch_gem_rules.py` (JSON output).
 
 ## Record encoding and write boundaries
 

@@ -18,7 +18,7 @@ provides 1,353 named stackable definitions. Empty and numeric-placeholder names
 are excluded from creation; existing unknown IDs remain visible and read-only.
 Intermediate, Advanced and Master art manuals have distinct IDs and labels.
 Metadata is reproducible with
-`uv run --with beautifulsoup4 python tools/fetch_inventory_catalog.py` (TSV output).
+`uv run --with beautifulsoup4 python scripts/fetch_inventory_catalog.py` (TSV output).
 Catalog membership does not prove obtainability at the current story point.
 
 ## Native validation

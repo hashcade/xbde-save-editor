@@ -87,7 +87,7 @@ def run_host_tests() -> None:
     command("dotnet", "build", "XbdeEditor.slnx", "-c", "Release", "--nologo")
     command("dotnet", "run", "--project", "test/Core.Test.csproj", "-c", "Release", "--no-build")
     command("dotnet", "run", "--project", "test/Gui.Smoke.csproj", "-c", "Release", "--no-build")
-    command(sys.executable, "tools/test_cli.py", "--cli", "cli/bin/Release/net10.0/XbdeEditor.Cli.dll")
+    command(sys.executable, "scripts/test_cli.py", "--cli", "cli/bin/Release/net10.0/XbdeEditor.Cli.dll")
 
 
 def push_tag(tag: str) -> None:

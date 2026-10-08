@@ -109,7 +109,7 @@ at `0xBD790` and armor initializer at `0xBDAC0`. They read `jwl_slot` and fixed
 gem item ID in the low halfword and a presence flag in the upper halfword at
 record `+0x1C`, `+0x24` and `+0x2C`. Weapons support three fixed entries; armor
 initializes only the first. The 1,572 initializer rows can be regenerated with
-`uv run --with beautifulsoup4 python tools/fetch_equipment_initializers.py` (TSV
+`uv run --with beautifulsoup4 python scripts/fetch_equipment_initializers.py` (TSV
 on standard output). Both catalogs map through global item references.
 
 Tests create every offered definition in both campaigns and compare the complete
@@ -135,7 +135,7 @@ tables, mapped through global item references rather than table row numbers.
 Equipment slots use the item table's type: Mechon Fiora's armor `parts` values
 do not follow the normal head/torso/arms/legs/feet convention.
 The 1,572 mapped definitions are reproducible with
-`uv run --with beautifulsoup4 python tools/fetch_equipment_rules.py` (JSON output).
+`uv run --with beautifulsoup4 python scripts/fetch_equipment_rules.py` (JSON output).
 Armor skills were checked against `BTL_PSVskill` and the passive skill catalog.
 In the supplied executable (build ID `7E1DF8E08D60544BBDCA1E333C153C97`),
 the armor initializer at `0xBDAC0` stores table `arm_type` at inventory `+0x14`

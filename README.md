@@ -57,10 +57,10 @@ See the [CLI reference](CLI.md) and [development plan](docs/roadmap.md).
 dotnet build XbdeEditor.slnx -c Release
 dotnet run --project test/Core.Test.csproj -c Release --no-build
 dotnet run --project test/Gui.Smoke.csproj -c Release --no-build
-python3 tools/test_cli.py --cli cli/bin/Release/net10.0/XbdeEditor.Cli.dll
+python3 scripts/test_cli.py --cli cli/bin/Release/net10.0/XbdeEditor.Cli.dll
 ```
 
-Releases use `python3 tools/release.py`. The script tests the current branch,
+Releases use `python3 scripts/release.py`. The script tests the current branch,
 creates the version commit and pushes its tag. GitHub Actions packages the
 desktop app and CLI with a shared runtime and generates release notes.
 There is no published release yet.

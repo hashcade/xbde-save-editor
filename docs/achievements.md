@@ -7,7 +7,7 @@ Names, conditions, ordering and EXP rewards are joined by ID from
 [JNL_playaward](https://xenoblade.github.io/xb1de/bdat/bdat_common/JNL_playaward.html),
 [JNL_playaward_ms](https://xenoblade.github.io/xb1de/bdat/bdat_common_ms/JNL_playaward_ms.html)
 and [MNU_playaward](https://xenoblade.github.io/xb1de/bdat/MNU_playaward.html).
-Regenerate the catalog with `tools/fetch_achievement_catalog.py` using BeautifulSoup.
+Regenerate the catalog with `scripts/fetch_achievement_catalog.py` using BeautifulSoup.
 Names and condition text currently use English game data.
 
 ## Save fields

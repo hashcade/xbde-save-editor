@@ -94,8 +94,8 @@ The extra catalog columns come from `BTL_PSVskill.shape` and `point_SP`.
 contains 64 recipient/source rows, with five shapes per row. The row ID is
 `8 * (recipient - 1) + source`. Numeric shapes are 1 Circle, 2 Square, 3 Hexagon,
 4 Octagram/star and 5 Diamond. Self rows are zero; no configured slot uses Diamond.
-Generate the catalogs with `tools/fetch_skill_definitions.py` and
-`tools/fetch_skill_link_shapes.py`, using BeautifulSoup.
+Generate the catalogs with `scripts/fetch_skill_definitions.py` and
+`scripts/fetch_skill_link_shapes.py`, using BeautifulSoup.
 
 Verified native paths in the same executable build:
 

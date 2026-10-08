@@ -30,7 +30,7 @@ Sources:
 - [ITM_itemlist reward metadata](https://xenobladedata.github.io/xb1de/bdat/bdat_common/ITM_itemlist.html)
 - [BTL_skilllist gem ranges](https://xenobladedata.github.io/xb1de/bdat/bdat_common/BTL_skilllist.html)
 
-`tools/fetch_collectopaedia_catalog.py` prints the entry TSV; `--rewards` prints
+`scripts/fetch_collectopaedia_catalog.py` prints the entry TSV; `--rewards` prints
 the separate 133-row reward TSV. The scripts do not save game files or alter
 repository catalogs. Native executable and personal saves are not distributed.
 
